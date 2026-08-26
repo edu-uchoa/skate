@@ -1,0 +1,28 @@
+<span class="chip">Passo <%= maneuver.code %> · Aprenda a cair</span>
+<h2 class="mt-xs font-display text-display-lg"><%= maneuver.name.titleize %></h2>
+
+<div class="mt-md aspect-video w-full overflow-hidden rounded-xl border border-surface-container-high bg-surface-container-lowest">
+  <% if maneuver.video_url.present? %>
+    <video class="h-full w-full object-cover" controls preload="metadata" src="<%= maneuver.video_url %>"></video>
+  <% else %>
+    <div class="flex h-full items-center justify-center text-on-surface-variant/50">
+      <span class="material-symbols-outlined text-[40px]">play_arrow</span>
+    </div>
+  <% end %>
+</div>
+
+<h3 class="mt-md font-display text-headline-md">Instruções</h3>
+<ol class="mt-xs space-y-xs">
+  <% maneuver.instruction_steps.each do |step| %>
+    <li class="card flex gap-sm">
+      <span class="font-display text-headline-md text-primary"><%= format("%02d", step.position) %></span>
+      <span class="text-body-md text-on-surface-variant"><%= step.body %></span>
+    </li>
+  <% end %>
+</ol>
+
+<% unless locked %>
+  <%= link_to new_maneuver_training_session_path(maneuver), class: "btn-primary mt-md" do %>
+    Fazer o drill <span class="material-symbols-outlined">arrow_forward</span>
+  <% end %>
+<% end %>

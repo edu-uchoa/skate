@@ -1,0 +1,30 @@
+<% content_for :section, "Diagnóstico" %>
+<%= render "shared/progress_bar", label: "Passo 3 de 3", percentage: 66 %>
+
+<h2 class="font-display text-headline-md">Como é o seu skate hoje?</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">
+  Isso ajuda a entender se o seu equipamento atual atende às suas necessidades
+  ou se precisamos focar em setup.
+</p>
+
+<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "setup"), method: :patch, class: "mt-md space-y-xs" do |f| %>
+  <% {
+       "no_board"        => "Não tenho skate ainda",
+       "store_board"     => "Skate de loja comum",
+       "skateshop_board" => "Montado em skateshop",
+       "other_board"     => "Outro (longboard, cruiser)"
+     }.each do |value, label| %>
+    <label class="card flex cursor-pointer items-center justify-between gap-sm has-[:checked]:border-primary">
+      <span class="flex items-center gap-sm">
+        <%= f.radio_button :setup, value, class: "accent-[#ffb800]", required: true,
+              checked: @diagnosis.setup == value %>
+        <span class="text-body-md text-on-surface"><%= label %></span>
+      </span>
+      <span class="material-symbols-outlined text-on-surface-variant/40">check_circle</span>
+    </label>
+  <% end %>
+
+  <%= f.button type: :submit, class: "btn-primary mt-md" do %>
+    Ver meu plano personalizado <span class="material-symbols-outlined">arrow_forward</span>
+  <% end %>
+<% end %>

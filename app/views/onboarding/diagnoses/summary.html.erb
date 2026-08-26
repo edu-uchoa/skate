@@ -1,0 +1,27 @@
+<% content_for :section, "Plano" %>
+
+<section class="flex min-h-[60dvh] flex-col justify-center">
+  <span class="material-symbols-outlined icon-filled text-[40px] text-primary">check_circle</span>
+
+  <h2 class="mt-xs font-display text-display-lg">Entendido.</h2>
+  <p class="mt-md text-body-lg text-on-surface"><%= @planner.summary %></p>
+  <p class="mt-xs text-body-md text-on-surface-variant"><%= @planner.reassurance %></p>
+
+  <% if @planner.recommended_drills.any? %>
+    <div class="card mt-md">
+      <span class="chip">Recomendado para você</span>
+      <ul class="mt-xs space-y-xs">
+        <% @planner.recommended_drills.each do |drill| %>
+          <li class="flex items-center gap-xs text-body-md text-on-surface">
+            <span class="material-symbols-outlined text-primary">bolt</span>
+            <%= drill.label %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= link_to maneuver_path(@planner.entry_maneuver), class: "btn-primary mt-lg" do %>
+    Ver meu primeiro passo <span class="material-symbols-outlined">arrow_forward</span>
+  <% end %>
+</section>

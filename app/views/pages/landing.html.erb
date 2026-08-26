@@ -1,0 +1,26 @@
+<% content_for :section, "Landing" %>
+
+<section class="flex w-full min-h-[70dvh] max-w-[36rem] flex-col justify-center">
+  <h2 class="font-display text-display-lg text-on-surface">Bora andar de skate.</h2>
+  <p class="mt-xs font-display text-headline-md text-primary">Sem vergonha de errar e sem cair à toa.</p>
+
+  <p class="mt-md text-body-lg text-on-surface-variant">
+    Uma sequência de passos práticos desenhados para você dar sua primeira manobra
+    no seu ritmo. 100% privado.
+  </p>
+
+  <div class="mt-lg space-y-xs">
+    <%= link_to onboarding_age_gate_path, class: "btn-primary" do %>
+      Começar agora
+      <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+    <p class="text-center text-label-caps uppercase tracking-widest text-on-surface-variant/70">
+      Grátis, leva 1 min
+    </p>
+  </div>
+
+  <p class="mt-lg flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70">
+    <span class="material-symbols-outlined text-[18px]">lock</span>
+    Você não precisa de conta para começar.
+  </p>
+</section>

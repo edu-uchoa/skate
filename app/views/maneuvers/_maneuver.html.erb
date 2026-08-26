@@ -1,0 +1,45 @@
+<span class="chip">Nó <%= maneuver.position %></span>
+<h2 class="mt-xs font-display text-display-lg"><%= maneuver.label.titleize %></h2>
+
+<div class="mt-md aspect-video w-full overflow-hidden rounded-xl border border-surface-container-high bg-surface-container-lowest">
+  <% if maneuver.video_url.present? %>
+    <video class="h-full w-full object-cover" controls preload="metadata" src="<%= maneuver.video_url %>"></video>
+  <% else %>
+    <div class="flex h-full items-center justify-center text-on-surface-variant/50">
+      <span class="material-symbols-outlined text-[40px]">play_arrow</span>
+    </div>
+  <% end %>
+</div>
+
+<% if maneuver.why_now.present? %>
+  <div class="card mt-md">
+    <h3 class="font-display text-headline-md">Por que agora?</h3>
+    <p class="mt-xs text-body-md text-on-surface-variant"><%= maneuver.why_now %></p>
+  </div>
+<% end %>
+
+<dl class="mt-md grid grid-cols-1 gap-xs sm:grid-cols-2">
+  <div class="card">
+    <dt class="flex items-center gap-xs text-label-caps uppercase tracking-widest text-on-surface-variant">
+      <span class="material-symbols-outlined text-[18px]">fitness_center</span> Dificuldade
+    </dt>
+    <dd class="mt-base text-body-md text-on-surface"><%= t("maneuver.difficulty.#{maneuver.difficulty}") %></dd>
+  </div>
+  <div class="card">
+    <dt class="flex items-center gap-xs text-label-caps uppercase tracking-widest text-on-surface-variant">
+      <span class="material-symbols-outlined text-[18px]">timer</span> Tempo médio
+    </dt>
+    <dd class="mt-base text-body-md text-on-surface"><%= maneuver.average_time || "—" %></dd>
+  </div>
+</dl>
+
+<% if locked %>
+  <p class="mt-md rounded-lg border border-outline-variant p-sm text-body-md text-on-surface-variant">
+    Este nó ainda está bloqueado<%= ". Conclua #{maneuver.prerequisite.label} antes." if maneuver.prerequisite %>
+  </p>
+<% else %>
+  <%= link_to new_maneuver_training_session_path(maneuver), class: "btn-primary mt-md" do %>
+    <span class="material-symbols-outlined">skateboarding</span> Treinar essa manobra
+  <% end %>
+  <%= link_to "Agendar para depois", new_schedule_path(maneuver_slug: maneuver.slug), class: "btn-tertiary mt-xs block" %>
+<% end %>

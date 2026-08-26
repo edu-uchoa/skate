@@ -1,0 +1,27 @@
+<% content_for :section, "Salvar progresso" %>
+
+<section class="flex min-h-[60dvh] flex-col justify-center">
+  <span class="material-symbols-outlined text-[40px] text-primary">shield_lock</span>
+  <h2 class="mt-xs font-display text-headline-md">Para o seu progresso não sumir...</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Como você está rodando o Skate na web, um clique pode apagar seu histórico.
+    Salve seus treinos e devolutivas em um perfil privado.
+  </p>
+
+  <%= form_with url: account_path, method: :post, scope: :account, class: "mt-md space-y-xs" do |f| %>
+    <%= f.label :destination, "E-mail ou telefone (WhatsApp)",
+          class: "mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant" %>
+    <%= f.text_field :destination, class: "field", required: true,
+          placeholder: "voce@email.com ou (61) 90000-0000", autocomplete: "email" %>
+
+    <%= f.button type: :submit, class: "btn-primary mt-md" do %>
+      Enviar código de acesso <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+  <% end %>
+
+  <%= link_to "Continuar sem salvar por enquanto", track_path, class: "btn-tertiary mt-md block" %>
+
+  <p class="mt-md flex items-center justify-center gap-xs text-label-caps uppercase tracking-widest text-on-surface-variant/70">
+    <span class="material-symbols-outlined text-[16px]">lock</span> Dados criptografados
+  </p>
+</section>

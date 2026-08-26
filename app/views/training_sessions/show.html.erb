@@ -1,0 +1,15 @@
+<% content_for :section, "Fila offline" %>
+
+<section class="flex min-h-[60dvh] flex-col items-center justify-center text-center">
+  <span class="material-symbols-outlined text-[40px] text-on-surface-variant">cloud_off</span>
+  <h2 class="mt-xs font-display text-headline-md">Aguardando conexão</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Você está sem internet. Salvamos seu treino localmente. Enviaremos assim que você
+    voltar ao sinal. Fique tranquilo, seu progresso não vai sumir.
+  </p>
+  <span class="chip mt-md">1 item na fila</span>
+
+  <%= button_to "Tentar enviar agora", submit_training_session_path(@training_session),
+        method: :patch, class: "btn-secondary mt-md" %>
+  <%= link_to "Voltar para a trilha", track_path, class: "btn-tertiary mt-xs" %>
+</section>

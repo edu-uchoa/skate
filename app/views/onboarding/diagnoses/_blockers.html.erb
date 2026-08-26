@@ -1,0 +1,28 @@
+<% content_for :section, "Diagnóstico" %>
+<%= render "shared/progress_bar", label: "Passo 2 de 3", percentage: 33 %>
+
+<h2 class="font-display text-headline-md">O que é mais difícil para você hoje?</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">Pode escolher mais de uma opção se quiser.</p>
+
+<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "blockers"), method: :patch, class: "mt-md space-y-xs" do |f| %>
+  <%= hidden_field_tag "diagnosis[blockers][]", "" %>
+
+  <% [
+       [ "fear_of_falling", "falling",        "Medo de cair e me machucar",           "A segurança física é sua maior barreira." ],
+       [ "shame",           "visibility_off", "Vergonha de treinar na frente dos outros", "O julgamento alheio te trava na pista." ],
+       [ "foot_technique",  "skateboarding",  "Não sei qual o movimento certo do pé",  "Falta técnica e memória muscular." ],
+       [ "no_place",        "location_off",   "Falta de lugar adequado",               "Não tem onde praticar com tranquilidade." ]
+     ].each do |value, icon, title, hint| %>
+    <label class="card flex cursor-pointer items-start gap-sm has-[:checked]:border-primary">
+      <%= check_box_tag "diagnosis[blockers][]", value, @diagnosis.blocker_kinds.include?(value),
+            id: "blocker_#{value}", class: "mt-1 accent-[#ffb800]" %>
+      <span class="material-symbols-outlined text-primary"><%= icon %></span>
+      <span>
+        <span class="block text-body-md text-on-surface"><%= title %></span>
+        <span class="block text-label-caps text-on-surface-variant/70"><%= hint %></span>
+      </span>
+    </label>
+  <% end %>
+
+  <%= f.button "Avançar", type: :submit, class: "btn-primary mt-md" %>
+<% end %>

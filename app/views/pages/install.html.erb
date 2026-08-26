@@ -1,0 +1,23 @@
+<% content_for :section, "Instalação" %>
+
+<section class="card">
+  <span class="material-symbols-outlined text-primary">add_to_home_screen</span>
+  <h2 class="mt-xs font-display text-headline-md">Adicione o Skate à sua tela inicial</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Evite que o Safari ou Chrome apague seu progresso após uma semana.
+    É como um app de verdade, mas sem ir para a App Store.
+  </p>
+
+  <ol class="mt-md space-y-xs text-body-md text-on-surface-variant">
+    <li class="flex items-center gap-xs">
+      <span class="material-symbols-outlined text-primary">ios_share</span>
+      Toque em <strong class="text-on-surface">Compartilhar</strong>
+    </li>
+    <li class="flex items-center gap-xs">
+      <span class="material-symbols-outlined text-primary">add_box</span>
+      Depois em <strong class="text-on-surface">“Adicionar à Tela de Início”</strong>
+    </li>
+  </ol>
+</section>
+
+<%= link_to "Continuar no navegador por enquanto", track_path, class: "btn-tertiary mt-md block" %>

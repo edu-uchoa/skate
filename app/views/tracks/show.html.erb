@@ -1,0 +1,35 @@
+<% content_for :section, "Trilha" %>
+
+<% if @comeback_due %>
+  <%= link_to new_comeback_path, class: "card mb-md flex items-center gap-xs border-primary/40" do %>
+    <span class="material-symbols-outlined text-primary">favorite</span>
+    <span class="text-body-md">Que bom te ver de volta! Vamos retomar com calma?</span>
+  <% end %>
+<% end %>
+
+<%= render "shared/progress_bar", label: "Progresso", percentage: progression.percentage %>
+
+<div class="relative">
+  <div class="absolute bottom-16 left-[23px] top-6 z-0 w-px border-l-2 border-dashed border-surface-variant"></div>
+
+  <% @learning_modules.each do |learning_module| %>
+    <div class="relative z-10 mb-md mt-lg flex items-start gap-md">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest">
+        <span class="material-symbols-outlined text-on-surface-variant">flag</span>
+      </div>
+      <div class="min-w-0">
+        <span class="chip"><%= learning_module.code %></span>
+        <h2 class="font-display text-headline-md text-on-surface"><%= learning_module.name %></h2>
+        <p class="text-label-caps uppercase tracking-widest text-on-surface-variant/70">
+          <%= learning_module.subtitle %>
+        </p>
+      </div>
+    </div>
+
+    <% learning_module.maneuvers.each do |maneuver| %>
+      <%= render "tracks/node", maneuver: maneuver,
+            status: progression.status_for(maneuver),
+            current: maneuver == @current_maneuver %>
+    <% end %>
+  <% end %>
+</div>

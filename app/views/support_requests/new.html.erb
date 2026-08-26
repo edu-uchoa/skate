@@ -1,0 +1,34 @@
+<% content_for :section, "Ajuda" %>
+
+<h2 class="font-display text-headline-md">Como podemos ajudar?</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">
+  Escolha uma opção abaixo para falar com a equipe.
+</p>
+
+<%= form_with model: @support_request, url: support_requests_path, class: "mt-md space-y-xs" do |f| %>
+  <%= f.hidden_field :maneuver_id, value: @maneuver&.id %>
+
+  <% [
+       [ "injury",    "medical_services", "Me machuquei (atendimento de emergência)", "Gera WhatsApp com suporte prioritário." ],
+       [ "stuck",     "help",             "Travei em uma manobra",                    "Dicas técnicas ou grave um clipe." ],
+       [ "technical", "bug_report",       "Problema técnico no site",                 "Relate bugs ou falhas de carregamento." ]
+     ].each do |value, icon, title, hint| %>
+    <label class="card flex cursor-pointer items-start gap-sm has-[:checked]:border-primary">
+      <%= f.radio_button :kind, value, class: "mt-1 accent-[#ffb800]", required: true,
+            checked: @support_request.kind == value %>
+      <span class="material-symbols-outlined text-primary"><%= icon %></span>
+      <span>
+        <span class="block text-body-md text-on-surface"><%= title %></span>
+        <span class="block text-label-caps text-on-surface-variant/70"><%= hint %></span>
+      </span>
+    </label>
+  <% end %>
+
+  <%= f.text_area :message, rows: 2, class: "field mt-md", placeholder: "Conta rapidinho o que aconteceu (opcional)" %>
+  <%= f.button "Falar no WhatsApp", type: :submit, class: "btn-primary mt-md" %>
+<% end %>
+
+<p class="mt-md flex items-center justify-center gap-xs text-label-caps text-on-surface-variant/70">
+  <span class="material-symbols-outlined text-[16px]">schedule</span>
+  Respondemos por WhatsApp em até 1 dia útil por um humano nomeado.
+</p>

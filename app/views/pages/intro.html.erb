@@ -1,0 +1,16 @@
+<% content_for :section, "Abertura" %>
+
+<section class="flex w-full min-h-[70dvh] max-w-[36rem] flex-col justify-center">
+  <h2 class="font-display text-display-lg text-on-surface">Do zero ao primeiro combo.</h2>
+  <p class="mt-xs font-display text-headline-md text-on-surface-variant">Sem plateia.</p>
+
+  <%= link_to onboarding_age_gate_path, class: "btn-primary mt-lg" do %>
+    Descobrir meu nível
+    <span class="material-symbols-outlined">arrow_forward</span>
+  <% end %>
+
+  <p class="mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70">
+    <span class="material-symbols-outlined text-[18px]">lock</span>
+    Privado por padrão. Ninguém vê o seu treino.
+  </p>
+</section>

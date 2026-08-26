@@ -1,0 +1,24 @@
+<% content_for :section, "Retorno" %>
+
+<span class="material-symbols-outlined icon-filled text-[40px] text-primary">favorite</span>
+<h2 class="mt-xs font-display text-headline-md">Sem problemas</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">
+  Não cobramos consistência forçada aqui. Vamos começar com sessões rápidas de aquecimento
+  em manobras que você já domina.
+</p>
+
+<% if @warmups.any? %>
+  <ul class="mt-md space-y-xs">
+    <% @warmups.each do |maneuver| %>
+      <li class="card flex items-center justify-between">
+        <span class="text-body-md text-on-surface"><%= maneuver.label %></span>
+        <%= link_to "Aquecer", maneuver_path(maneuver),
+              class: "font-body text-label-caps uppercase tracking-widest text-primary" %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to track_path, class: "btn-primary mt-lg" do %>
+  Bora aquecer <span class="material-symbols-outlined">arrow_forward</span>
+<% end %>

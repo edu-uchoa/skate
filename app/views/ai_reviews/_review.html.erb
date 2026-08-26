@@ -1,0 +1,38 @@
+<span class="chip"><span class="material-symbols-outlined text-[14px]">model_training</span> Análise da IA</span>
+
+<% if ai_review.status_failed? %>
+  <div class="card mt-md border-error/40">
+    <h2 class="font-display text-headline-md text-error">Não conseguimos analisar o vídeo</h2>
+    <p class="mt-xs text-body-md text-on-surface-variant">
+      Isso não afeta seu progresso. Você pode tentar de novo no próximo treino.
+    </p>
+  </div>
+<% else %>
+  <h2 class="mt-xs font-display text-display-lg"><%= ai_review.headline %></h2>
+
+  <div class="card mt-md">
+    <h3 class="flex items-center gap-xs font-display text-headline-md">
+      <span class="material-symbols-outlined text-primary">check_circle</span> O que você fez bem
+    </h3>
+    <p class="mt-xs text-body-md text-on-surface-variant"><%= ai_review.strengths %></p>
+  </div>
+
+  <div class="card mt-xs">
+    <h3 class="flex items-center gap-xs font-display text-headline-md">
+      <span class="material-symbols-outlined text-primary">warning</span> Onde foi o erro
+    </h3>
+    <p class="mt-xs text-body-md text-on-surface-variant"><%= ai_review.mistake %></p>
+  </div>
+
+  <div class="card mt-xs border-primary/40">
+    <h3 class="flex items-center gap-xs font-display text-headline-md">
+      <span class="material-symbols-outlined text-primary">tips_and_updates</span> Próxima sessão: foca só nisso
+    </h3>
+    <p class="mt-xs text-body-md text-on-surface-variant"><%= ai_review.next_focus %></p>
+  </div>
+<% end %>
+
+<%= link_to track_path, class: "btn-primary mt-lg" do %>
+  Ir para a trilha de manobras <span class="material-symbols-outlined">arrow_forward</span>
+<% end %>
+<%= link_to "Agendar próxima sessão", new_schedule_path, class: "btn-tertiary mt-xs block" %>

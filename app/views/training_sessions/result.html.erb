@@ -1,0 +1,45 @@
+<% content_for :section, "Resultado" %>
+
+<span class="material-symbols-outlined icon-filled text-[40px] text-primary">skateboarding</span>
+<h2 class="mt-xs font-display text-display-lg">Como foi o seu treino?</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">
+  Seu feedback ajuda a personalizar os próximos desafios.
+</p>
+
+<%= render "shared/errors", record: @training_session %>
+
+<%= form_with model: @training_session, url: submit_training_session_path(@training_session),
+      method: :patch, data: { controller: "offline-queue" }, class: "mt-md space-y-xs" do |f| %>
+
+  <% [
+       [ "felt_safe",   "check_circle", "Fiz e me senti seguro" ],
+       [ "felt_afraid", "warning",      "Fiz com medo" ],
+       [ "could_not",   "cancel",       "Não consegui fazer" ]
+     ].each do |value, icon, label| %>
+    <label class="card flex cursor-pointer items-center gap-sm has-[:checked]:border-primary">
+      <%= f.radio_button :outcome, value, class: "accent-[#ffb800]", required: true %>
+      <span class="material-symbols-outlined shrink-0 text-primary"><%= icon %></span>
+      <span class="min-w-0 text-body-md text-on-surface"><%= label %></span>
+    </label>
+  <% end %>
+
+  <div class="card mt-md">
+    <h3 class="font-display text-headline-md">Análise de queda (IA)</h3>
+    <label class="mt-xs flex cursor-pointer items-center gap-xs text-body-md text-on-surface-variant">
+      <span class="material-symbols-outlined shrink-0 text-primary">video_camera_front</span>
+      <span>Gravar ou subir vídeo de <%= Rails.configuration.x.sakte.max_clip_seconds %>s</span>
+      <%= f.file_field :clip, accept: "video/*", capture: "environment", class: "sr-only" %>
+    </label>
+    <p class="mt-xs text-label-caps text-on-surface-variant/70">
+      A IA analisa se você caiu certo. Privado: só você e a análise veem.
+    </p>
+    <p class="mt-xs flex items-center gap-xs text-label-caps uppercase tracking-widest text-primary">
+      <span class="material-symbols-outlined text-[16px]">lock</span> Criptografado e seguro
+    </p>
+  </div>
+
+  <%= f.text_area :notes, rows: 2, class: "field mt-md", placeholder: "Quer anotar alguma coisa? (opcional)" %>
+
+  <%= hidden_field_tag :offline, "", data: { offline_queue_target: "flag" } %>
+  <%= f.button "Enviar resultado", type: :submit, class: "btn-primary mt-md" %>
+<% end %>

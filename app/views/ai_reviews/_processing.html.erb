@@ -1,0 +1,21 @@
+<section class="flex min-h-[60dvh] flex-col justify-center"
+         data-controller="poll" data-poll-interval-value="4000">
+  <h2 class="font-display text-headline-md">Processando seu diagnóstico...</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Nossa IA está analisando sua postura de queda. Leva menos de 2 minutos. Fique de olho.
+  </p>
+
+  <ul class="mt-md space-y-xs">
+    <li class="flex items-center gap-xs text-body-md text-on-surface">
+      <span class="material-symbols-outlined text-primary">check_circle</span> Upload de vídeo concluído
+    </li>
+    <li class="flex items-center gap-xs text-body-md text-on-surface-variant">
+      <span class="material-symbols-outlined animate-spin text-primary">progress_activity</span> Mapeamento de articulações
+    </li>
+    <li class="flex items-center gap-xs text-body-md text-on-surface-variant/50">
+      <span class="material-symbols-outlined">radio_button_unchecked</span> Análise de impacto
+    </li>
+  </ul>
+
+  <%= link_to "Voltar para a trilha", track_path, class: "btn-tertiary mt-lg" %>
+</section>

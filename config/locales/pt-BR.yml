@@ -1,0 +1,48 @@
+pt-BR:
+  date:
+    abbr_day_names: [Dom, Seg, Ter, Qua, Qui, Sex, Sáb]
+    day_names: [domingo, segunda-feira, terça-feira, quarta-feira, quinta-feira, sexta-feira, sábado]
+    abbr_month_names: [~, Jan, Fev, Mar, Abr, Mai, Jun, Jul, Ago, Set, Out, Nov, Dez]
+    formats:
+      default: "%d/%m/%Y"
+      short: "%d de %B"
+  maneuver:
+    difficulty:
+      beginner: Iniciante
+      intermediate: Intermediário
+      advanced: Avançado
+    kind:
+      drill: Drill
+      maneuver: Manobra
+      assessment: Avaliação técnica
+  training_session:
+    outcome:
+      felt_safe: Fiz e me senti seguro
+      felt_afraid: Fiz com medo
+      could_not: Não consegui fazer
+    period:
+      morning: Manhã
+      afternoon: Tarde
+      night: Noite
+  activerecord:
+    models:
+      user: Usuário
+      diagnosis: Diagnóstico
+      maneuver: Manobra
+      training_session: Treino
+      support_request: Pedido de ajuda
+    attributes:
+      user:
+        birth_year: Ano de nascimento
+      training_session:
+        outcome: Resultado
+        scheduled_on: Data
+        period: Período
+        location_name: Local
+        clip: Vídeo
+    errors:
+      models:
+        user:
+          attributes:
+            birth_year:
+              blank: precisa ser informado

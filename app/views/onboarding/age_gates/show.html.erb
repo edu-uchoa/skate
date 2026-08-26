@@ -1,0 +1,31 @@
+<% content_for :section, "Segurança" %>
+
+<%= render "shared/errors", record: @user %>
+
+<section class="mx-auto max-w-[36rem]">
+  <span class="material-symbols-outlined text-primary">calendar_today</span>
+  <h2 class="mt-xs font-display text-headline-md">Qual é o seu ano de nascimento?</h2>
+
+  <%= form_with model: @user, url: onboarding_age_gate_path, method: :patch, class: "mt-md space-y-md" do |f| %>
+    <div>
+      <%= f.label :birth_year, "Ano de nascimento",
+            class: "mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant" %>
+      <%= f.number_field :birth_year, class: "field", inputmode: "numeric",
+            placeholder: "2005", min: 1900, max: Date.current.year, required: true %>
+    </div>
+
+    <div class="rounded-lg border border-outline-variant bg-surface-container-low p-sm">
+      <span class="material-symbols-outlined text-on-surface-variant">policy</span>
+      <p class="mt-xs text-body-md text-on-surface-variant">
+        O Skate é restrito a maiores de <%= User::MINIMUM_AGE %> anos por regras de privacidade e
+        segurança física. Se você tem entre 13 e 17 anos, certifique-se de treinar sob
+        supervisão de um responsável.
+      </p>
+    </div>
+
+    <%= f.button type: :submit, class: "btn-primary" do %>
+      Aceitar termos de uso e segurança
+      <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+  <% end %>
+</section>

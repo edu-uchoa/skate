@@ -1,0 +1,19 @@
+<% content_for :section, "Retorno" %>
+
+<h2 class="font-display text-display-lg">Que bom te ver de volta!</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">O que rolou nesse tempo?</p>
+
+<%= form_with model: @comeback, url: comeback_path, class: "mt-md space-y-xs" do |f| %>
+  <% {
+       "injury"     => "Parei por lesão / Me machuquei",
+       "lost_focus" => "Perdi um pouco o foco",
+       "no_time"    => "Falta de tempo"
+     }.each do |value, label| %>
+    <label class="card flex cursor-pointer items-center gap-sm has-[:checked]:border-primary">
+      <%= f.radio_button :reason, value, class: "accent-[#ffb800]", required: true %>
+      <span class="text-body-md text-on-surface"><%= label %></span>
+    </label>
+  <% end %>
+
+  <%= f.button "Continuar", type: :submit, class: "btn-primary mt-md" %>
+<% end %>

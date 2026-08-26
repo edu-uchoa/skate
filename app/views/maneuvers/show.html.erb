@@ -1,0 +1,13 @@
+<% content_for :section, "Módulo #{@maneuver.learning_module.code}" %>
+
+<% if @maneuver.kind_drill? %>
+  <%= render "maneuvers/drill", maneuver: @maneuver, locked: @locked %>
+<% else %>
+  <%= render "maneuvers/maneuver", maneuver: @maneuver, locked: @locked %>
+<% end %>
+
+<%= link_to new_support_request_path(kind: :stuck, maneuver_slug: @maneuver.slug),
+      class: "mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70" do %>
+  <span class="material-symbols-outlined text-[18px]">medical_services</span>
+  Se machucou ou travou? Fale com a gente.
+<% end %>

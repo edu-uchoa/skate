@@ -1,0 +1,64 @@
+<% content_for :section, "Agenda" %>
+
+<% if @first_commitment %>
+  <h2 class="font-display text-headline-md">Quando e onde você vai fazer sua primeira sessão?</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Escolha um local plano, vazio e sem ninguém te olhando. Uma garagem ou ciclovia
+    vazia às 7h da manhã funcionam muito bem.
+  </p>
+<% else %>
+  <h2 class="font-display text-headline-md">Quando será o seu próximo rolê?</h2>
+  <p class="mt-xs text-body-md text-on-surface-variant">
+    Recomendamos treinar 1 vez por semana. O skate exige tempo de descanso para os
+    joelhos e corpo.
+  </p>
+<% end %>
+
+<%= render "shared/errors", record: @training_session %>
+
+<%= form_with model: @training_session, url: schedules_path, class: "mt-md space-y-md" do |f| %>
+  <%= hidden_field_tag :maneuver_slug, @maneuver&.slug %>
+
+  <div>
+    <span class="mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant">
+      Dia da semana
+    </span>
+    <div class="flex gap-xs overflow-x-auto pb-xs">
+      <% (0..6).each do |offset| %>
+        <% date = Date.current + offset %>
+        <label class="min-w-[64px] shrink-0 cursor-pointer rounded-lg border border-surface-container-high
+                      bg-surface-container p-xs text-center has-[:checked]:border-primary has-[:checked]:bg-surface-container-high">
+          <%= f.radio_button :scheduled_on, date.to_s, class: "sr-only",
+                checked: @training_session.scheduled_on == date %>
+          <span class="block text-label-caps uppercase text-on-surface-variant"><%= I18n.l(date, format: "%a") %></span>
+          <span class="block font-display text-headline-md text-on-surface"><%= date.day %></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <span class="mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant">
+      Período
+    </span>
+    <div class="grid grid-cols-1 gap-xs sm:grid-cols-3">
+      <% [ [ "morning", "light_mode", "Manhã" ], [ "afternoon", "routine", "Tarde" ], [ "night", "dark_mode", "Noite" ] ].each do |value, icon, label| %>
+        <label class="cursor-pointer rounded-lg border border-surface-container-high bg-surface-container p-xs
+                      text-center has-[:checked]:border-primary">
+          <%= f.radio_button :period, value, class: "sr-only", checked: @training_session.period == value %>
+          <span class="material-symbols-outlined text-primary"><%= icon %></span>
+          <span class="mt-1 block text-label-caps uppercase text-on-surface-variant"><%= label %></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :location_name, "Localização",
+          class: "mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant" %>
+    <%= f.text_field :location_name, class: "field", placeholder: "Garagem de casa, ciclovia vazia..." %>
+  </div>
+
+  <%= f.button (@first_commitment ? "Salvar meu compromisso de treino" : "Confirmar agendamento"),
+        type: :submit, class: "btn-primary" %>
+<% end %>

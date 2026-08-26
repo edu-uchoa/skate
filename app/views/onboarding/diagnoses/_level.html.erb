@@ -1,0 +1,22 @@
+<% content_for :section, "Diagnóstico" %>
+<%= render "shared/progress_bar", label: "Passo 1 de 3", percentage: 0 %>
+
+<h2 class="font-display text-headline-md">Qual é o seu nível hoje?</h2>
+
+<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "level"), method: :patch, class: "mt-md space-y-xs" do |f| %>
+  <% {
+       "never_ridden"   => "Nunca subi em um skate",
+       "can_push"       => "Consigo remar (empurrar) e fazer curvas, mas não mando nenhuma manobra",
+       "stuck_on_ollie" => "Estou travado tentando mandar o Ollie"
+     }.each do |value, label| %>
+    <label class="card flex cursor-pointer items-start gap-sm has-[:checked]:border-primary">
+      <%= f.radio_button :level, value, class: "mt-1 accent-[#ffb800]", required: true,
+            checked: @diagnosis.level == value %>
+      <span class="text-body-md text-on-surface"><%= label %></span>
+    </label>
+  <% end %>
+
+  <%= f.button type: :submit, class: "btn-primary mt-md" do %>
+    Continuar <span class="material-symbols-outlined">arrow_forward</span>
+  <% end %>
+<% end %>

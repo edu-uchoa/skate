@@ -1,0 +1,45 @@
+<% content_for :section, "Segurança" %>
+
+<div class="mb-md flex items-center gap-xs" data-controller="connection">
+  <span class="material-symbols-outlined text-on-surface-variant" data-connection-target="icon">wifi</span>
+  <span class="text-label-caps uppercase tracking-widest text-on-surface-variant"
+        data-connection-target="label">Online</span>
+</div>
+
+<span class="material-symbols-outlined icon-filled text-[40px] text-primary">skateboarding</span>
+<h2 class="mt-xs font-display text-display-lg">Checklist de segurança</h2>
+<p class="mt-xs text-body-md text-on-surface-variant">
+  Confirme as condições da pista antes de iniciar a gravação.
+</p>
+
+<%= render "shared/errors", record: @training_session %>
+
+<%= form_with model: @training_session,
+      url: maneuver_training_sessions_path(@maneuver),
+      data: { controller: "checklist" },
+      class: "mt-md space-y-xs" do |f| %>
+
+  <% {
+       gear_checked: "Capacete e joelheira estão firmes?",
+       ground_clear: "O chão está plano e livre de pedras?",
+       space_safe:   "Tem espaço seguro ao redor?"
+     }.each do |attribute, question| %>
+    <label class="card flex cursor-pointer items-center justify-between gap-sm has-[:checked]:border-primary">
+      <span class="text-body-md text-on-surface"><%= question %></span>
+      <%= f.check_box attribute, class: "h-5 w-5 accent-[#ffb800]",
+            data: { checklist_target: "item", action: "checklist#refresh" } %>
+    </label>
+  <% end %>
+
+  <%= f.button type: :submit, class: "btn-primary mt-md",
+        disabled: true, data: { checklist_target: "submit" } do %>
+    <span class="material-symbols-outlined">lock</span>
+    <span data-checklist-target="label">Complete o checklist</span>
+  <% end %>
+<% end %>
+
+<%= link_to new_support_request_path(kind: :injury),
+      class: "mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70" do %>
+  <span class="material-symbols-outlined text-[18px]">medical_services</span>
+  Se machucou ou travou? Fale com a gente.
+<% end %>

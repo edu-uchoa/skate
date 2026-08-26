@@ -1,0 +1,7 @@
+<% content_for :section, "Devolutiva" %>
+
+<% if @ai_review.finished? %>
+  <%= render "ai_reviews/review", ai_review: @ai_review, training_session: @training_session %>
+<% else %>
+  <%= render "ai_reviews/processing", ai_review: @ai_review %>
+<% end %>

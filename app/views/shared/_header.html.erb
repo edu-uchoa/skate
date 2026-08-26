@@ -1,0 +1,19 @@
+<header class="pt-safe fixed top-0 z-50 w-full bg-surface/80 backdrop-blur-xl">
+  <div class="mx-auto flex h-16 max-w-[980px] items-center justify-between gap-xs px-4 sm:px-8 md:px-12">
+    <div class="flex min-w-0 items-center gap-xs">
+      <%= link_to "Skate", root_path, class: "shrink-0 font-display text-[24px] font-extrabold text-primary" %>
+      <span class="mx-xs h-4 w-px shrink-0 bg-outline-variant"></span>
+      <h1 class="min-w-0 truncate font-body text-[10px] uppercase tracking-widest text-on-surface-variant sm:text-label-caps">
+        <%= content_for(:section) || "Trilha" %>
+      </h1>
+    </div>
+
+    <div class="flex shrink-0 items-center gap-xs">
+      <%= link_to new_support_request_path,
+            class: "flex h-10 w-10 items-center justify-center rounded-full bg-surface-container hover:bg-surface-container-high",
+            aria: { label: "Ajuda" } do %>
+        <span class="material-symbols-outlined text-on-surface">support_agent</span>
+      <% end %>
+    </div>
+  </div>
+</header>

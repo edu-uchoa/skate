@@ -1,0 +1,47 @@
+<div class="relative z-10 mb-lg flex flex-col gap-md sm:flex-row">
+  <% case status when "completed" %>
+    <div class="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+      <span class="material-symbols-outlined icon-filled">check</span>
+    </div>
+  <% when "locked" %>
+    <div class="mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant">
+      <span class="material-symbols-outlined opacity-50">lock</span>
+    </div>
+  <% else %>
+    <div class="relative mt-1 h-12 w-12 shrink-0">
+      <div class="absolute inset-0 animate-ping rounded-full bg-primary-container opacity-30"></div>
+      <div class="relative flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+        <span class="material-symbols-outlined icon-filled">skateboarding</span>
+      </div>
+    </div>
+  <% end %>
+
+  <% if current %>
+    <div class="min-w-0 w-full">
+      <div class="card w-full">
+        <span class="mb-xs block font-body text-label-caps uppercase tracking-widest text-primary">
+          Módulo atual
+        </span>
+        <h3 class="font-display text-headline-md text-on-surface"><%= maneuver.label %></h3>
+        <p class="mb-md mt-xs text-body-md text-on-surface-variant"><%= maneuver.description %></p>
+        <%= link_to "Iniciar treino", maneuver_path(maneuver), class: "btn-primary" %>
+      </div>
+    </div>
+  <% else %>
+    <div class="min-w-0 flex flex-col justify-center pt-2 <%= "opacity-50" if status == "locked" %>">
+      <%= link_to maneuver_path(maneuver), class: "font-display text-headline-md text-on-surface" do %>
+        <%= maneuver.label %>
+      <% end %>
+      <p class="mt-base font-body text-label-caps uppercase tracking-widest
+                <%= status == 'completed' ? 'text-primary' : 'text-on-surface-variant' %>">
+        <% if status == "completed" %>
+          Concluído
+        <% elsif status == "locked" %>
+          Bloqueado<%= " · Requer #{maneuver.prerequisite.code}" if maneuver.prerequisite %>
+        <% else %>
+          Disponível
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+</div>
