@@ -1,0 +1,39 @@
+<% content_for :section, "Entrar" %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">login</span>
+    <h2 class="screen-title">Bora voltar pro rolê</h2>
+    <p class="screen-desc">Entre com o e-mail ou telefone da sua conta e a sua senha.</p>
+  </header>
+
+  <%= form_with url: session_path, method: :post, scope: :session, class: "auth-form" do |f| %>
+    <div class="auth-field">
+      <%= f.label :contact, "E-mail ou telefone (WhatsApp)", class: "auth-label" %>
+      <%= f.text_field :contact, value: params.dig(:session, :contact), class: "auth-input", required: true,
+            autofocus: true, autocomplete: "username", autocapitalize: "none", spellcheck: false,
+            placeholder: "voce@email.com ou (61) 90000-0000" %>
+    </div>
+
+    <div class="auth-field">
+      <%= f.label :password, "Senha", class: "auth-label" %>
+      <%= f.password_field :password, class: "auth-input", required: true,
+            autocomplete: "current-password", placeholder: "Sua senha" %>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Entrar</span>
+      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+    <% end %>
+  <% end %>
+
+  <div class="auth-links">
+    <%= link_to "Esqueci minha senha", new_password_reset_path, class: "auth-muted-link" %>
+    <%= link_to "Ainda não tenho conta — criar agora", new_account_path, class: "auth-link" %>
+  </div>
+
+  <p class="auth-note">
+    <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
+    Dados criptografados
+  </p>
+</section>

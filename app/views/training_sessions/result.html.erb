@@ -1,45 +1,89 @@
-<% content_for :section, "Resultado" %>
-
-<span class="material-symbols-outlined icon-filled text-[40px] text-primary">skateboarding</span>
-<h2 class="mt-xs font-display text-display-lg">Como foi o seu treino?</h2>
-<p class="mt-xs text-body-md text-on-surface-variant">
-  Seu feedback ajuda a personalizar os próximos desafios.
-</p>
+<span class="step-indicator">SESSÃO FINALIZADA</span>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Como foi o seu treino?</h2>
+<p class="screen-desc" style="font-family: 'Inter', sans-serif;">Seja sincero. A sua evolução depende de ajustar o ritmo certo para você.</p>
 
 <%= render "shared/errors", record: @training_session %>
 
 <%= form_with model: @training_session, url: submit_training_session_path(@training_session),
-      method: :patch, data: { controller: "offline-queue" }, class: "mt-md space-y-xs" do |f| %>
+      method: :patch, data: { controller: "offline-queue" }, class: "form-registro" do |f| %>
 
-  <% [
-       [ "felt_safe",   "check_circle", "Fiz e me senti seguro" ],
-       [ "felt_afraid", "warning",      "Fiz com medo" ],
-       [ "could_not",   "cancel",       "Não consegui fazer" ]
-     ].each do |value, icon, label| %>
-    <label class="card flex cursor-pointer items-center gap-sm has-[:checked]:border-primary">
-      <%= f.radio_button :outcome, value, class: "accent-[#ffb800]", required: true %>
-      <span class="material-symbols-outlined shrink-0 text-primary"><%= icon %></span>
-      <span class="min-w-0 text-body-md text-on-surface"><%= label %></span>
+  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; width: 100%;">
+    
+    <!-- Option: Fiz Seguro -->
+    <label class="sub-headline-card option-card" style="transform: none; background: #18231c; border: 1px solid #343538; padding: 10px; cursor: pointer; display: flex; gap: 10px; align-items: center; transition: all 0.2s;" onclick="selectCard(this, '#30D158')">
+      <%= f.radio_button :outcome, "felt_safe", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
+      <div style="display: flex; gap: 10px; align-items: center; flex: 1;">
+        <span class="material-symbols-outlined" style="color: #30D158; font-size: 26px;">check_circle</span>
+        <div style="font-family: 'Inter', sans-serif;">
+          <h3 style="font-size: 13px; font-weight: bold; color: #e3e2e6; text-transform: uppercase; margin: 0;">Fiz e me senti seguro</h3>
+          <p style="font-size: 11px; color: #d5c4ab; margin: 0;">Missão cumprida com estilo e firmeza.</p>
+        </div>
+      </div>
     </label>
-  <% end %>
 
-  <div class="card mt-md">
-    <h3 class="font-display text-headline-md">Análise de queda (IA)</h3>
-    <label class="mt-xs flex cursor-pointer items-center gap-xs text-body-md text-on-surface-variant">
-      <span class="material-symbols-outlined shrink-0 text-primary">video_camera_front</span>
-      <span>Gravar ou subir vídeo de <%= Rails.configuration.x.sakte.max_clip_seconds %>s</span>
-      <%= f.file_field :clip, accept: "video/*", capture: "environment", class: "sr-only" %>
+    <!-- Option: Fiz com Medo -->
+    <label class="sub-headline-card option-card" style="transform: none; background: #232014; border: 1px solid #343538; padding: 10px; cursor: pointer; display: flex; gap: 10px; align-items: center; transition: all 0.2s;" onclick="selectCard(this, '#ffb800')">
+      <%= f.radio_button :outcome, "felt_afraid", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
+      <div style="display: flex; gap: 10px; align-items: center; flex: 1;">
+        <span class="material-symbols-outlined" style="color: #ffb800; font-size: 26px;">warning</span>
+        <div style="font-family: 'Inter', sans-serif;">
+          <h3 style="font-size: 13px; font-weight: bold; color: #ffb800; text-transform: uppercase; margin: 0;">Fiz com medo</h3>
+          <p style="font-size: 11px; color: #d5c4ab; margin: 0;">Consegui, mas ainda preciso de mais base.</p>
+        </div>
+      </div>
     </label>
-    <p class="mt-xs text-label-caps text-on-surface-variant/70">
-      A IA analisa se você caiu certo. Privado: só você e a análise veem.
-    </p>
-    <p class="mt-xs flex items-center gap-xs text-label-caps uppercase tracking-widest text-primary">
-      <span class="material-symbols-outlined text-[16px]">lock</span> Criptografado e seguro
-    </p>
+
+    <!-- Option: Não consegui -->
+    <label class="sub-headline-card option-card" style="transform: none; background: #241416; border: 1px solid #343538; padding: 10px; cursor: pointer; display: flex; gap: 10px; align-items: center; transition: all 0.2s;" onclick="selectCard(this, '#ff5a5f')">
+      <%= f.radio_button :outcome, "could_not", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
+      <div style="display: flex; gap: 10px; align-items: center; flex: 1;">
+        <span class="material-symbols-outlined" style="color: #ff5a5f; font-size: 26px;">block</span>
+        <div style="font-family: 'Inter', sans-serif;">
+          <h3 style="font-size: 13px; font-weight: bold; color: #ff5a5f; text-transform: uppercase; margin: 0;">Não saiu / travei</h3>
+          <p style="font-size: 11px; color: #d5c4ab; margin: 0;">Bloqueio mental ou físico. Bora rever.</p>
+        </div>
+      </div>
+    </label>
   </div>
 
-  <%= f.text_area :notes, rows: 2, class: "field mt-md", placeholder: "Quer anotar alguma coisa? (opcional)" %>
+  <script>
+    function selectCard(element, color) {
+      document.querySelectorAll('.option-card').forEach(card => {
+        card.style.borderColor = '#343538';
+      });
+      element.style.borderColor = color;
+    }
+  </script>
+
+  <!-- Video Upload / IA Scanner Section -->
+  <div class="sub-headline-card" style="position: relative; background: #1a1b20; border: 1px solid #343538; padding: 14px; margin-bottom: 12px; transform: none; width: 100%;">
+    <div class="version-badge" style="top: -6px; right: -4px; background: #fd591e; color: black; font-size: 8px;">IA & MENTOR</div>
+    <div style="display: flex; gap: 8px; align-items: flex-start;">
+      <div style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #ffb800; overflow: hidden; flex-shrink: 0;">
+        <img src="<%= asset_path 'skater_avatar_head.png' %>" alt="Mentor" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div style="flex: 1; font-family: 'Inter', sans-serif;">
+        <h4 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin-bottom: 2px;">Análise Técnica de Vídeo</h4>
+        <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.sakte.max_clip_seconds %>s do seu rolê para a IA ou nossos mentores analisarem sua postura.</p>
+        
+        <!-- O BOTAO DE UPLOAD VERDADEIRO (Abre Câmera no celular) -->
+        <label class="tactile-btn-primary" style="padding: 8px 12px; font-size: 12px; width: auto; display: inline-flex; cursor: pointer; align-items: center; gap: 6px; margin: 0; font-family: 'Outfit', sans-serif;">
+          <span class="material-symbols-outlined" style="font-size: 18px;">videocam</span>
+          Gravar ou Escolher Arquivo
+          <%= f.file_field :clip, accept: "video/mp4,video/x-m4v,video/*", capture: "environment", style: "display: none;" %>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notas -->
+  <%= f.text_area :notes, rows: 2, style: "font-family: 'Inter', sans-serif; width: 100%; background: #121316; border: 1px solid #343538; color: #e3e2e6; padding: 10px; border-radius: 6px; font-size: 12px; margin-bottom: 12px;", placeholder: "Quer anotar alguma coisa? (opcional)" %>
 
   <%= hidden_field_tag :offline, "", data: { offline_queue_target: "flag" } %>
-  <%= f.button "Enviar resultado", type: :submit, class: "btn-primary mt-md" %>
+  
+  <!-- Submit Final -->
+  <%= f.button type: :submit, class: "tactile-btn-primary", style: "font-family: 'Outfit', sans-serif; width: 100%; margin-top: auto; display: flex; justify-content: center;" do %>
+    <span>Enviar Resultado</span>
+    <span class="material-symbols-outlined">send</span>
+  <% end %>
 <% end %>

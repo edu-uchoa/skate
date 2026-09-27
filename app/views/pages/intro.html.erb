@@ -1,16 +1,24 @@
 <% content_for :section, "Abertura" %>
 
-<section class="flex w-full min-h-[70dvh] max-w-[36rem] flex-col justify-center">
-  <h2 class="font-display text-display-lg text-on-surface">Do zero ao primeiro combo.</h2>
-  <p class="mt-xs font-display text-headline-md text-on-surface-variant">Sem plateia.</p>
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%;">
+  <div style="position: relative; width: 100%; max-width: 240px; aspect-ratio: 1/1; margin-bottom: 20px;">
+    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #1f1f23, #0d0e11); border-radius: 16px; display: flex; align-items: center; justify-content: center; padding: 24px; border: 1px solid #343538; box-shadow: 6px 6px 0 #FFB800; transform: rotate(-1deg);">
+      <img src="<%= asset_path('stance_logo_oficial.svg') %>" alt="STANCE Logo" style="width: 100%; height: auto;">
+    </div>
+    <div class="version-badge" style="top: -8px; right: -8px; background: #fd591e; color: black; font-weight: 900;">BETA</div>
+  </div>
 
-  <%= link_to onboarding_age_gate_path, class: "btn-primary mt-lg" do %>
-    Descobrir meu nível
+  <h1 style="font-family: var(--font-display); font-size: 26px; font-weight: 900; text-transform: uppercase; color: #e3e2e6; line-height: 1.2; margin-bottom: 20px;">
+    Do zero ao<br><span style="color: #ffb800;">primeiro combo.</span>
+  </h1>
+
+  <%= link_to onboarding_age_gate_path, class: "tactile-btn-primary", style: "max-width: 280px; display: flex; justify-content: center; align-items: center; text-decoration: none;" do %>
+    <span style="font-weight: 800;">Descobrir meu nível</span>
     <span class="material-symbols-outlined">arrow_forward</span>
   <% end %>
 
-  <p class="mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70">
-    <span class="material-symbols-outlined text-[18px]">lock</span>
-    Privado por padrão. Ninguém vê o seu treino.
-  </p>
-</section>
+  <div style="margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: #d5c4ab; opacity: 0.8;">
+    <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
+    <span>Privado por padrão. Ninguém vê o seu treino.</span>
+  </div>
+</div>

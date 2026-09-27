@@ -1,0 +1,48 @@
+<% content_for :section, "Spot Finder" %>
+
+<div style="padding: 10px 12px; background: #0d0e11; border-bottom: 1px solid #292a2d; display: flex; gap: 6px; overflow-x: auto; margin: -16px -16px 0 -16px;">
+  <button class="tape-badge" style="background: #ffb800; color: black; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🏙 STREET</button>
+  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🏀 QUADRAS</button>
+  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🛹 BOWLS</button>
+  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🕳 VAZIOS</button>
+</div>
+
+<!-- Satellite Map Viewport -->
+<div style="position: relative; width: 100vw; height: 400px; background: #0d0e11; overflow: hidden; margin-left: -16px;">
+  <img src="<%= asset_path 'skate_discipline_spot_map.jpg' %>" alt="Mapa de Picos" style="width: 100%; height: 100%; object-fit: cover;">
+  
+  <!-- Spot Marker 1 -->
+  <div style="position: absolute; top: 40%; left: 35%; cursor: pointer;" onclick="alert('Spot selecionado: Pista do Ibira')">
+    <div style="width: 32px; height: 32px; border-radius: 50%; background: #ffb800; color: black; display: flex; align-items: center; justify-content: center; border: 2px solid black; box-shadow: 0 4px 8px rgba(0,0,0,0.8);">
+      <span class="material-symbols-outlined" style="font-size: 18px; font-weight: bold;">skateboarding</span>
+    </div>
+    <div class="version-badge" style="top: -14px; left: -10px; background: #fd591e; color: black; font-size: 8px; padding: 1px 4px; position: absolute;">IBIRA</div>
+  </div>
+</div>
+
+<!-- Bottom Sheet -->
+<div style="margin-top: -40px; position: relative; z-index: 10; background: #1a1b20; border: 1px solid #343538; border-radius: 10px; padding: 12px; box-shadow: 0 -8px 24px rgba(0,0,0,0.9);">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+    <div>
+      <h3 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 900; color: #e3e2e6; text-transform: uppercase;">Pista do Ibira (Marquise)</h3>
+      <p style="font-size: 11px; color: #9e8f78; font-family: 'Inter', sans-serif;">Parque Ibirapuera • São Paulo - SP</p>
+    </div>
+    <span class="tape-badge" style="background: #30D158; color: black; font-size: 9px; font-family: 'Outfit', sans-serif;">PISO LISO</span>
+  </div>
+
+  <div style="display: flex; gap: 8px; margin-bottom: 8px; font-family: 'Inter', sans-serif;">
+    <div style="flex: 1; background: #0d0e11; padding: 8px 10px; border-radius: 6px; border: 1px solid #292a2d;">
+      <span style="font-size: 9px; color: #9e8f78; display: block; margin-bottom: 2px;">ILUMINAÇÃO</span>
+      <span style="font-size: 11px; font-weight: bold; color: #30D158;">💡 Boa até 22h</span>
+    </div>
+    <div style="flex: 1; background: #0d0e11; padding: 8px 10px; border-radius: 6px; border: 1px solid #292a2d;">
+      <span style="font-size: 9px; color: #9e8f78; display: block; margin-bottom: 2px;">HORÁRIO IDEAL</span>
+      <span style="font-size: 11px; font-weight: bold; color: #ffb800;">7h às 10h da manhã</span>
+    </div>
+  </div>
+
+  <button class="tactile-btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 10px 12px; font-size: 12px; font-family: 'Outfit', sans-serif;" onclick="alert('Abrindo rotas no Google Maps...')">
+    <span style="font-weight: 800;">Como Chegar</span>
+    <span class="material-symbols-outlined" style="font-size: 18px;">directions</span>
+  </button>
+</div>

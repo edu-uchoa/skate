@@ -1,27 +1,55 @@
-<% content_for :section, "Salvar progresso" %>
+<% content_for :section, "Cadastro" %>
 
-<section class="flex min-h-[60dvh] flex-col justify-center">
-  <span class="material-symbols-outlined text-[40px] text-primary">shield_lock</span>
-  <h2 class="mt-xs font-display text-headline-md">Para o seu progresso não sumir...</h2>
-  <p class="mt-xs text-body-md text-on-surface-variant">
-    Como você está rodando o Skate na web, um clique pode apagar seu histórico.
-    Salve seus treinos e devolutivas em um perfil privado.
-  </p>
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">person_add</span>
+    <h2 class="screen-title">Crie sua conta</h2>
+    <p class="screen-desc">
+      Seu progresso, treinos e devolutivas ficam salvos e privados. Use e-mail ou telefone e uma senha.
+    </p>
+  </header>
 
-  <%= form_with url: account_path, method: :post, scope: :account, class: "mt-md space-y-xs" do |f| %>
-    <%= f.label :destination, "E-mail ou telefone (WhatsApp)",
-          class: "mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant" %>
-    <%= f.text_field :destination, class: "field", required: true,
-          placeholder: "voce@email.com ou (61) 90000-0000", autocomplete: "email" %>
+  <% if @user.errors.any? %>
+    <ul class="auth-errors" role="alert">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  <% end %>
 
-    <%= f.button type: :submit, class: "btn-primary mt-md" do %>
-      Enviar código de acesso <span class="material-symbols-outlined">arrow_forward</span>
+  <%= form_with model: @user, url: account_path, method: :post, class: "auth-form" do |f| %>
+    <div class="auth-field">
+      <%= f.label :contact, "E-mail ou telefone (WhatsApp)", class: "auth-label" %>
+      <%= f.text_field :contact, value: params.dig(:user, :contact), class: "auth-input", required: true,
+            autocomplete: "username", autocapitalize: "none", spellcheck: false,
+            placeholder: "voce@email.com ou (61) 90000-0000" %>
+    </div>
+
+    <div class="auth-field">
+      <%= f.label :password, "Senha", class: "auth-label" %>
+      <%= f.password_field :password, class: "auth-input", required: true, autocomplete: "new-password",
+            minlength: User::PASSWORD_LENGTH.min, maxlength: User::PASSWORD_LENGTH.max,
+            placeholder: "Mínimo de #{User::PASSWORD_LENGTH.min} caracteres" %>
+    </div>
+
+    <div class="auth-field">
+      <%= f.label :password_confirmation, "Confirme a senha", class: "auth-label" %>
+      <%= f.password_field :password_confirmation, class: "auth-input", required: true,
+            autocomplete: "new-password", placeholder: "Repita a senha" %>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Criar conta</span>
+      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
     <% end %>
   <% end %>
 
-  <%= link_to "Continuar sem salvar por enquanto", track_path, class: "btn-tertiary mt-md block" %>
+  <div class="auth-links">
+    <%= link_to "Já tenho conta — entrar", new_session_path, class: "auth-link" %>
+  </div>
 
-  <p class="mt-md flex items-center justify-center gap-xs text-label-caps uppercase tracking-widest text-on-surface-variant/70">
-    <span class="material-symbols-outlined text-[16px]">lock</span> Dados criptografados
+  <p class="auth-note">
+    <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
+    Senha criptografada. Ninguém vê seus dados.
   </p>
 </section>

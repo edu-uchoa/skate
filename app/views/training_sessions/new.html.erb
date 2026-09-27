@@ -1,45 +1,43 @@
 <% content_for :section, "Segurança" %>
 
-<div class="mb-md flex items-center gap-xs" data-controller="connection">
-  <span class="material-symbols-outlined text-on-surface-variant" data-connection-target="icon">wifi</span>
-  <span class="text-label-caps uppercase tracking-widest text-on-surface-variant"
-        data-connection-target="label">Online</span>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+  <span class="tape-badge" style="background: #ffb800; color: black; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">🛡 MODO TREINO OFFLINE</span>
 </div>
-
-<span class="material-symbols-outlined icon-filled text-[40px] text-primary">skateboarding</span>
-<h2 class="mt-xs font-display text-display-lg">Checklist de segurança</h2>
-<p class="mt-xs text-body-md text-on-surface-variant">
-  Confirme as condições da pista antes de iniciar a gravação.
-</p>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Checklist Pré-Sessão</h2>
+<p class="screen-desc" style="font-family: 'Inter', sans-serif;">Marque os itens antes de subir no skate para garantir um treino seguro.</p>
 
 <%= render "shared/errors", record: @training_session %>
 
 <%= form_with model: @training_session,
       url: maneuver_training_sessions_path(@maneuver),
       data: { controller: "checklist" },
-      class: "mt-md space-y-xs" do |f| %>
+      style: "display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;" do |f| %>
 
   <% {
-       gear_checked: "Capacete e joelheira estão firmes?",
-       ground_clear: "O chão está plano e livre de pedras?",
-       space_safe:   "Tem espaço seguro ao redor?"
+       gear_checked: "Capacete e joelheiras bem firmes?",
+       ground_clear: "O chão está plano e sem pedrinhas?",
+       space_safe:   "Ambiente seguro e livre de perigos?"
      }.each do |attribute, question| %>
-    <label class="card flex cursor-pointer items-center justify-between gap-sm has-[:checked]:border-primary">
-      <span class="text-body-md text-on-surface"><%= question %></span>
-      <%= f.check_box attribute, class: "h-5 w-5 accent-[#ffb800]",
-            data: { checklist_target: "item", action: "checklist#refresh" } %>
-    </label>
+    <div class="check-item" onclick="this.classList.toggle('done')" style="display: flex; align-items: center; gap: 10px; background: #1a1b20; border: 1px solid #343538; border-radius: 8px; padding: 10px; cursor: pointer; transition: all 0.2s;">
+      <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%;">
+        <div class="check-box-square" style="width: 28px; height: 28px; border-radius: 6px; background: #24252a; border: 2px solid #343538; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <span class="material-symbols-outlined" style="font-size: 16px; color: #ffb800;">check</span>
+        </div>
+        <%= f.check_box attribute, style: "position: absolute; opacity: 0; pointer-events: none;",
+              data: { checklist_target: "item", action: "checklist#refresh" } %>
+        <span style="font-size: 12px; font-weight: bold; color: #e3e2e6; font-family: 'Inter', sans-serif;"><%= question %></span>
+      </label>
+    </div>
   <% end %>
 
-  <%= f.button type: :submit, class: "btn-primary mt-md",
-        disabled: true, data: { checklist_target: "submit" } do %>
-    <span class="material-symbols-outlined">lock</span>
-    <span data-checklist-target="label">Complete o checklist</span>
-  <% end %>
-<% end %>
+  <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; padding-top: 14px;">
+    <%= f.button type: :submit, class: "tactile-btn-primary", style: "width: 100%; background: #ff5a5f; color: black; box-shadow: 0 4px 0 #690005; font-family: 'Outfit', sans-serif; display: flex; justify-content: center; align-items: center; gap: 6px;", data: { checklist_target: "submit" } do %>
+      <span class="material-symbols-outlined">videocam</span>
+      <span style="font-weight: 800;">Gravar 15s de Vídeo Direto</span>
+    <% end %>
 
-<%= link_to new_support_request_path(kind: :injury),
-      class: "mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70" do %>
-  <span class="material-symbols-outlined text-[18px]">medical_services</span>
-  Se machucou ou travou? Fale com a gente.
+    <%= f.button type: :submit, class: "secondary-link-btn", style: "text-align: center; display: block; width: 100%; border: none; background: transparent; cursor: pointer;", data: { checklist_target: "submit" } do %>
+      Registrar sem enviar vídeo
+    <% end %>
+  </div>
 <% end %>

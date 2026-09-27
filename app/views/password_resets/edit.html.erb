@@ -1,0 +1,49 @@
+<% content_for :section, "Nova senha" %>
+
+<section class="auth-screen">
+  <%= link_to new_password_reset_path, class: "auth-back" do %>
+    <span class="material-symbols-outlined">arrow_back</span> Trocar contato
+  <% end %>
+
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">password</span>
+    <h2 class="screen-title">Crie uma senha nova</h2>
+    <p class="screen-desc">
+      Digite o código enviado para <strong style="color: var(--text-on-surface);"><%= @contact %></strong>
+      e escolha a nova senha.
+    </p>
+  </header>
+
+  <%= form_with url: password_reset_path, method: :patch, class: "auth-form" do %>
+    <div class="auth-field">
+      <%= label_tag :code, "Código de acesso", class: "auth-label" %>
+      <%= text_field_tag :code, nil, class: "auth-input auth-input-code", required: true,
+            inputmode: "numeric", autocomplete: "one-time-code", maxlength: AccessCode::LENGTH,
+            pattern: "\\d{#{AccessCode::LENGTH}}", placeholder: "000000" %>
+    </div>
+
+    <div class="auth-field">
+      <%= label_tag :password, "Nova senha", class: "auth-label" %>
+      <%= password_field_tag :password, nil, class: "auth-input", required: true, autocomplete: "new-password",
+            minlength: User::PASSWORD_LENGTH.min, maxlength: User::PASSWORD_LENGTH.max,
+            placeholder: "Mínimo de #{User::PASSWORD_LENGTH.min} caracteres" %>
+    </div>
+
+    <div class="auth-field">
+      <%= label_tag :password_confirmation, "Confirme a nova senha", class: "auth-label" %>
+      <%= password_field_tag :password_confirmation, nil, class: "auth-input", required: true,
+            autocomplete: "new-password", placeholder: "Repita a senha" %>
+    </div>
+
+    <%= button_tag type: :submit, class: "tactile-btn-primary" do %>
+      <span>Salvar e entrar</span>
+      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+    <% end %>
+  <% end %>
+
+  <div class="auth-links" data-controller="countdown" data-countdown-seconds-value="30">
+    <p class="auth-hint" data-countdown-target="label"></p>
+    <%= button_to "Reenviar código", resend_password_reset_path, method: :post,
+          class: "auth-link hidden", data: { countdown_target: "action" } %>
+  </div>
+</section>

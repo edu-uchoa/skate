@@ -1,26 +1,44 @@
 <% content_for :section, "Landing" %>
 
-<section class="flex w-full min-h-[70dvh] max-w-[36rem] flex-col justify-center">
-  <h2 class="font-display text-display-lg text-on-surface">Bora andar de skate.</h2>
-  <p class="mt-xs font-display text-headline-md text-primary">Sem vergonha de errar e sem cair à toa.</p>
+<div class="hero-card-container">
+  <div class="version-badge">V. 1.0.4</div>
+  <img src="<%= asset_path('skater_hero.jpg') %>" alt="Skatista" class="hero-bg-img">
+  <div class="hero-overlay-border"></div>
+  
+  <div class="hero-logo-center">
+    <img src="<%= asset_path('stance_logo_oficial.svg') %>" alt="STANCE Logo Oficial" class="stance-logo-img">
+  </div>
+</div>
 
-  <p class="mt-md text-body-lg text-on-surface-variant">
-    Uma sequência de passos práticos desenhados para você dar sua primeira manobra
-    no seu ritmo. 100% privado.
-  </p>
-
-  <div class="mt-lg space-y-xs">
-    <%= link_to onboarding_age_gate_path, class: "btn-primary" do %>
-      Começar agora
-      <span class="material-symbols-outlined">arrow_forward</span>
-    <% end %>
-    <p class="text-center text-label-caps uppercase tracking-widest text-on-surface-variant/70">
-      Grátis, leva 1 min
+<div class="hero-text-block">
+  <div class="yellow-accent-bar"></div>
+  <h1 class="main-headline">Bora andar<br>de skate!</h1>
+  
+  <div class="sub-headline-card">
+    <h2 class="sub-headline-title">Sem vergonha de errar<br>e sem cair à toa.</h2>
+    <p class="sub-headline-body">
+      Uma sequência de passos práticos desenhados para você dar sua primeira manobra no seu ritmo. 100% privado.
     </p>
   </div>
+</div>
 
-  <p class="mt-lg flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70">
-    <span class="material-symbols-outlined text-[18px]">lock</span>
-    Você não precisa de conta para começar.
+<div class="hero-cta-section" style="margin-top: auto; padding-top: 10px;">
+  <%= link_to (signed_in? ? install_path : new_account_path), id: "landing-cta", class: "tactile-btn-primary" do %>
+    <span class="btn-text">
+      Começar agora
+      <span class="btn-subtext">(Grátis, leva 1 min)</span>
+    </span>
+    <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+  <% end %>
+
+  <p class="privacy-note">
+    <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
+    Crie sua conta grátis. Seus dados ficam privados.
   </p>
-</section>
+
+  <% unless signed_in? %>
+    <%= link_to "Já tem conta? Entrar", new_session_path, id: "landing-sign-in", class: "secondary-link-btn",
+          style: "display: block; width: 100%; text-decoration: underline;" %>
+  <% end %>
+
+</div>

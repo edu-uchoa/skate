@@ -1,30 +1,48 @@
 <% content_for :section, "Diagnóstico" %>
-<%= render "shared/progress_bar", label: "Passo 3 de 3", percentage: 66 %>
+<span class="step-indicator">PASSO 3 DE 3 • 100%</span>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Como é o seu skate hoje?</h2>
+<p class="screen-desc" style="font-family: 'Inter', sans-serif;">Isso ajuda a entender se o seu equipamento aguenta o tranco ou se precisamos te salvar de um skate travado.</p>
 
-<h2 class="font-display text-headline-md">Como é o seu skate hoje?</h2>
-<p class="mt-xs text-body-md text-on-surface-variant">
-  Isso ajuda a entender se o seu equipamento atual atende às suas necessidades
-  ou se precisamos focar em setup.
-</p>
+<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "setup"), method: :patch, class: "options-list" do |f| %>
+  <% options = [
+       { val: "no_board", icon: "shopping_cart", title: "Não tenho skate ainda", desc: "Quero começar com o equipamento certo" },
+       { val: "store_board", icon: "skateboarding", title: "Skate montado comum", desc: "Comprado em loja de departamento / brinquedo" },
+       { val: "skateshop_board", icon: "build", title: "Skate de skateshop profissional", desc: "Peças montadas sob medida para rolê sério" },
+       { val: "other_board", icon: "waves", title: "Outro tipo de prancha", desc: "Cruiser, Longboard, Surfskate, etc." }
+     ] %>
 
-<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "setup"), method: :patch, class: "mt-md space-y-xs" do |f| %>
-  <% {
-       "no_board"        => "Não tenho skate ainda",
-       "store_board"     => "Skate de loja comum",
-       "skateshop_board" => "Montado em skateshop",
-       "other_board"     => "Outro (longboard, cruiser)"
-     }.each do |value, label| %>
-    <label class="card flex cursor-pointer items-center justify-between gap-sm has-[:checked]:border-primary">
-      <span class="flex items-center gap-sm">
-        <%= f.radio_button :setup, value, class: "accent-[#ffb800]", required: true,
-              checked: @diagnosis.setup == value %>
-        <span class="text-body-md text-on-surface"><%= label %></span>
-      </span>
-      <span class="material-symbols-outlined text-on-surface-variant/40">check_circle</span>
-    </label>
-  <% end %>
+  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; width: 100%;">
+    <% options.each do |opt| %>
+      <% is_checked = @diagnosis.setup == opt[:val] %>
+      <label class="sub-headline-card option-card <%= is_checked ? 'selected' : '' %>" style="transform: none; background: #1a1b20; border: 1px solid <%= is_checked ? '#ffb800' : '#343538' %>; padding: 10px; cursor: pointer; transition: all 0.2s;" onclick="selectCard(this, '#ffb800')">
+        <%= f.radio_button :setup, opt[:val], class: "sr-only", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
+        
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span class="material-symbols-outlined" style="color: #ffb800;"><%= opt[:icon] %></span>
+          <div style="font-family: 'Inter', sans-serif;">
+            <h3 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin: 0;"><%= opt[:title] %></h3>
+            <p style="font-size: 11px; color: #d5c4ab; margin: 0; line-height: 1.4;"><%= opt[:desc] %></p>
+          </div>
+        </div>
+      </label>
+    <% end %>
+  </div>
 
-  <%= f.button type: :submit, class: "btn-primary mt-md" do %>
-    Ver meu plano personalizado <span class="material-symbols-outlined">arrow_forward</span>
-  <% end %>
+  <script>
+    function selectCard(element, color) {
+      document.querySelectorAll('.option-card').forEach(card => {
+        card.style.borderColor = '#343538';
+        card.classList.remove('selected');
+      });
+      element.style.borderColor = color;
+      element.classList.add('selected');
+    }
+  </script>
+
+  <div style="margin-top: auto; padding-top: 14px;">
+    <%= f.button type: :submit, class: "tactile-btn-primary", style: "width: 100%; font-family: 'Outfit', sans-serif; display: flex; justify-content: center; align-items: center;" do %>
+      <span>Ver meu plano personalizado</span>
+      <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+  </div>
 <% end %>

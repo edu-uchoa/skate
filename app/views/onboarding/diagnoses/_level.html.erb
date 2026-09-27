@@ -1,22 +1,49 @@
 <% content_for :section, "Diagnóstico" %>
-<%= render "shared/progress_bar", label: "Passo 1 de 3", percentage: 0 %>
+<span class="step-indicator">PASSO 1 DE 3 • 33%</span>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Qual é o seu nível hoje?</h2>
+<p class="screen-desc" style="font-family: 'Inter', sans-serif;">Isso define onde você entra na trilha para não perder tempo com o que já sabe ou tentar algo difícil demais.</p>
 
-<h2 class="font-display text-headline-md">Qual é o seu nível hoje?</h2>
+<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "level"), method: :patch, class: "options-list" do |f| %>
+  <% levels = [
+       { val: "never_ridden", title: "Nunca subi em um skate", desc: "Quero aprender a ficar de pé, remar e cair sem me machucar", icon: "skateboarding" },
+       { val: "can_push", title: "Consigo remar e fazer curvas", desc: "Mas ainda não tenho segurança para mandar manobras no chão", icon: "directions_run" },
+       { val: "stuck_on_ollie", title: "Estou travado tentando o Ollie", desc: "O pop bate mas o skate não sobe ou o pé de trás escapa", icon: "sports_martial_arts", badge: "MAIS COMUM" },
+       { val: "advanced", title: "Já mando Ollie com firmeza", desc: "Quero aprender transição em bowl, mini-rampa, grinds e combos", icon: "military_tech" }
+     ] %>
 
-<%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "level"), method: :patch, class: "mt-md space-y-xs" do |f| %>
-  <% {
-       "never_ridden"   => "Nunca subi em um skate",
-       "can_push"       => "Consigo remar (empurrar) e fazer curvas, mas não mando nenhuma manobra",
-       "stuck_on_ollie" => "Estou travado tentando mandar o Ollie"
-     }.each do |value, label| %>
-    <label class="card flex cursor-pointer items-start gap-sm has-[:checked]:border-primary">
-      <%= f.radio_button :level, value, class: "mt-1 accent-[#ffb800]", required: true,
-            checked: @diagnosis.level == value %>
-      <span class="text-body-md text-on-surface"><%= label %></span>
-    </label>
-  <% end %>
+  <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; width: 100%;">
+    <% levels.each do |level| %>
+      <label class="sub-headline-card option-card" style="transform: none; background: #1a1b20; border: 1px solid #343538; padding: 10px; cursor: pointer; transition: all 0.2s;" onclick="selectCard(this, '#ffb800')">
+        <%= f.radio_button :level, level[:val], class: "sr-only", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
+        
+        <% if level[:badge] %>
+          <div class="version-badge" style="top: -8px; right: -6px; background: #fd591e; color: black; font-weight: 800; font-size: 9px; padding: 2px 6px;"><%= level[:badge] %></div>
+        <% end %>
 
-  <%= f.button type: :submit, class: "btn-primary mt-md" do %>
-    Continuar <span class="material-symbols-outlined">arrow_forward</span>
-  <% end %>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-family: 'Inter', sans-serif;">
+            <h3 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin: 0;"><%= level[:title] %></h3>
+            <p style="font-size: 11px; color: #d5c4ab; margin: 0; line-height: 1.4;"><%= level[:desc] %></p>
+          </div>
+          <span class="material-symbols-outlined" style="color: #ffb800;"><%= level[:icon] %></span>
+        </div>
+      </label>
+    <% end %>
+  </div>
+
+  <script>
+    function selectCard(element, color) {
+      document.querySelectorAll('.option-card').forEach(card => {
+        card.style.borderColor = '#343538';
+      });
+      element.style.borderColor = color;
+    }
+  </script>
+
+  <div style="margin-top: auto; padding-top: 14px;">
+    <%= f.button type: :submit, class: "tactile-btn-primary", style: "width: 100%; font-family: 'Outfit', sans-serif; display: flex; justify-content: center; align-items: center;" do %>
+      <span>Avançar para o Passo 2</span>
+      <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+  </div>
 <% end %>

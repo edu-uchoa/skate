@@ -1,0 +1,26 @@
+<% content_for :section, "Minha conta" %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">account_circle</span>
+    <h2 class="screen-title">Minha conta</h2>
+    <p class="screen-desc">Use este contato e sua senha para entrar em qualquer aparelho.</p>
+  </header>
+
+  <div class="auth-card">
+    <span class="auth-card-label"><%= current_user.email ? "E-mail" : "Telefone (WhatsApp)" %></span>
+    <span class="auth-card-value"><%= current_user.contact %></span>
+    <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %></span>
+  </div>
+
+  <%= link_to track_path, class: "tactile-btn-primary" do %>
+    <span>Voltar para a trilha</span>
+    <span class="material-symbols-outlined btn-arrow">route</span>
+  <% end %>
+
+  <div class="auth-actions">
+    <%= button_to "Sair deste aparelho", sign_out_path, method: :delete, class: "auth-secondary-btn" %>
+    <%= button_to "Sair de todos os aparelhos", sign_out_everywhere_path, method: :delete,
+          class: "auth-secondary-btn danger" %>
+  </div>
+</section>

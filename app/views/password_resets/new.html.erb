@@ -1,0 +1,30 @@
+<% content_for :section, "Recuperar senha" %>
+
+<section class="auth-screen">
+  <%= link_to new_session_path, class: "auth-back" do %>
+    <span class="material-symbols-outlined">arrow_back</span> Voltar
+  <% end %>
+
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">lock_reset</span>
+    <h2 class="screen-title">Esqueceu a senha?</h2>
+    <p class="screen-desc">
+      Informe o e-mail ou telefone da sua conta. Enviaremos um código de <%= AccessCode::LENGTH %> dígitos
+      para você criar uma senha nova.
+    </p>
+  </header>
+
+  <%= form_with url: password_reset_path, method: :post, scope: :password_reset, class: "auth-form" do |f| %>
+    <div class="auth-field">
+      <%= f.label :contact, "E-mail ou telefone (WhatsApp)", class: "auth-label" %>
+      <%= f.text_field :contact, value: params.dig(:password_reset, :contact), class: "auth-input", required: true,
+            autofocus: true, autocomplete: "username", autocapitalize: "none", spellcheck: false,
+            placeholder: "voce@email.com ou (61) 90000-0000" %>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Enviar código</span>
+      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+    <% end %>
+  <% end %>
+</section>

@@ -1,8 +1,6 @@
 <% flash.each do |type, message| %>
-  <div class="card mb-md flex items-start gap-xs <%= type.to_s == 'alert' ? 'border-error/40' : 'border-primary/40' %>">
-    <span class="material-symbols-outlined <%= type.to_s == 'alert' ? 'text-error' : 'text-primary' %>">
-      <%= type.to_s == "alert" ? "error" : "check_circle" %>
-    </span>
-    <p class="text-body-md text-on-surface"><%= message %></p>
+  <div class="flash-message <%= 'alert' if type.to_s == 'alert' %>" role="<%= type.to_s == 'alert' ? 'alert' : 'status' %>">
+    <span class="material-symbols-outlined"><%= type.to_s == "alert" ? "error" : "check_circle" %></span>
+    <p><%= message %></p>
   </div>
 <% end %>

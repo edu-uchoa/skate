@@ -1,15 +1,33 @@
-<% content_for :section, "Fila offline" %>
+<div class="step-indicator" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+  <span class="tape-badge" style="background: #1f1f23; color: #888; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; font-family: 'Outfit', sans-serif;">📡 FILA OFFLINE</span>
+</div>
 
-<section class="flex min-h-[60dvh] flex-col items-center justify-center text-center">
-  <span class="material-symbols-outlined text-[40px] text-on-surface-variant">cloud_off</span>
-  <h2 class="mt-xs font-display text-headline-md">Aguardando conexão</h2>
-  <p class="mt-xs text-body-md text-on-surface-variant">
-    Você está sem internet. Salvamos seu treino localmente. Enviaremos assim que você
-    voltar ao sinal. Fique tranquilo, seu progresso não vai sumir.
-  </p>
-  <span class="chip mt-md">1 item na fila</span>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Aguardando conexão</h2>
+<p class="screen-desc" style="font-family: 'Inter', sans-serif;">
+  Você está sem internet. Salvamos seu treino localmente e enviaremos assim que você voltar ao sinal. Fique tranquilo, seu progresso não vai sumir.
+</p>
 
-  <%= button_to "Tentar enviar agora", submit_training_session_path(@training_session),
-        method: :patch, class: "btn-secondary mt-md" %>
-  <%= link_to "Voltar para a trilha", track_path, class: "btn-tertiary mt-xs" %>
-</section>
+<div class="sub-headline-card" style="position: relative; background: #1a1b20; border: 1px solid #343538; padding: 14px; margin-bottom: 12px; margin-top: 14px; transform: none; box-shadow: 4px 4px 0 #121316;">
+  <div class="version-badge" style="position: absolute; top: -8px; right: -6px; background: #ffb800; color: black; font-size: 9px; font-weight: 800; padding: 3px 6px; border-radius: 4px;">STATUS: NA FILA</div>
+  
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid #343538; background: #121316; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+      <span class="material-symbols-outlined" style="font-size: 24px; color: #666;">cloud_off</span>
+    </div>
+    <div style="font-family: 'Inter', sans-serif;">
+      <span style="font-size: 10px; color: #9e8f78; text-transform: uppercase; font-weight: bold;">AGUARDANDO</span>
+      <h3 style="font-size: 16px; font-weight: bold; color: #e3e2e6; margin: 0;">1 item na fila</h3>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding-top: 20px;">
+  <%= button_to submit_training_session_path(@training_session), method: :patch, class: "tactile-btn-primary", style: "width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; font-family: 'Outfit', sans-serif; background: #343538; color: white; box-shadow: 0 4px 0 #121316;" do %>
+    <span class="material-symbols-outlined">sync</span>
+    <span style="font-weight: 800;">Tentar enviar agora</span>
+  <% end %>
+  
+  <%= link_to track_path, class: "secondary-link-btn", style: "text-align: center; display: block;" do %>
+    Voltar para a trilha
+  <% end %>
+</div>

@@ -1,0 +1,63 @@
+<% content_for :section, "Deck Builder" %>
+
+<span class="step-indicator">CUSTOMIZAÇÃO • WORKBENCH</span>
+
+<!-- Skate Preview Card -->
+<div style="position: relative; width: 100%; height: 130px; background: #1a1b20; border-radius: 8px; border: 1px solid #343538; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; margin-top: 14px; box-shadow: 4px 4px 0 #121316;">
+  <div style="width: 80%; height: 26px; background: #0d0e11; border-radius: 14px; border: 1px solid #343538; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #9e8f78; font-weight: bold; letter-spacing: 1px; font-family: 'Outfit', sans-serif;">
+    TOP • LIXA EMBORRACHADA
+  </div>
+  <div id="deck-bottom-preview" style="width: 80%; height: 26px; background: linear-gradient(90deg, #ffb800, #fd591e); border-radius: 14px; border: 1px solid black; display: flex; align-items: center; justify-content: center; font-size: 10px; color: black; font-weight: 900; letter-spacing: 1px; font-family: 'Outfit', sans-serif;">
+    BOTTOM • TUBARÃO STREET
+  </div>
+  <div class="version-badge" style="top: 4px; right: 4px; font-size: 8px; padding: 2px 4px; font-family: 'Inter', sans-serif; position: absolute;">PRO DECK</div>
+</div>
+
+<!-- Graphics Selector -->
+<div style="margin-bottom: 10px;">
+  <span style="font-size: 11px; font-weight: 800; color: #e3e2e6; text-transform: uppercase; display: block; margin-bottom: 4px; font-family: 'Outfit', sans-serif;">Gráficos de Shape</span>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-family: 'Inter', sans-serif;">
+    <div class="option-card selected deck-art-opt" onclick="document.querySelectorAll('.deck-art-opt').forEach(el=>el.classList.remove('selected')); this.classList.add('selected'); document.getElementById('deck-bottom-preview').textContent='BOTTOM • TUBARÃO STREET';" style="padding: 10px; cursor: pointer;">
+      <h4 style="font-size: 11px; font-weight: bold; color: #ffb800; margin: 0;">Tubarão Street</h4>
+      <p style="font-size: 9px; margin: 0; color: #d5c4ab;">Stencil Urbano</p>
+    </div>
+    <div class="option-card deck-art-opt" onclick="document.querySelectorAll('.deck-art-opt').forEach(el=>el.classList.remove('selected')); this.classList.add('selected'); document.getElementById('deck-bottom-preview').textContent='BOTTOM • CAVEIRA GRAFFITI';" style="padding: 10px; cursor: pointer;">
+      <h4 style="font-size: 11px; font-weight: bold; margin: 0; color: #e3e2e6;">Caveira Graffiti</h4>
+      <p style="font-size: 9px; margin: 0; color: #d5c4ab;">Riot Street</p>
+    </div>
+    <div class="option-card deck-art-opt" onclick="document.querySelectorAll('.deck-art-opt').forEach(el=>el.classList.remove('selected')); this.classList.add('selected'); document.getElementById('deck-bottom-preview').textContent='BOTTOM • TIGRE ASPHALT';" style="padding: 10px; cursor: pointer;">
+      <h4 style="font-size: 11px; font-weight: bold; margin: 0; color: #e3e2e6;">Tigre Asphalt</h4>
+      <p style="font-size: 9px; margin: 0; color: #d5c4ab;">Concrete Wild</p>
+    </div>
+    <div class="option-card deck-art-opt" onclick="document.querySelectorAll('.deck-art-opt').forEach(el=>el.classList.remove('selected')); this.classList.add('selected'); document.getElementById('deck-bottom-preview').textContent='BOTTOM • TIPOGRAFIA STANCE';" style="padding: 10px; cursor: pointer;">
+      <h4 style="font-size: 11px; font-weight: bold; margin: 0; color: #e3e2e6;">Tipografia Stance</h4>
+      <p style="font-size: 9px; margin: 0; color: #d5c4ab;">Zine Clássico</p>
+    </div>
+  </div>
+</div>
+
+<!-- Wheels & Trucks -->
+<div style="display: flex; gap: 10px; margin-bottom: 12px; background: #1a1b20; padding: 12px; border-radius: 6px; border: 1px solid #343538; font-family: 'Inter', sans-serif;">
+  <div style="flex: 1;">
+    <span style="font-size: 10px; color: #9e8f78; font-weight: bold; display: block; margin-bottom: 4px;">RODINHAS</span>
+    <div style="display: flex; gap: 6px;">
+      <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 2px solid #ffb800; cursor: pointer;"></div>
+      <div style="width: 20px; height: 20px; border-radius: 50%; background: #ff5a5f; border: 1px solid #343538; cursor: pointer;"></div>
+      <div style="width: 20px; height: 20px; border-radius: 50%; background: #30D158; border: 1px solid #343538; cursor: pointer;"></div>
+    </div>
+  </div>
+  <div style="flex: 1; border-left: 1px solid #343538; padding-left: 10px;">
+    <span style="font-size: 10px; color: #9e8f78; font-weight: bold; display: block; margin-bottom: 4px;">TRUCKS</span>
+    <div style="display: flex; gap: 6px;">
+      <div style="width: 28px; height: 16px; background: #9e8f78; border: 2px solid #ffb800; border-radius: 2px; cursor: pointer;"></div>
+      <div style="width: 28px; height: 16px; background: #0d0e11; border: 1px solid #343538; border-radius: 2px; cursor: pointer;"></div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top: auto; padding-top: 6px; padding-bottom: 24px;">
+  <%= link_to avatar_path, class: "tactile-btn-primary", style: "display: flex; justify-content: center; align-items: center; gap: 6px; text-decoration: none; font-family: 'Outfit', sans-serif;" do %>
+    <span class="material-symbols-outlined">check</span>
+    <span style="font-weight: 800;">Salvar Customização</span>
+  <% end %>
+</div>

@@ -38,3 +38,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+gem "tzinfo-data"
+gem "thor", "~> 1.3.2"

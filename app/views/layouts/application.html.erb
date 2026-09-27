@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html class="dark" lang="pt-BR">
   <head>
-    <title><%= content_for(:title) || "Skate" %></title>
+    <title><%= content_for(:title) || "STANCE · Bora andar de skate!" %></title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#121317">
     <%= csrf_meta_tags %>
@@ -13,20 +13,78 @@
     <link rel="manifest" href="<%= pwa_manifest_path %>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Outfit:wght@700;800&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "custom_styles", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="min-h-dvh bg-surface font-body text-body-md text-on-surface antialiased">
-    <%= render "shared/header" %>
+  <body class="bg-[#121316] text-[#e3e2e6]" style="font-family: 'Inter', sans-serif; background: #121316; color: #e3e2e6; margin: 0; overflow: hidden;">
+    <div class="grain"></div>
 
-    <main class="mx-auto w-full max-w-[980px] pb-xl pt-20">
-      <%= render "shared/flash" %>
-      <%= render "shared/anonymous_banner" if anonymous_profile? && current_user.onboarded? %>
-      <%= yield %>
-    </main>
+    <!-- Mobile Phone Simulator Container -->
+    <div class="phone-container">
+
+      <!-- Fixed Top Header -->
+      <header class="phone-header-bar">
+        <div class="header-left">
+          <button class="icon-btn" onclick="alert('Menu (em breve)')" title="Abrir Menu de Navegação">
+            <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+          </button>
+        </div>
+        <div class="header-right" style="display: flex; align-items: center;">
+          <% if signed_in? %>
+            <%= link_to my_account_path, class: "icon-btn", title: "Minha conta", aria: { label: "Minha conta" } do %>
+              <span class="material-symbols-outlined" style="font-size: 22px;">account_circle</span>
+            <% end %>
+          <% else %>
+            <%= link_to new_session_path, class: "icon-btn", title: "Entrar", aria: { label: "Entrar" } do %>
+              <span class="material-symbols-outlined" style="font-size: 22px;">login</span>
+            <% end %>
+          <% end %>
+          <button class="help-btn" title="Dúvidas e Suporte">
+            <span class="material-symbols-outlined" style="font-size: 22px;">help</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Screens Content Viewport -->
+      <div class="phone-content" style="overflow-y: auto;">
+        <%= render "shared/flash" %>
+
+        <div class="screen active" style="position: relative; display: flex; flex-direction: column; width: 100%; padding: 14px;">
+          <%= yield %>
+        </div>
+      </div>
+
+      <!-- Bottom Navigation -->
+      <nav class="phone-bottom-nav">
+        <a href="<%= root_path %>" class="nav-btn">
+          <span class="material-symbols-outlined" style="font-size: 22px;">home</span>
+          <span class="nav-label">Início</span>
+        </a>
+        <a href="<%= track_path %>" class="nav-btn">
+          <span class="material-symbols-outlined" style="font-size: 22px;">route</span>
+          <span class="nav-label">Trilha</span>
+        </a>
+        <div class="nav-fab-container">
+          <button class="nav-fab-btn" title="Gravar Manobra & Scanner IA">
+            <span class="material-symbols-outlined" style="font-size: 26px; font-weight: 900;">videocam</span>
+          </button>
+          <span class="nav-fab-label">Gravar</span>
+        </div>
+        <a href="<%= spots_path %>" class="nav-btn <%= 'active' if current_page?(spots_path) %>">
+          <span class="material-symbols-outlined" style="font-size: 22px;">map</span>
+          <span class="nav-label">Picos</span>
+        </a>
+        <a href="#" class="nav-btn">
+          <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
+          <span class="nav-label">Zine</span>
+        </a>
+      </nav>
+
+    </div>
   </body>
 </html>

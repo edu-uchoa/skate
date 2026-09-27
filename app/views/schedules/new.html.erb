@@ -1,64 +1,99 @@
 <% content_for :section, "Agenda" %>
 
-<% if @first_commitment %>
-  <h2 class="font-display text-headline-md">Quando e onde você vai fazer sua primeira sessão?</h2>
-  <p class="mt-xs text-body-md text-on-surface-variant">
-    Escolha um local plano, vazio e sem ninguém te olhando. Uma garagem ou ciclovia
-    vazia às 7h da manhã funcionam muito bem.
-  </p>
-<% else %>
-  <h2 class="font-display text-headline-md">Quando será o seu próximo rolê?</h2>
-  <p class="mt-xs text-body-md text-on-surface-variant">
-    Recomendamos treinar 1 vez por semana. O skate exige tempo de descanso para os
-    joelhos e corpo.
-  </p>
-<% end %>
+<div style="position: relative; margin-bottom: 6px;">
+  <div class="version-badge" style="top: -4px; right: 0; background: #fd591e; color: black; font-weight: 800; font-size: 9px; padding: 2px 6px;">COMPROMISSO</div>
+  <h2 class="screen-title" style="font-size: 20px; line-height: 22px; padding-right: 70px;">
+    <% if @first_commitment %>
+      Quando e onde você vai fazer sua primeira sessão?
+    <% else %>
+      Quando será o seu próximo rolê?
+    <% end %>
+  </h2>
+</div>
+
+<div style="position: relative; height: 90px; border-radius: 8px; overflow: hidden; border: 1px solid #343538; margin-bottom: 10px; box-shadow: 3px 3px 0 #121316;">
+  <img src="<%= asset_path 'skate_spot_perfect.jpg' %>" alt="Pico Perfeito" style="width: 100%; height: 100%; object-fit: cover;">
+  <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(18,19,22,0.95), rgba(18,19,22,0.3)); display: flex; flex-direction: column; justify-content: flex-end; padding: 6px 10px;">
+    <div style="display: flex; align-items: center; gap: 4px; color: #ffb800; font-weight: 800; font-size: 11px; text-transform: uppercase;">
+      <span class="material-symbols-outlined" style="font-size: 14px;">verified</span>
+      <span>O Pico Perfeito</span>
+    </div>
+    <p style="font-size: 10px; color: #d5c4ab; line-height: 1.2;">
+      <% if @first_commitment %>
+        Piso plano, liso e sem plateia. Garagens ou quadras entre 7h e 10h da manhã.
+      <% else %>
+        Recomendamos treinar 1 vez por semana. O skate exige tempo de descanso.
+      <% end %>
+    </p>
+  </div>
+</div>
 
 <%= render "shared/errors", record: @training_session %>
 
-<%= form_with model: @training_session, url: schedules_path, class: "mt-md space-y-md" do |f| %>
+<%= form_with model: @training_session, url: schedules_path, class: "form-registro" do |f| %>
   <%= hidden_field_tag :maneuver_slug, @maneuver&.slug %>
 
-  <div>
-    <span class="mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant">
-      Dia da semana
-    </span>
-    <div class="flex gap-xs overflow-x-auto pb-xs">
+  <div style="margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <span style="font-size: 11px; font-weight: 800; color: #e3e2e6; text-transform: uppercase;">Dia do Drop</span>
+    </div>
+    <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px;">
       <% (0..6).each do |offset| %>
         <% date = Date.current + offset %>
-        <label class="min-w-[64px] shrink-0 cursor-pointer rounded-lg border border-surface-container-high
-                      bg-surface-container p-xs text-center has-[:checked]:border-primary has-[:checked]:bg-surface-container-high">
-          <%= f.radio_button :scheduled_on, date.to_s, class: "sr-only",
-                checked: @training_session.scheduled_on == date %>
-          <span class="block text-label-caps uppercase text-on-surface-variant"><%= I18n.l(date, format: "%a") %></span>
-          <span class="block font-display text-headline-md text-on-surface"><%= date.day %></span>
+        <% is_checked = @training_session.scheduled_on == date %>
+        <label class="day-chip <%= is_checked ? 'selected' : '' %>" style="transform: rotate(<%= [-2, -1, 1, 2].sample %>deg); cursor: pointer;" onclick="selectDay(this)">
+          <%= f.radio_button :scheduled_on, date.to_s, class: "sr-only", style: "position: absolute; opacity: 0;", checked: is_checked %>
+          <span style="font-size: 8px; opacity: 0.7;"><%= I18n.l(date, format: "%a").upcase %></span>
+          <span style="font-size: 12px; font-weight: 900;"><%= date.day %></span>
         </label>
       <% end %>
     </div>
   </div>
 
-  <div>
-    <span class="mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant">
-      Período
-    </span>
-    <div class="grid grid-cols-1 gap-xs sm:grid-cols-3">
+  <div style="margin-bottom: 12px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <span style="font-size: 11px; font-weight: 800; color: #e3e2e6; text-transform: uppercase;">Período</span>
+    </div>
+    <div style="display: flex; gap: 8px;">
       <% [ [ "morning", "light_mode", "Manhã" ], [ "afternoon", "routine", "Tarde" ], [ "night", "dark_mode", "Noite" ] ].each do |value, icon, label| %>
-        <label class="cursor-pointer rounded-lg border border-surface-container-high bg-surface-container p-xs
-                      text-center has-[:checked]:border-primary">
-          <%= f.radio_button :period, value, class: "sr-only", checked: @training_session.period == value %>
-          <span class="material-symbols-outlined text-primary"><%= icon %></span>
-          <span class="mt-1 block text-label-caps uppercase text-on-surface-variant"><%= label %></span>
+        <% is_checked = @training_session.period == value %>
+        <label class="time-chip <%= is_checked ? 'selected' : '' %>" style="cursor: pointer; flex: 1; text-align: center; border: 1px solid <%= is_checked ? '#ffb800' : '#343538' %>; background: <%= is_checked ? '#1a1b20' : '#121316' %>; padding: 10px; border-radius: 8px;" onclick="selectTime(this)">
+          <%= f.radio_button :period, value, class: "sr-only", style: "position: absolute; opacity: 0;", checked: is_checked %>
+          <span class="material-symbols-outlined" style="font-size: 20px; color: <%= is_checked ? '#ffb800' : '#888' %>;"><%= icon %></span>
+          <span style="display: block; font-size: 10px; font-weight: bold; margin-top: 4px; color: <%= is_checked ? '#ffb800' : '#888' %>;"><%= label %></span>
         </label>
       <% end %>
     </div>
   </div>
 
-  <div>
-    <%= f.label :location_name, "Localização",
-          class: "mb-xs block font-body text-label-caps uppercase tracking-widest text-on-surface-variant" %>
-    <%= f.text_field :location_name, class: "field", placeholder: "Garagem de casa, ciclovia vazia..." %>
+  <div style="margin-bottom: 12px;">
+    <%= f.label :location_name, "Localização", style: "font-size: 11px; font-weight: 800; color: #e3e2e6; text-transform: uppercase; margin-bottom: 4px; display: block;" %>
+    <%= f.text_field :location_name, style: "font-family: 'Inter', sans-serif; width: 100%; background: #121316; border: 1px solid #343538; color: #e3e2e6; padding: 10px; border-radius: 6px; font-size: 12px;", placeholder: "Garagem de casa, ciclovia vazia..." %>
   </div>
 
-  <%= f.button (@first_commitment ? "Salvar meu compromisso de treino" : "Confirmar agendamento"),
-        type: :submit, class: "btn-primary" %>
+  <script>
+    function selectDay(element) {
+      document.querySelectorAll('.day-chip').forEach(chip => chip.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+    function selectTime(element) {
+      document.querySelectorAll('.time-chip').forEach(chip => {
+        chip.style.borderColor = '#343538';
+        chip.style.background = '#121316';
+        chip.querySelector('.material-symbols-outlined').style.color = '#888';
+        chip.querySelector('span:last-child').style.color = '#888';
+      });
+      element.style.borderColor = '#ffb800';
+      element.style.background = '#1a1b20';
+      element.querySelector('.material-symbols-outlined').style.color = '#ffb800';
+      element.querySelector('span:last-child').style.color = '#ffb800';
+    }
+  </script>
+
+  <div style="margin-top: auto; padding-top: 14px;">
+    <%= f.button type: :submit, class: "tactile-btn-primary", style: "width: 100%; font-family: 'Outfit', sans-serif; display: flex; justify-content: center; align-items: center;" do %>
+      <span><%= @first_commitment ? "Salvar meu compromisso" : "Confirmar agendamento" %></span>
+      <span class="material-symbols-outlined">schedule</span>
+    <% end %>
+  </div>
 <% end %>

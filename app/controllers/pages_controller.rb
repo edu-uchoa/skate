@@ -1,7 +1,9 @@
 class PagesController < ApplicationController
-  # Telas públicas: landing, abertura e instruções de instalação (PWA).
+  # Só a landing é pública; abertura e instalação (PWA) já exigem conta.
+  allow_unauthenticated_access only: :landing
+
   def landing
-    redirect_to track_path if current_user.onboarded?
+    redirect_to track_path if current_user&.onboarded?
   end
 
   def intro; end

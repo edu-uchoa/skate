@@ -7,7 +7,7 @@
 <% end %>
 
 <%= link_to new_support_request_path(kind: :stuck, maneuver_slug: @maneuver.slug),
-      class: "mt-md flex items-center justify-center gap-xs text-body-md text-on-surface-variant/70" do %>
-  <span class="material-symbols-outlined text-[18px]">medical_services</span>
+      style: "display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: #d5c4ab; margin-top: 14px; text-decoration: none; opacity: 0.7;" do %>
+  <span class="material-symbols-outlined" style="font-size: 15px;">medical_services</span>
   Se machucou ou travou? Fale com a gente.
 <% end %>

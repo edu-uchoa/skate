@@ -27,12 +27,22 @@ Rails.application.routes.draw do
 
   resources :schedules, only: %i[new create], path: "agenda"
 
-  # Conta opcional (perfil temporário -> salvo) por código de acesso.
-  resource  :account,      only: %i[new create], path: "salvar-progresso"
-  resource  :access_code,  only: %i[new create],  path: "verificacao" do
+  # Funcionalidades Front-end
+  resource  :store,  only: :show, path: "loja"
+  resource  :avatar, only: :show, path: "avatar"
+  resource  :deck,   only: :show, path: "deck"
+  resources :spots,  only: :index, path: "picos"
+
+  # Conta obrigatória: cadastro/login com e-mail ou telefone e senha.
+  resource  :account,        only: %i[new create], path: "cadastro", path_names: { new: "" }
+  resource  :session,        only: %i[new create], path: "entrar", path_names: { new: "" }
+  resource  :password_reset, only: %i[new create edit update], path: "recuperar-senha",
+                             path_names: { new: "", edit: "nova-senha" } do
     post :resend, on: :member, path: "reenviar"
   end
-  delete "sair", to: "accounts#destroy", as: :sign_out
+  get    "conta", to: "accounts#show",        as: :my_account
+  delete "sair",  to: "accounts#destroy",     as: :sign_out
+  delete "sair-de-todos", to: "accounts#destroy_all", as: :sign_out_everywhere
 
   resources :support_requests, only: %i[new create], path: "ajuda"
   resource  :comeback,         only: %i[new create], path: "retorno"

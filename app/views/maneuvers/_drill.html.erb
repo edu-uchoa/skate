@@ -1,28 +1,43 @@
-<span class="chip">Passo <%= maneuver.code %> · Aprenda a cair</span>
-<h2 class="mt-xs font-display text-display-lg"><%= maneuver.name.titleize %></h2>
+<span class="step-indicator">PASSO <%= maneuver.code %> • DRILL</span>
+<h2 class="screen-title" style="font-family: 'Outfit', sans-serif;"><%= maneuver.name.titleize %></h2>
 
-<div class="mt-md aspect-video w-full overflow-hidden rounded-xl border border-surface-container-high bg-surface-container-lowest">
+<div class="video-container" style="position: relative; width: 100%; height: 140px; border-radius: 10px; overflow: hidden; border: 1px solid #343538; margin-bottom: 10px; box-shadow: 3px 3px 0 #121316;">
   <% if maneuver.video_url.present? %>
-    <video class="h-full w-full object-cover" controls preload="metadata" src="<%= maneuver.video_url %>"></video>
+    <video style="width: 100%; height: 100%; object-fit: cover;" controls preload="metadata" src="<%= maneuver.video_url %>"></video>
   <% else %>
-    <div class="flex h-full items-center justify-center text-on-surface-variant/50">
-      <span class="material-symbols-outlined text-[40px]">play_arrow</span>
+    <img src="<%= asset_path('skater_hero.jpg') %>" alt="Demonstração" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.6;">
+    <div class="play-circle" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: #ffb800; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+      <span class="material-symbols-outlined" style="font-size: 32px; color: black;">play_arrow</span>
     </div>
+    <div class="video-badge" style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #ffb800; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 4px; text-transform: uppercase;">CÂMERA LENTA • 15 SEG</div>
   <% end %>
 </div>
 
-<h3 class="mt-md font-display text-headline-md">Instruções</h3>
-<ol class="mt-xs space-y-xs">
-  <% maneuver.instruction_steps.each do |step| %>
-    <li class="card flex gap-sm">
-      <span class="font-display text-headline-md text-primary"><%= format("%02d", step.position) %></span>
-      <span class="text-body-md text-on-surface-variant"><%= step.body %></span>
-    </li>
-  <% end %>
-</ol>
+<% if maneuver.why_now.present? %>
+  <div class="sub-headline-card" style="border-left: 4px solid #ffb800; transform: none; background: #1a1b20; padding: 8px 10px; margin-bottom: 8px;">
+    <span style="font-size: 10px; font-weight: 800; color: #ffb800; text-transform: uppercase; display: block; margin-bottom: 2px;">🎯 Por que agora?</span>
+    <p style="font-size: 11px; color: #d5c4ab; line-height: 1.35; font-family: 'Inter', sans-serif;"><%= maneuver.why_now %></p>
+  </div>
+<% end %>
+
+<% if maneuver.instruction_steps.any? %>
+  <div class="instructions-card" style="background: #1a1b20; border: 1px solid #343538; border-radius: 8px; padding: 10px; margin-bottom: 10px;">
+    <% maneuver.instruction_steps.each do |step| %>
+      <p style="font-size: 12px; color: #e3e2e6; margin: 0 0 6px 0; font-family: 'Inter', sans-serif; line-height: 1.4;">
+        <strong style="color: #ffb800;"><%= step.position %>.</strong> <%= step.body %>
+      </p>
+    <% end %>
+  </div>
+<% end %>
 
 <% unless locked %>
-  <%= link_to new_maneuver_training_session_path(maneuver), class: "btn-primary mt-md" do %>
-    Fazer o drill <span class="material-symbols-outlined">arrow_forward</span>
-  <% end %>
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+    <%= link_to new_maneuver_training_session_path(maneuver), class: "tactile-btn-primary", style: "display: flex; justify-content: center; align-items: center; gap: 6px; text-decoration: none; font-family: 'Outfit', sans-serif;" do %>
+      <span style="font-weight: 800;">Praticar este Passo</span>
+      <span class="material-symbols-outlined">arrow_forward</span>
+    <% end %>
+    <%= link_to track_path, class: "secondary-link-btn", style: "text-align: center; display: block;" do %>
+      Voltar ao Mapa
+    <% end %>
+  </div>
 <% end %>
