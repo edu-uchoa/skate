@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   end
 
   resources :schedules, only: %i[new create], path: "agenda"
+  resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" }
+  resource  :zine,      only: :show, path: "zine"
 
   # Funcionalidades Front-end
   resource  :store,  only: :show, path: "loja"

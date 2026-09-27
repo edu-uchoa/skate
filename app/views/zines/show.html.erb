@@ -1,0 +1,71 @@
+<% content_for :section, "Zine" %>
+<%# Sem prévia do cache do Turbo: o status da análise muda e não pode aparecer desatualizado. %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+
+<section class="zine-screen" <%= tag.attributes(data: { controller: "poll", poll_interval_value: 5000 }) if @analysis_running %>>
+  <header class="auth-head">
+    <span class="step-indicator">Seus rolês gravados</span>
+    <h2 class="screen-title">Zine</h2>
+    <p class="screen-desc">
+      Todo vídeo que você grava ou envia fica guardado aqui, com o andamento da análise.
+      <% if @analysis_running %>A página se atualiza sozinha enquanto a IA analisa.<% end %>
+    </p>
+  </header>
+
+  <% if @training_sessions.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">video_library</span>
+      <p>Você ainda não gravou nenhuma manobra.</p>
+      <%= link_to new_recording_path, class: "tactile-btn-primary" do %>
+        <span>Gravar minha primeira</span>
+        <span class="material-symbols-outlined btn-arrow">videocam</span>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="auth-hint"><%= pluralize(@training_sessions.size, "vídeo", plural: "vídeos") %></p>
+
+    <ol class="zine-list">
+      <% @training_sessions.each do |training_session| %>
+        <% stage = analysis_stage_for(training_session) %>
+        <% action_label, action_path = zine_action_for(training_session) %>
+
+        <li class="zine-card" id="<%= dom_id(training_session, :zine) %>">
+          <div class="zine-video">
+            <video src="<%= url_for(training_session.clip) %>#t=0.1" controls playsinline preload="metadata"></video>
+          </div>
+
+          <div class="zine-body">
+            <div class="zine-title-row">
+              <h3><%= training_session.maneuver.name %></h3>
+              <span class="zine-code"><%= training_session.maneuver.code %></span>
+            </div>
+            <p class="auth-hint"><%= zine_clip_details(training_session) %></p>
+
+            <p class="zine-status <%= stage[:tone] %>">
+              <span class="material-symbols-outlined <%= 'zine-spin' if training_session.analysis_stage == :processing %>"><%= stage[:icon] %></span>
+              <%= stage[:label] %>
+            </p>
+
+            <ol class="zine-steps" aria-label="Andamento da análise">
+              <% ZinesHelper::ANALYSIS_STEPS.each_with_index do |step, index| %>
+                <% state = if index < stage[:step] then "done"
+                           elsif index == stage[:step] && stage[:tone] == "error" then "error"
+                           elsif index == stage[:step] then "current"
+                           end %>
+                <li class="<%= state %>"><span></span><%= step %></li>
+              <% end %>
+            </ol>
+
+            <% if training_session.analysis_stage == :completed && training_session.ai_review.headline.present? %>
+              <p class="zine-headline">“<%= training_session.ai_review.headline %>”</p>
+            <% end %>
+
+            <%= link_to action_path, class: "zine-action" do %>
+              <%= action_label %> <span class="material-symbols-outlined">arrow_forward</span>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

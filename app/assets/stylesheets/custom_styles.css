@@ -1167,3 +1167,382 @@ body {
 .auth-back .material-symbols-outlined {
   font-size: 16px;
 }
+
+/* Tela "Gravar" (câmera/upload, preview e progresso) */
+a.nav-fab-btn {
+  text-decoration: none;
+}
+
+.rec-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 12px 2px 8px;
+}
+
+.rec-screen [hidden] {
+  display: none !important;
+}
+
+.rec-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rec-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rec-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  text-align: left;
+  color: var(--text-on-surface);
+  font-family: var(--font-body);
+}
+
+.rec-option-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: black;
+  font-size: 24px;
+}
+
+.rec-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rec-option-text strong {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.rec-option-text small {
+  font-size: 11px;
+  color: var(--text-variant);
+}
+
+.rec-hidden-input {
+  display: none;
+}
+
+.rec-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rec-video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  max-height: 52vh;
+  overflow: hidden;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: #000;
+  box-shadow: 3px 3px 0 var(--surface-low);
+}
+
+.rec-video-frame video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.rec-timer {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--text-on-surface);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.rec-record-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1px solid var(--error-color);
+  border-radius: var(--radius-sm);
+  background: var(--error-color);
+  box-shadow: 0 4px 0 var(--error-shadow);
+  color: black;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.rec-record-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: black;
+}
+
+.rec-record-btn.recording .rec-record-dot {
+  border-radius: 2px;
+  animation: pulse 1s infinite;
+}
+
+.rec-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: none;
+}
+
+.rec-checklist legend {
+  margin-bottom: 8px;
+}
+
+.rec-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: #1a1b20;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+  cursor: pointer;
+}
+
+.rec-check input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--primary-color);
+}
+
+.rec-check:has(input:checked) {
+  border-color: var(--primary-color);
+}
+
+.rec-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rec-progress-rail {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid var(--surface-highest);
+  border-radius: 999px;
+  background: var(--surface-low);
+}
+
+.rec-progress-fill {
+  width: 0;
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.15s ease-out;
+}
+
+.rec-form .tactile-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Aba "Zine" (vídeos gravados + andamento da análise) */
+.zine-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 12px 2px 8px;
+}
+
+.zine-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  border: 1px dashed var(--surface-highest);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-variant);
+}
+
+.zine-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  list-style: none;
+}
+
+.zine-card {
+  overflow: hidden;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  box-shadow: 3px 3px 0 var(--surface-low);
+}
+
+.zine-video {
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.zine-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.zine-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 14px;
+}
+
+.zine-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.zine-title-row h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+}
+
+.zine-code {
+  flex-shrink: 0;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-highest);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-variant);
+}
+
+.zine-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.zine-status .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.zine-status.info  { color: var(--primary-color); }
+.zine-status.warn  { color: var(--secondary-color); }
+.zine-status.ok    { color: var(--tertiary-color); }
+.zine-status.error { color: var(--error-color); }
+
+.zine-spin {
+  animation: zine-spin 1.4s linear infinite;
+}
+
+@keyframes zine-spin {
+  to { transform: rotate(360deg); }
+}
+
+.zine-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  list-style: none;
+}
+
+.zine-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(213, 196, 171, 0.5);
+}
+
+.zine-steps li span {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--surface-highest);
+}
+
+.zine-steps li.done { color: var(--text-variant); }
+.zine-steps li.done span { background: var(--tertiary-color); }
+.zine-steps li.current { color: var(--primary-color); }
+.zine-steps li.current span { background: var(--primary-color); animation: pulse 1.2s infinite; }
+.zine-steps li.error { color: var(--error-color); }
+.zine-steps li.error span { background: var(--error-color); }
+
+.zine-headline {
+  padding-left: 10px;
+  border-left: 3px solid var(--tertiary-color);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-on-surface);
+}
+
+.zine-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.zine-action .material-symbols-outlined {
+  font-size: 16px;
+}

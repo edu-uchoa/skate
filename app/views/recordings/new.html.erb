@@ -1,0 +1,110 @@
+<% content_for :section, "Gravar" %>
+<% max_seconds = TrainingSession.max_clip_seconds %>
+<% max_mb      = TrainingSession.max_clip_bytes / 1.megabyte %>
+
+<section class="rec-screen"
+         data-controller="recorder"
+         data-recorder-max-seconds-value="<%= max_seconds %>"
+         data-recorder-max-bytes-value="<%= TrainingSession.max_clip_bytes %>"
+         data-recorder-types-value="<%= TrainingSession::CLIP_CONTENT_TYPES.to_json %>">
+
+  <header class="auth-head">
+    <span class="step-indicator">IA &amp; Mentor</span>
+    <h2 class="screen-title">Grave sua manobra</h2>
+    <p class="screen-desc">
+      Até <%= max_seconds %>s de vídeo. Posicione o celular de lado, pegando o corpo inteiro e o skate.
+    </p>
+  </header>
+
+  <ul class="auth-errors" role="alert" data-recorder-target="errors" <%= "hidden" unless @training_session&.errors&.any? %>>
+    <% @training_session&.errors&.full_messages&.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+
+  <%= form_with url: recording_path, scope: :recording, multipart: true, class: "rec-form",
+        data: { recorder_target: "form", action: "submit->recorder#upload" } do |f| %>
+
+    <div class="auth-field">
+      <%= f.label :maneuver_slug, "Manobra", class: "auth-label" %>
+      <%= f.select :maneuver_slug, @maneuvers.map { |m| [ "#{m.code} · #{m.name}", m.slug ] },
+            { selected: @maneuver&.slug }, class: "auth-input" %>
+    </div>
+
+    <%# 1. Escolha: câmera ou upload %>
+    <div class="rec-options" data-recorder-target="chooser">
+      <button type="button" class="option-card rec-option" data-action="recorder#openCamera">
+        <span class="material-symbols-outlined rec-option-icon">videocam</span>
+        <span class="rec-option-text">
+          <strong>Gravar com a câmera</strong>
+          <small>Para sozinho em <%= max_seconds %>s</small>
+        </span>
+      </button>
+
+      <button type="button" class="option-card rec-option" data-action="recorder#pickFile">
+        <span class="material-symbols-outlined rec-option-icon">upload</span>
+        <span class="rec-option-text">
+          <strong>Fazer upload de vídeo</strong>
+          <small>MP4, MOV ou WebM · até <%= max_mb %> MB</small>
+        </span>
+      </button>
+
+      <%= f.file_field :clip, accept: "video/mp4,video/quicktime,video/webm,.mp4,.mov,.m4v,.webm",
+            class: "rec-hidden-input", data: { recorder_target: "fileInput", action: "change->recorder#fileChosen" } %>
+      <%# Sem MediaRecorder (ex.: http fora de localhost), abre a câmera nativa do celular. %>
+      <input type="file" accept="video/*" capture="environment" class="rec-hidden-input"
+             data-recorder-target="captureInput" data-action="change->recorder#fileChosen">
+    </div>
+
+    <%# 2. Câmera ao vivo %>
+    <div class="rec-stage" data-recorder-target="camera" hidden>
+      <div class="rec-video-frame">
+        <video data-recorder-target="live" autoplay muted playsinline></video>
+        <span class="rec-timer" data-recorder-target="timer">00:00 / 00:<%= format("%02d", max_seconds) %></span>
+      </div>
+      <div class="rec-controls">
+        <button type="button" class="auth-secondary-btn" data-action="recorder#closeCamera">Cancelar</button>
+        <button type="button" class="rec-record-btn" data-recorder-target="recordButton" data-action="recorder#toggleRecording">
+          <span class="rec-record-dot"></span>
+          <span data-recorder-target="recordLabel">Gravar</span>
+        </button>
+      </div>
+    </div>
+
+    <%# 3. Pré-visualização antes do envio %>
+    <div class="rec-stage" data-recorder-target="preview" hidden>
+      <div class="rec-video-frame">
+        <video data-recorder-target="previewVideo" controls playsinline></video>
+      </div>
+      <p class="auth-hint" data-recorder-target="meta"></p>
+      <button type="button" class="auth-secondary-btn" data-action="recorder#discard">
+        Descartar e escolher outro
+      </button>
+    </div>
+
+    <fieldset class="rec-checklist">
+      <legend class="auth-label">Checklist de segurança</legend>
+      <% { gear_checked: "Capacete e joelheiras bem firmes",
+           ground_clear: "Chão plano e sem pedrinhas",
+           space_safe:   "Ambiente seguro e livre de perigos" }.each do |attribute, label| %>
+        <label class="rec-check">
+          <%= f.check_box attribute, data: { recorder_target: "check", action: "recorder#refresh" } %>
+          <span><%= label %></span>
+        </label>
+      <% end %>
+    </fieldset>
+
+    <%= f.hidden_field :duration_seconds, data: { recorder_target: "duration" } %>
+    <%= f.hidden_field :source, data: { recorder_target: "source" } %>
+
+    <div class="rec-progress" data-recorder-target="progress" hidden>
+      <div class="rec-progress-rail"><div class="rec-progress-fill" data-recorder-target="progressBar"></div></div>
+      <p class="auth-hint" data-recorder-target="progressLabel">Enviando… 0%</p>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary", data: { recorder_target: "submit" } do %>
+      <span>Enviar vídeo</span>
+      <span class="material-symbols-outlined btn-arrow">cloud_upload</span>
+    <% end %>
+  <% end %>
+</section>

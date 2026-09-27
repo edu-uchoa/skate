@@ -6,13 +6,20 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-# Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-# amazon:
-#   service: S3
-#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
-#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
-#   region: us-east-1
-#   bucket: your_own_bucket-<%= Rails.env %>
+# Vídeos das manobras na nuvem (qualquer storage compatível com S3):
+#   AWS S3, Supabase Storage, Cloudflare R2, MinIO...
+# Ative com ACTIVE_STORAGE_SERVICE=amazon e adicione `gem "aws-sdk-s3", require: false`.
+# Para Supabase/R2/MinIO, informe S3_ENDPOINT (ex.: https://<projeto>.supabase.co/storage/v1/s3).
+amazon:
+  service: S3
+  access_key_id: <%= ENV["S3_ACCESS_KEY_ID"] || Rails.application.credentials.dig(:aws, :access_key_id) %>
+  secret_access_key: <%= ENV["S3_SECRET_ACCESS_KEY"] || Rails.application.credentials.dig(:aws, :secret_access_key) %>
+  region: <%= ENV.fetch("S3_REGION", "us-east-1") %>
+  bucket: <%= ENV.fetch("S3_BUCKET", "sakte-clips-#{Rails.env}") %>
+  <% if ENV["S3_ENDPOINT"].present? %>
+  endpoint: <%= ENV["S3_ENDPOINT"] %>
+  force_path_style: true
+  <% end %>
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:

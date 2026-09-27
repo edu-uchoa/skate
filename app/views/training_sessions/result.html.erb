@@ -66,12 +66,21 @@
         <h4 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin-bottom: 2px;">Análise Técnica de Vídeo</h4>
         <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.sakte.max_clip_seconds %>s do seu rolê para a IA ou nossos mentores analisarem sua postura.</p>
         
+        <% if @training_session.clip.attached? && @training_session.clip.persisted? %>
+          <video src="<%= url_for(@training_session.clip) %>" controls playsinline preload="metadata"
+                 style="width: 100%; max-height: 220px; border-radius: 6px; background: #000;"></video>
+          <p style="font-size: 11px; color: #30D158; font-weight: bold; margin-top: 6px;">
+            <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">check_circle</span>
+            Vídeo salvo. Envie o resultado para a análise.
+          </p>
+        <% else %>
         <!-- O BOTAO DE UPLOAD VERDADEIRO (Abre Câmera no celular) -->
         <label class="tactile-btn-primary" style="padding: 8px 12px; font-size: 12px; width: auto; display: inline-flex; cursor: pointer; align-items: center; gap: 6px; margin: 0; font-family: 'Outfit', sans-serif;">
           <span class="material-symbols-outlined" style="font-size: 18px;">videocam</span>
           Gravar ou Escolher Arquivo
           <%= f.file_field :clip, accept: "video/mp4,video/x-m4v,video/*", capture: "environment", style: "display: none;" %>
         </label>
+        <% end %>
       </div>
     </div>
   </div>

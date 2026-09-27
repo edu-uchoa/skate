@@ -70,16 +70,16 @@
           <span class="nav-label">Trilha</span>
         </a>
         <div class="nav-fab-container">
-          <button class="nav-fab-btn" title="Gravar Manobra & Scanner IA">
+          <%= link_to new_recording_path, class: "nav-fab-btn", title: "Gravar Manobra & Scanner IA", aria: { label: "Gravar" } do %>
             <span class="material-symbols-outlined" style="font-size: 26px; font-weight: 900;">videocam</span>
-          </button>
+          <% end %>
           <span class="nav-fab-label">Gravar</span>
         </div>
         <a href="<%= spots_path %>" class="nav-btn <%= 'active' if current_page?(spots_path) %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">map</span>
           <span class="nav-label">Picos</span>
         </a>
-        <a href="#" class="nav-btn">
+        <a href="<%= zine_path %>" class="nav-btn <%= 'active' if current_page?(zine_path) %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
           <span class="nav-label">Zine</span>
         </a>
