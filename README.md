@@ -100,6 +100,11 @@ Principais rotas:
 | Tela | Rota |
 | --- | --- |
 | Pagina inicial | `/` |
+| Cadastro / Entrar | `/cadastro`, `/entrar` |
+| Recuperar senha | `/recuperar-senha` |
+| Minha conta | `/conta` |
+| Gravar video | `/gravar` |
+| Zine (videos e analises) | `/zine` |
 | Idade e seguranca | `/comecar/idade` |
 | Diagnostico | `/comecar/diagnostico?step=level` |
 | Plano do diagnostico | `/comecar/diagnostico/plano` |
@@ -128,6 +133,10 @@ docker run --rm -p 3000:80 \
 ## Variaveis e credenciais
 
 Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e as credenciais necessarias no ambiente de execucao.
+
+## Documentacao das funcionalidades
+
+- [Autenticacao, pagina Gravar e aba Zine](docs/autenticacao-gravar-zine.md)
 
 ## Estado atual
 
