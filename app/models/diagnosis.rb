@@ -2,7 +2,7 @@ class Diagnosis < ApplicationRecord
   belongs_to :user
   has_many :diagnosis_blockers, dependent: :destroy
 
-  enum :level, { never_ridden: 0, can_push: 1, stuck_on_ollie: 2 }, prefix: true
+  enum :level, { never_ridden: 0, can_push: 1, stuck_on_ollie: 2, advanced: 3 }, prefix: true
   enum :setup, { no_board: 0, store_board: 1, skateshop_board: 2, other_board: 3 }, prefix: true
 
   STEPS = %w[level blockers setup].freeze

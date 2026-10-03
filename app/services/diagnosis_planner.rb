@@ -6,7 +6,8 @@ class DiagnosisPlanner
   ENTRY_POINTS = {
     "never_ridden"    => "0.1",
     "can_push"        => "1.3",
-    "stuck_on_ollie"  => "2.2"
+    "stuck_on_ollie"  => "2.2",
+    "advanced"        => "3.0"
   }.freeze
 
   BLOCKER_DRILLS = {
@@ -60,7 +61,8 @@ class DiagnosisPlanner
     {
       "never_ridden"   => "você está começando do zero",
       "can_push"       => "você já rema e faz curvas",
-      "stuck_on_ollie" => "você está travado no ollie"
+      "stuck_on_ollie" => "você está travado no ollie",
+      "advanced"       => "você já manda ollie com firmeza"
     }[diagnosis.level]
   end
 

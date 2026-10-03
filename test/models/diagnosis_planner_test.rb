@@ -23,4 +23,14 @@ class DiagnosisPlannerTest < ActiveSupport::TestCase
 
     assert_equal "available", @user.maneuver_progresses.first.status
   end
+
+  test "quem já manda ollie entra direto nas primeiras manobras" do
+    shove_it = Maneuver.create!(learning_module: LearningModule.create!(code: "3", name: "PRIMEIRAS MANOBRAS", position: 3),
+                                code: "3.0", slug: "shove-it", name: "SHOVE-IT", position: 0)
+    @diagnosis.update!(level: :advanced)
+    planner = DiagnosisPlanner.new(@diagnosis)
+
+    assert_equal shove_it, planner.entry_maneuver
+    assert_includes planner.summary, "já manda ollie com firmeza"
+  end
 end
