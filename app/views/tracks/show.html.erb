@@ -18,41 +18,32 @@
   </div>
 </div>
 
-<div class="overworld-map-viewport" style="position: relative; width: 100%; height: calc(100vh - 180px); overflow: hidden; background: #0d0e11;">
-  <img src="<%= asset_path('skate_overworld_map.jpg') %>" alt="Mapa de Rua" class="map-graphic-img" style="width: 100%; height: 100%; object-fit: cover; object-position: center bottom;">
-  
-  <% coordinates = [
-       { top: "80%", left: "22%" },
-       { top: "64%", left: "38%" },
-       { top: "48%", left: "52%" },
-       { top: "32%", left: "66%" },
-       { top: "18%", left: "78%" },
-       { top: "10%", left: "50%" }
-     ] %>
+<div class="overworld-map-viewport" data-controller="track-map">
+  <div class="overworld-map-canvas" style="aspect-ratio: <%= map_aspect_ratio %>;">
+    <img src="<%= asset_path("skate_overworld_map.jpg") %>" alt="Mapa de Rua" class="map-graphic-img" draggable="false">
 
-  <% index = 0 %>
-  <% @learning_modules.each do |learning_module| %>
-    <% learning_module.maneuvers.each do |maneuver| %>
+    <% @learning_modules.flat_map(&:maneuvers).each_with_index do |maneuver, index| %>
       <% status = progression.status_for(maneuver) %>
       <% current = (maneuver == @current_maneuver) %>
-      <% coord = coordinates[index % coordinates.size] %>
-      
-      <%= link_to maneuver_path(maneuver), style: "position: absolute; top: #{coord[:top]}; left: #{coord[:left]}; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.5); transform: translate(-50%, -50%); transition: transform 0.2s; #{status == 'completed' ? 'background: #30D158; border: 3px solid #1a1b20; color: #0d0e11;' : (current ? 'background: #fd591e; border: 3px solid #ffb800; color: #1a1b20; transform: translate(-50%, -50%) scale(1.1); z-index: 10;' : 'background: #24252a; border: 3px solid #343538; color: #666;')} " do %>
+      <% state = status == "completed" ? "is-completed" : ("is-current" if current) %>
+
+      <%= link_to maneuver_path(maneuver), class: ["map-node", state], style: map_node_position(index),
+                  title: maneuver.label, aria: { label: maneuver.label },
+                  data: ({ track_map_target: "current" } if current) do %>
         <% if status == "completed" %>
-          <span class="material-symbols-outlined" style="font-size: 20px; font-weight: 800;">check</span>
+          <span class="material-symbols-outlined">check</span>
         <% elsif current %>
-          <span class="material-symbols-outlined" style="font-size: 24px; font-weight: 800;">play_arrow</span>
+          <span class="material-symbols-outlined">play_arrow</span>
         <% else %>
-          <span class="material-symbols-outlined" style="font-size: 18px; font-weight: 800;">lock</span>
+          <span class="material-symbols-outlined">lock</span>
         <% end %>
       <% end %>
-      <% index += 1 %>
     <% end %>
-  <% end %>
+  </div>
 </div>
 
 <% if @current_maneuver %>
-  <div class="floating-lesson-card" style="position: absolute; bottom: 85px; left: 16px; right: 16px; background: #1a1b20; border: 2px solid #343538; border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.8); z-index: 20;">
+  <div class="floating-lesson-card" style="position: relative; flex-shrink: 0; margin-top: 10px; background: #1a1b20; border: 2px solid #343538; border-radius: 12px; padding: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,0.8); z-index: 20;">
     <div class="lesson-info" style="flex: 1; padding-right: 10px;">
       <span class="lesson-step" style="font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 800; color: #ffb800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">
         MÓDULO ATUAL • <%= @current_maneuver.label %>
