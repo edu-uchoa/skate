@@ -46,7 +46,7 @@ O antigo **perfil anônimo** (usuário criado automaticamente por cookie) foi re
 ### Atenção
 
 - **Contas antigas** criadas pelo fluxo de "salvar progresso" (só com código, sem senha) não conseguem entrar até usar **Esqueci minha senha** uma vez.
-- **O código de recuperação ainda não é enviado** por e-mail/WhatsApp: ele aparece no log do servidor (`[Sakte] código 123456 para ...`). A integração real entra em `app/services/access_code_delivery.rb`.
+- **O código de recuperação ainda não é enviado** por e-mail/WhatsApp: ele aparece no log do servidor (`[Stance] código 123456 para ...`). A integração real entra em `app/services/access_code_delivery.rb`.
 
 ---
 
@@ -71,8 +71,8 @@ Feitas no navegador (para feedback imediato) **e** no servidor (fonte da verdade
 | Regra | Limite | Onde está configurado |
 | --- | --- | --- |
 | Formato | MP4, MOV, WebM | `TrainingSession::CLIP_CONTENT_TYPES` |
-| Tamanho | 40 MB | `config/initializers/sakte.rb` (`max_clip_bytes`) |
-| Duração | 15 s (+1 s de tolerância) | `config/initializers/sakte.rb` (`max_clip_seconds`) |
+| Tamanho | 40 MB | `config/initializers/stance.rb` (`max_clip_bytes`) |
+| Duração | 15 s (+1 s de tolerância) | `config/initializers/stance.rb` (`max_clip_seconds`) |
 | Checklist de segurança | 3 itens marcados | `TrainingSession#validate_recording` |
 
 O formato é identificado pelo **conteúdo** do arquivo (Marcel), não pela extensão — um PNG renomeado para `.mp4` é recusado.

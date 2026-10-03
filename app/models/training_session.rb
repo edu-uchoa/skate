@@ -68,8 +68,8 @@ class TrainingSession < ApplicationRecord
 
   def analysis_running? = %i[pending processing].include?(analysis_stage)
 
-  def self.max_clip_seconds = Rails.configuration.x.sakte.max_clip_seconds
-  def self.max_clip_bytes   = Rails.configuration.x.sakte.max_clip_bytes
+  def self.max_clip_seconds = Rails.configuration.x.stance.max_clip_seconds
+  def self.max_clip_bytes   = Rails.configuration.x.stance.max_clip_bytes
 
   # Duração informada pelo navegador na gravação/seleção (salva no blob).
   def clip_duration = clip.attached? ? clip.blob.custom_metadata["duration_seconds"]&.to_f : nil

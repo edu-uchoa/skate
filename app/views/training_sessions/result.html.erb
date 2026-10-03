@@ -64,7 +64,7 @@
       </div>
       <div style="flex: 1; font-family: 'Inter', sans-serif;">
         <h4 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin-bottom: 2px;">Análise Técnica de Vídeo</h4>
-        <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.sakte.max_clip_seconds %>s do seu rolê para a IA ou nossos mentores analisarem sua postura.</p>
+        <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.stance.max_clip_seconds %>s do seu rolê para a IA ou nossos mentores analisarem sua postura.</p>
         
         <% if @training_session.clip.attached? && @training_session.clip.persisted? %>
           <video src="<%= url_for(@training_session.clip) %>" controls playsinline preload="metadata"

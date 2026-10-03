@@ -83,13 +83,13 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "rejeita vídeo acima do tamanho máximo" do
-    original = Rails.configuration.x.sakte.max_clip_bytes
-    Rails.configuration.x.sakte.max_clip_bytes = 10
+    original = Rails.configuration.x.stance.max_clip_bytes
+    Rails.configuration.x.stance.max_clip_bytes = 10
     upload
     assert_response :unprocessable_entity
     assert_match "MB", response.parsed_body["errors"].join
   ensure
-    Rails.configuration.x.sakte.max_clip_bytes = original
+    Rails.configuration.x.stance.max_clip_bytes = original
   end
 
   test "não aceita manobra bloqueada: cai na manobra atual" do

@@ -5,7 +5,7 @@
 module Authentication
   extend ActiveSupport::Concern
 
-  COOKIE = :sakte_token
+  COOKIE = :stance_token
 
   included do
     before_action :resume_session

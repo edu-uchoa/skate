@@ -10,7 +10,7 @@ class SupportRequest < ApplicationRecord
   scope :urgent, -> { where(kind: :injury, status: :open) }
 
   # Monta o link de WhatsApp com contexto pré-preenchido (tela de ajuda mínima).
-  def whatsapp_url(number: Rails.configuration.x.sakte.support_whatsapp)
+  def whatsapp_url(number: Rails.configuration.x.stance.support_whatsapp)
     text = case kind
            when "injury"    then "Oi, me machuquei treinando no Skate e preciso de ajuda."
            when "stuck"     then "Oi, travei na manobra #{maneuver&.label || '(não informada)'}."
