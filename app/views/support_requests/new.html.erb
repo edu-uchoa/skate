@@ -1,34 +1,50 @@
 <% content_for :section, "Ajuda" %>
 
-<h2 class="font-display text-headline-md">Como podemos ajudar?</h2>
-<p class="mt-xs text-body-md text-on-surface-variant">
-  Escolha uma opção abaixo para falar com a equipe.
-</p>
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">support_agent</span>
+    <h2 class="screen-title">Como podemos ajudar?</h2>
+    <p class="screen-desc">Escolha uma opção abaixo para falar com a equipe.</p>
+  </header>
 
-<%= form_with model: @support_request, url: support_requests_path, class: "mt-md space-y-xs" do |f| %>
-  <%= f.hidden_field :maneuver_id, value: @maneuver&.id %>
+  <%= render "shared/errors", record: @support_request %>
 
-  <% [
-       [ "injury",    "medical_services", "Me machuquei (atendimento de emergência)", "Gera WhatsApp com suporte prioritário." ],
-       [ "stuck",     "help",             "Travei em uma manobra",                    "Dicas técnicas ou grave um clipe." ],
-       [ "technical", "bug_report",       "Problema técnico no site",                 "Relate bugs ou falhas de carregamento." ]
-     ].each do |value, icon, title, hint| %>
-    <label class="card flex cursor-pointer items-start gap-sm has-[:checked]:border-primary">
-      <%= f.radio_button :kind, value, class: "mt-1 accent-[#ffb800]", required: true,
-            checked: @support_request.kind == value %>
-      <span class="material-symbols-outlined text-primary"><%= icon %></span>
-      <span>
-        <span class="block text-body-md text-on-surface"><%= title %></span>
-        <span class="block text-label-caps text-on-surface-variant/70"><%= hint %></span>
-      </span>
-    </label>
+  <%# Sem Turbo: o servidor redireciona para o WhatsApp (outro site), o que o Turbo não segue. %>
+  <%= form_with model: @support_request, url: support_requests_path, class: "auth-form", data: { turbo: false } do |f| %>
+    <%= f.hidden_field :maneuver_id, value: @maneuver&.id %>
+
+    <fieldset class="choice-list">
+      <legend class="auth-label" style="margin-bottom: 8px;">O que aconteceu?</legend>
+      <% [
+           [ "injury",    "medical_services", "Me machuquei (atendimento de emergência)", "Gera WhatsApp com suporte prioritário." ],
+           [ "stuck",     "help",             "Travei em uma manobra",                    "Dicas técnicas ou grave um clipe." ],
+           [ "technical", "bug_report",       "Problema técnico no site",                 "Relate bugs ou falhas de carregamento." ]
+         ].each do |value, icon, title, hint| %>
+        <label class="choice-card <%= "danger" if value == "injury" %>">
+          <%= f.radio_button :kind, value, required: true, checked: @support_request.kind == value %>
+          <span class="material-symbols-outlined choice-icon"><%= icon %></span>
+          <span class="choice-text">
+            <strong><%= title %></strong>
+            <small><%= hint %></small>
+          </span>
+          <span class="choice-mark"></span>
+        </label>
+      <% end %>
+    </fieldset>
+
+    <div class="auth-field">
+      <%= f.label :message, "Mensagem (opcional)", class: "auth-label" %>
+      <%= f.text_area :message, rows: 3, class: "auth-input", placeholder: "Conta rapidinho o que aconteceu" %>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Falar no WhatsApp</span>
+      <span class="material-symbols-outlined btn-arrow">chat</span>
+    <% end %>
   <% end %>
 
-  <%= f.text_area :message, rows: 2, class: "field mt-md", placeholder: "Conta rapidinho o que aconteceu (opcional)" %>
-  <%= f.button "Falar no WhatsApp", type: :submit, class: "btn-primary mt-md" %>
-<% end %>
-
-<p class="mt-md flex items-center justify-center gap-xs text-label-caps text-on-surface-variant/70">
-  <span class="material-symbols-outlined text-[16px]">schedule</span>
-  Respondemos por WhatsApp em até 1 dia útil por um humano nomeado.
-</p>
+  <p class="auth-note">
+    <span class="material-symbols-outlined" style="font-size: 15px;">schedule</span>
+    Respondemos por WhatsApp em até 1 dia útil por um humano nomeado.
+  </p>
+</section>

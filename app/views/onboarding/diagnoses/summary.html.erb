@@ -1,27 +1,40 @@
 <% content_for :section, "Plano" %>
 
-<section class="flex min-h-[60dvh] flex-col justify-center">
-  <span class="material-symbols-outlined icon-filled text-[40px] text-primary">check_circle</span>
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon" style="font-size: 40px; color: var(--tertiary-color);">check_circle</span>
+    <span class="step-indicator">Diagnóstico concluído • 100%</span>
+    <h2 class="screen-title" style="font-size: 30px;">Entendido.</h2>
+  </header>
 
-  <h2 class="mt-xs font-display text-display-lg">Entendido.</h2>
-  <p class="mt-md text-body-lg text-on-surface"><%= @planner.summary %></p>
-  <p class="mt-xs text-body-md text-on-surface-variant"><%= @planner.reassurance %></p>
+  <div class="sub-headline-card" style="margin: 0;">
+    <p class="sub-headline-title" style="text-transform: none; margin-bottom: 6px;"><%= @planner.summary %></p>
+    <p class="sub-headline-body"><%= @planner.reassurance %></p>
+  </div>
+
+  <div class="auth-card">
+    <span class="auth-card-label">Seu ponto de partida na trilha</span>
+    <span class="auth-card-value"><%= @planner.entry_maneuver.label %></span>
+  </div>
 
   <% if @planner.recommended_drills.any? %>
-    <div class="card mt-md">
-      <span class="chip">Recomendado para você</span>
-      <ul class="mt-xs space-y-xs">
+    <div class="auth-card">
+      <span class="auth-card-label">Recomendado para você</span>
+      <ul class="card-list">
         <% @planner.recommended_drills.each do |drill| %>
-          <li class="flex items-center gap-xs text-body-md text-on-surface">
-            <span class="material-symbols-outlined text-primary">bolt</span>
-            <%= drill.label %>
+          <li>
+            <span class="card-list-label">
+              <span class="material-symbols-outlined">bolt</span>
+              <%= drill.label %>
+            </span>
           </li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <%= link_to maneuver_path(@planner.entry_maneuver), class: "btn-primary mt-lg" do %>
-    Ver meu primeiro passo <span class="material-symbols-outlined">arrow_forward</span>
+  <%= link_to maneuver_path(@planner.entry_maneuver), class: "tactile-btn-primary" do %>
+    <span>Ver meu primeiro passo</span>
+    <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
   <% end %>
 </section>

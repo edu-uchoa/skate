@@ -13,7 +13,7 @@
 
   <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; width: 100%;">
     <% levels.each do |level| %>
-      <label class="sub-headline-card option-card" style="transform: none; background: #1a1b20; border: 1px solid #343538; padding: 10px; cursor: pointer; transition: all 0.2s;" onclick="selectCard(this, '#ffb800')">
+      <label class="sub-headline-card option-card" style="position: relative; transform: none; background: #1a1b20; border: 1px solid #343538; padding: 10px; cursor: pointer; transition: all 0.2s;" onclick="selectCard(this, '#ffb800')">
         <%= f.radio_button :level, level[:val], class: "sr-only", required: true, style: "position: absolute; opacity: 0; pointer-events: none;" %>
         
         <% if level[:badge] %>

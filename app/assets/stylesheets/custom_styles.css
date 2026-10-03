@@ -1560,3 +1560,127 @@ a.nav-fab-btn {
 .zine-action .material-symbols-outlined {
   font-size: 16px;
 }
+
+/* Erros de formulário fora das telas auth-* (que já usam gap). */
+.screen > .auth-errors {
+  margin-bottom: 12px;
+}
+
+/* Cartões de escolha (radio) das telas Ajuda e Retorno.
+   O input fica escondido dentro do label; :has destaca o marcado sem JS. */
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: none;
+}
+
+.choice-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: 2px 2px 0 var(--surface-low);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.choice-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choice-card:has(input:checked) {
+  border-color: var(--primary-color);
+  background: #24252a;
+}
+
+.choice-card:has(input:focus-visible) {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.choice-card.danger:has(input:checked) {
+  border-color: var(--error-color);
+}
+
+.choice-icon {
+  flex-shrink: 0;
+  color: var(--primary-color);
+}
+
+.choice-card.danger .choice-icon {
+  color: var(--error-color);
+}
+
+.choice-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.choice-text strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+}
+
+.choice-text small {
+  font-size: 10.5px;
+  line-height: 1.3;
+  color: var(--text-variant);
+}
+
+/* Bolinha de seleção à direita do cartão. */
+.choice-mark {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-highest);
+  transition: all 0.15s ease;
+}
+
+.choice-card:has(input:checked) .choice-mark {
+  border: 6px solid var(--primary-color);
+}
+
+.choice-card.danger:has(input:checked) .choice-mark {
+  border-color: var(--error-color);
+}
+
+/* Lista de itens dentro de um auth-card (drills recomendados, aquecimentos). */
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  list-style: none;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+}
+
+.card-list .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.card-list-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -10,12 +10,12 @@ module Onboarding
       @user.assign_attributes(birth_year: params.dig(:user, :birth_year).presence)
 
       if @user.birth_year.blank?
-        @user.errors.add(:birth_year, "informe o ano de nascimento")
+        @user.errors.add(:base, "Informe o ano de nascimento.")
         return render :show, status: :unprocessable_entity
       end
 
       unless @user.old_enough?
-        @user.errors.add(:base, "O Skate é restrito a maiores de #{User::MINIMUM_AGE} anos.")
+        @user.errors.add(:base, "O Stance é restrito a maiores de #{User::MINIMUM_AGE} anos.")
         return render :show, status: :unprocessable_entity
       end
 

@@ -1,19 +1,34 @@
 <% content_for :section, "Retorno" %>
 
-<h2 class="font-display text-display-lg">Que bom te ver de volta!</h2>
-<p class="mt-xs text-body-md text-on-surface-variant">O que rolou nesse tempo?</p>
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">waving_hand</span>
+    <h2 class="screen-title">Que bom te ver de volta!</h2>
+    <p class="screen-desc">O que rolou nesse tempo?</p>
+  </header>
 
-<%= form_with model: @comeback, url: comeback_path, class: "mt-md space-y-xs" do |f| %>
-  <% {
-       "injury"     => "Parei por lesão / Me machuquei",
-       "lost_focus" => "Perdi um pouco o foco",
-       "no_time"    => "Falta de tempo"
-     }.each do |value, label| %>
-    <label class="card flex cursor-pointer items-center gap-sm has-[:checked]:border-primary">
-      <%= f.radio_button :reason, value, class: "accent-[#ffb800]", required: true %>
-      <span class="text-body-md text-on-surface"><%= label %></span>
-    </label>
+  <%= render "shared/errors", record: @comeback %>
+
+  <%# Sem Turbo: a resposta de sucesso é a própria página (render :created), que o Turbo ignora. %>
+  <%= form_with model: @comeback, url: comeback_path, class: "auth-form", data: { turbo: false } do |f| %>
+    <fieldset class="choice-list">
+      <% [
+           [ "injury",     "healing",    "Parei por lesão / Me machuquei" ],
+           [ "lost_focus", "psychology", "Perdi um pouco o foco" ],
+           [ "no_time",    "schedule",   "Falta de tempo" ]
+         ].each do |value, icon, label| %>
+        <label class="choice-card">
+          <%= f.radio_button :reason, value, required: true %>
+          <span class="material-symbols-outlined choice-icon"><%= icon %></span>
+          <span class="choice-text"><strong><%= label %></strong></span>
+          <span class="choice-mark"></span>
+        </label>
+      <% end %>
+    </fieldset>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Continuar</span>
+      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+    <% end %>
   <% end %>
-
-  <%= f.button "Continuar", type: :submit, class: "btn-primary mt-md" %>
-<% end %>
+</section>
