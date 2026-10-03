@@ -1684,3 +1684,253 @@ a.nav-fab-btn {
   align-items: center;
   gap: 6px;
 }
+
+/* Guias dos drills (app/views/maneuvers/guides/): conteúdo abaixo do vídeo. */
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.guide-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.guide-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+}
+
+.guide-lead,
+.guide-specs-intro {
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-variant);
+}
+
+.guide-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0 var(--surface-low);
+}
+
+.guide-card-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--primary-color);
+}
+
+/* Abas Rua / Bowl: radio escondido, :has mostra o painel do estilo marcado. */
+.guide-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.guide-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-sm);
+  background: var(--surface-low);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-variant);
+  cursor: pointer;
+}
+
+.guide-tab input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.guide-tab .material-symbols-outlined {
+  font-size: 18px;
+}
+
+.guide-tab:has(input:checked) {
+  background: var(--primary-color);
+  border-color: black;
+  color: black;
+  box-shadow: 0 3px 0 var(--primary-shadow);
+}
+
+.guide-tab:has(input:focus-visible) {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+.guide-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide:has(input[value="rua"]:checked) .guide-panel-bowl,
+.guide:has(input[value="bowl"]:checked) .guide-panel-rua {
+  display: none;
+}
+
+.guide-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-specs div {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--surface-high);
+}
+
+.guide-specs dt {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  padding-top: 1px;
+}
+
+.guide-specs dd,
+.guide-list li,
+.guide-steps li {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+.guide-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.guide-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-variant);
+  padding-bottom: 4px;
+}
+
+.guide-table td {
+  padding: 6px 0;
+  border-top: 1px solid var(--surface-high);
+  color: var(--text-on-surface);
+}
+
+.guide-table td:last-child {
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.guide-hint {
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--text-variant);
+  opacity: 0.85;
+}
+
+.guide-tip {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #1a1b20;
+  border-left: 4px solid var(--primary-color);
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-variant);
+}
+
+.guide-tip .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.guide-tip strong {
+  color: var(--text-on-surface);
+}
+
+.guide-list,
+.guide-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.guide-list li::marker,
+.guide-steps li::marker {
+  color: var(--primary-color);
+  font-weight: 800;
+}
+
+.guide-details {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.guide-details summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+  cursor: pointer;
+  list-style: none;
+}
+
+.guide-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.guide-details summary::after {
+  content: "expand_more";
+  font-family: "Material Symbols Outlined";
+  font-size: 20px;
+  margin-left: auto;
+  color: var(--primary-color);
+  transition: transform 0.2s;
+}
+
+.guide-details[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.guide-details summary .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.guide-details[open] .guide-steps {
+  margin: 12px 0 10px;
+}

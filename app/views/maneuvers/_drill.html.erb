@@ -13,6 +13,10 @@
   <% end %>
 </div>
 
+<%# Guia próprio do drill, se existir: app/views/maneuvers/guides/_<slug>.html.erb %>
+<% guide = "maneuvers/guides/#{maneuver.slug.underscore}" %>
+<%= render guide if lookup_context.exists?(guide, [], true) %>
+
 <% if maneuver.why_now.present? %>
   <div class="sub-headline-card" style="border-left: 4px solid #ffb800; transform: none; background: #1a1b20; padding: 8px 10px; margin-bottom: 8px;">
     <span style="font-size: 10px; font-weight: 800; color: #ffb800; text-transform: uppercase; display: block; margin-bottom: 2px;">🎯 Por que agora?</span>
