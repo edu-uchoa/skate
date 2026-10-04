@@ -68,6 +68,20 @@ Toda view é renderizada dentro de `.screen` (flex em coluna, com rolagem) no la
 - Mensagens de erro em português e sem nome de campo em inglês: prefira
   `errors.add(:base, "...")` a `errors.add(:birth_year, ...)` (o locale padrão é `en`).
 
+## Voz e conteúdo (dos documentos de estratégia da equipe)
+
+O público trava por **medo de se machucar** e **vergonha de ser visto**. Por isso:
+- A voz é a do **amigo mais velho que já caiu** e já ficou parado, não a do instrutor
+  que avalia. Nada de cobrança ("você precisa", "não desista!"); prefira acolher
+  ("tudo bem parar", "se cair, você sabe rolar").
+- **Sem número inventado.** Estatística só com fonte (ex.: "reduz 90% dos
+  machucados" não tem fonte e não deve aparecer).
+- **Privado por padrão:** nada na tela expõe a pessoa a estranhos (feed, ranking
+  público, clipe visível para outros) sem ela escolher.
+- **Sem cobrança diária:** ofensiva/streak e metas diárias punem quem parou por lesão.
+  Se aparecerem em tela existente, avise o usuário em vez de ampliar.
+- Imagens e exemplos com representação feminina, e português de rua.
+
 ## Antes de dar como pronto
 
 Confira no navegador com a skill **stance-responsivo**. Compare o print com uma tela
