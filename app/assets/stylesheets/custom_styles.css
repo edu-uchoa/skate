@@ -1883,6 +1883,15 @@ a.nav-fab-btn {
   padding-left: 18px;
 }
 
+/* O Tailwind zera os marcadores de lista (list-style: none); os guias precisam deles. */
+.guide-list {
+  list-style: disc;
+}
+
+.guide-steps {
+  list-style: decimal;
+}
+
 .guide-list li::marker,
 .guide-steps li::marker {
   color: var(--primary-color);
