@@ -47,7 +47,7 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 | `video-container` / `play-circle` / `video-badge` | Vídeo (ou placeholder) no topo do passo |
 | `guide`, `guide-head`, `guide-title`, `guide-lead` | Estrutura do guia de um passo |
 | `guide-card` + `guide-card-label` | Cartão numerado ("1. Escolha o seu estilo") |
-| `guide-tabs` / `guide-tab` / `guide-panel-rua` / `guide-panel-bowl` | Abas Rua/Bowl só com CSS (radios `name="guide-style"` com `value="rua"`/`"bowl"`) |
+| `guide-tabs` / `guide-tab` / `guide-panel-rua` / `guide-panel-bowl` | Abas Rua/Bowl só com CSS (radios `name="guide-style"` com `value="rua"`/`"bowl"`). Ícones: `location_city` (Rua) e `render "shared/icon_bowl"` (Bowl, SVG próprio; o Material Symbols não tem bowl de skate) |
 | `guide-specs` (+ `.is-wide`) | Lista rótulo → explicação (Shape, Truck...). `.is-wide` para rótulos longos |
 | `guide-gear`, `guide-gear-name`, `guide-tag` (`.is-must`, `.is-start`) | Lista de itens com etiqueta (Obrigatório, Começando, Opcional) |
 | `guide-table`, `guide-tip`, `guide-list`, `guide-hint` | Tabela, dica com barra amarela, lista com marcador amarelo, nota pequena |

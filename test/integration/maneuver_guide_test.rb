@@ -19,6 +19,7 @@ class ManeuverGuideTest < ActionDispatch::IntegrationTest
     assert_select ".video-container + .guide"
     assert_select ".guide-panel-rua"
     assert_select ".guide-panel-bowl"
+    assert_select ".guide-tab svg.icon-bowl", count: 1
     assert_select ".guide-details summary", text: /Passo a passo da montagem/
   end
 
