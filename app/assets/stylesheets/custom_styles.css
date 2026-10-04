@@ -1934,3 +1934,61 @@ a.nav-fab-btn {
 .guide-details[open] .guide-steps {
   margin: 12px 0 10px;
 }
+
+/* Coluna de rótulos mais larga para nomes maiores (ex.: guia de equipamento). */
+.guide-specs.is-wide div {
+  grid-template-columns: 82px 1fr;
+}
+
+/* Lista de equipamentos do guia 0.2: nome + etiqueta e, abaixo, para que serve. */
+.guide-gear {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}
+
+.guide-gear li {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 0;
+  border-top: 1px solid var(--surface-high);
+}
+
+.guide-gear-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-on-surface);
+}
+
+.guide-gear p {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-variant);
+}
+
+.guide-tag {
+  padding: 1px 6px;
+  border: 1px solid var(--surface-highest);
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--text-variant);
+}
+
+.guide-tag.is-must {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: black;
+}
+
+.guide-tag.is-start {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}

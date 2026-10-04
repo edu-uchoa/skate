@@ -22,6 +22,19 @@ class ManeuverGuideTest < ActionDispatch::IntegrationTest
     assert_select ".guide-details summary", text: /Passo a passo da montagem/
   end
 
+  test "o passo 0.2 mostra o guia de equipamento com o kit de rua e de bowl" do
+    equipment = Maneuver.create!(learning_module: @setup.learning_module, code: "0.2", slug: "equipamento",
+                                 name: "EQUIPAMENTO", position: 2, kind: :drill)
+
+    get maneuver_path(equipment)
+
+    assert_response :success
+    assert_select ".video-container + .guide"
+    assert_select ".guide-panel-rua .guide-gear li", minimum: 3
+    assert_select ".guide-panel-bowl .guide-gear-name", text: /Joelheira com capa de plástico/
+    assert_select ".guide-card-label", text: /Onde e como comprar/
+  end
+
   test "drill sem guia continua só com vídeo e botões" do
     get maneuver_path(@other)
 
