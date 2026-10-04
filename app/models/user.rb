@@ -16,7 +16,7 @@ class User < ApplicationRecord
   normalizes :phone, with: ->(value) { value.to_s.gsub(/\D/, "").presence }
 
   validates :birth_year,
-            numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: -> (_) { Date.current.year } },
+            numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: ->(_) { Date.current.year } },
             allow_nil: true
   validate :validate_contact
   validate :validate_password, if: :registered?

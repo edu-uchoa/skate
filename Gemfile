@@ -27,6 +27,7 @@ gem "image_processing", "~> 1.2"  # previews dos vídeos (Active Storage)
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "brakeman", require: false
+  gem "bundler-audit", require: false  # gems com falhas conhecidas (usado pelo CI)
   gem "rubocop-rails-omakase", require: false
 end
 

@@ -36,7 +36,10 @@ commit e que qualquer mudança possa ser desfeita sozinha.
 
 1. Regra nova ou bug corrigido → escreva um teste que falharia sem a correção
    (`test/models/` para regras, `test/integration/` para telas e fluxos).
-2. `bin/rails test` — a suíte inteira tem que passar.
+2. `bin/rails test` — a suíte inteira tem que passar. Para rodar só alguns testes no
+   Git Bash, use `MSYS_NO_PATHCONV=1 bin/rails test arquivo_test.rb -n "/trecho/"`:
+   sem isso, o `/trecho/` vira um caminho do Windows e nenhum teste roda ("0 runs").
+   Para provar que um teste novo pega o bug, rode-o uma vez sem a correção (deve falhar).
 3. `bin/rubocop <arquivos .rb alterados>` — o CI do GitHub roda o RuboCop.
 4. Mudou tela, CSS ou formulário → confira no navegador com a skill **stance-responsivo**
    (prints em celular e computador e, para formulários, o envio de verdade). Testes de

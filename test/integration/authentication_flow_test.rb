@@ -109,6 +109,17 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_match "rider@example.com", response.body
   end
 
+  test "pedido HEAD a uma rota protegida também guarda a volta após o login" do
+    sign_up("head@example.com")
+    delete sign_out_path
+
+    head my_account_path
+    assert_redirected_to new_session_path
+
+    sign_in("head@example.com")
+    assert_redirected_to my_account_path
+  end
+
   test "login com contato inexistente mostra a mesma mensagem" do
     sign_in("ninguem@example.com")
     assert_response :unprocessable_entity

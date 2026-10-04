@@ -67,22 +67,25 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 ## Verificações automáticas (iguais ao CI)
 
 ```bash
-bundle exec brakeman --no-pager -q   # falhas de segurança no código
-bin/importmap audit                  # pacotes JavaScript vulneráveis
-bin/rubocop                          # estilo (o CI falha se houver ofensas)
-bin/rails test                       # testes
+bin/brakeman --no-pager                  # falhas de segurança no código
+bin/bundler-audit                        # gems com falhas conhecidas
+bin/importmap audit                      # pacotes JavaScript vulneráveis
+bin/rubocop                              # estilo (o CI falha se houver ofensas)
+bin/rails db:test:prepare test           # testes
+bin/rails db:test:prepare test:system    # testes de navegador (pasta test/system)
 ```
 
-Estado em 04/10/2026:
-- **Brakeman**: 1 alerta fraco (`HTTP Verb Confusion` em `authentication.rb`, `request.get?`
-  ignora HEAD). É inofensivo; não precisa de correção urgente.
-- **`bin/brakeman`** (com `--ensure-latest`, usado no CI) recusa rodar porque a versão
-  8.0.6 não é a mais nova. Até atualizar a gem, rode `bundle exec brakeman` localmente;
-  no GitHub essa etapa falha.
-- **`bin/bundler-audit`** não roda: a gem `bundler-audit` não está no `Gemfile`, então
-  essa etapa do CI também falha. Correção sugerida (mudança separada):
-  `gem "bundler-audit", require: false` no grupo `:development, :test` + `bundle install`.
-- **importmap audit**: nenhum pacote vulnerável.
+Todas passavam em 04/10/2026, sem nenhum alerta. Para manter assim:
+- A Brakeman reprova com **qualquer** alerta, mesmo fraco. Corrija a causa; use
+  `config/brakeman.ignore` só para falso positivo comprovado, com nota explicando.
+- `bin/brakeman` usa `--ensure-latest`: quando sair uma versão nova da Brakeman, ele volta
+  a reprovar até a gem ser atualizada (`bundle update brakeman --conservative` ou o Pull
+  Request do Dependabot). Não é falha do código.
+- `bin/bundler-audit` baixa a base de falhas conhecidas na primeira vez (precisa de
+  internet). Se apontar uma gem, atualize só ela (`bundle update <gem> --conservative`)
+  e rode os testes.
+- `test/system` ainda só tem `.keep`: a etapa de testes de navegador do CI passa, mas não
+  testa nada até alguém escrever testes ali.
 
 ## Como relatar
 

@@ -41,7 +41,8 @@ module Authentication
 
   def require_authentication
     return if signed_in?
-    session[:return_to_after_authenticating] = request.fullpath if request.get?
+    # HEAD é um GET sem corpo: tratar os dois igual (evita o alerta "HTTP verb confusion" do Brakeman).
+    session[:return_to_after_authenticating] = request.fullpath if request.get? || request.head?
     redirect_to new_session_path, alert: "Entre ou crie sua conta para continuar."
   end
 
