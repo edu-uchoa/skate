@@ -35,6 +35,21 @@ class ManeuverGuideTest < ActionDispatch::IntegrationTest
     assert_select ".guide-card-label", text: /Onde e como comprar/
   end
 
+  test "o passo 0.3 mostra o guia de queda controlada: medo, como cair e postura" do
+    fall = Maneuver.create!(learning_module: @setup.learning_module, code: "0.3", slug: "queda-controlada",
+                            name: "QUEDA CONTROLADA", position: 3, kind: :drill)
+
+    get maneuver_path(fall)
+
+    assert_response :success
+    assert_select ".video-container + .guide"
+    assert_select ".guide-card-label", text: /Diminua o medo/
+    assert_select ".guide-panel-rua dt", text: "Role"
+    assert_select ".guide-panel-bowl dt", text: "Joelhos"
+    assert_select ".guide-card-label", text: /Solte as pernas/
+    assert_select ".guide-details summary", text: /Treino de 10 minutos/
+  end
+
   test "drill sem guia continua só com vídeo e botões" do
     get maneuver_path(@other)
 
