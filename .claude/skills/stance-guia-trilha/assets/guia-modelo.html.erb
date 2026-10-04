@@ -1,0 +1,64 @@
+<%# Guia do passo X.Y: <assunto em uma linha>.
+    Base: <tipos de fonte: fabricantes, skatistas profissionais, entidades médicas>.
+    Sem citar marcas: só critérios, medidas e técnica. %>
+<section class="guide" aria-labelledby="guide-title">
+  <header class="guide-head">
+    <span class="step-indicator">Guia rápido</span>
+    <h3 id="guide-title" class="guide-title">Título curto e animado</h3>
+    <p class="guide-lead">Duas ou três frases: por que este passo importa para quem está começando.</p>
+  </header>
+
+  <%# Abas só quando a resposta muda com o estilo. Remova se não fizer sentido. %>
+  <div class="guide-card">
+    <span class="guide-card-label">1. Escolha o seu estilo</span>
+
+    <div class="guide-tabs" role="radiogroup" aria-label="Estilo">
+      <label class="guide-tab">
+        <input type="radio" name="guide-style" value="rua" checked>
+        <span class="material-symbols-outlined">location_city</span> Rua
+      </label>
+      <label class="guide-tab">
+        <input type="radio" name="guide-style" value="bowl">
+        <span class="material-symbols-outlined">waves</span> Bowl
+      </label>
+    </div>
+
+    <div class="guide-panel guide-panel-rua">
+      <p class="guide-specs-intro">Uma frase sobre o estilo.</p>
+      <dl class="guide-specs">
+        <div><dt>Item</dt><dd>Explicação curta, com medida quando houver.</dd></div>
+      </dl>
+    </div>
+
+    <div class="guide-panel guide-panel-bowl">
+      <p class="guide-specs-intro">Uma frase sobre o estilo.</p>
+      <dl class="guide-specs">
+        <div><dt>Item</dt><dd>Explicação curta, com medida quando houver.</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="guide-tip">
+    <span class="material-symbols-outlined">bolt</span>
+    <p><strong>Na dúvida:</strong> a recomendação mais segura para quem está começando.</p>
+  </div>
+
+  <div class="guide-card">
+    <span class="guide-card-label">2. Próximo assunto</span>
+    <ul class="guide-list">
+      <li>Item prático, uma ideia por linha.</li>
+    </ul>
+  </div>
+
+  <%# Conteúdo longo (passo a passo) fica recolhido para a página não ficar enorme. %>
+  <details class="guide-details">
+    <summary>
+      <span class="material-symbols-outlined">build</span>
+      Passo a passo
+    </summary>
+    <ol class="guide-steps">
+      <li><strong>Ação:</strong> como fazer.</li>
+    </ol>
+    <p class="guide-hint">Dica final curta.</p>
+  </details>
+</section>
