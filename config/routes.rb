@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   namespace :mentor do
     resource  :zine,     only: :show, path: "zine"
     resources :requests, only: %i[index update destroy], path: "pedidos"
+    resources :reviews,  only: %i[edit update], path: "devolutivas", path_names: { edit: "responder" }
   end
 
   # Funcionalidades Front-end

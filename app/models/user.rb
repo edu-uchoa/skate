@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :training_sessions, dependent: :destroy
   has_many :support_requests, dependent: :destroy
   has_many :comebacks, dependent: :destroy
+  has_many :given_reviews, class_name: "AiReview", foreign_key: :reviewer_id,
+                           inverse_of: :reviewer, dependent: :nullify # devolutivas que respondeu como mentor
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e um mentor

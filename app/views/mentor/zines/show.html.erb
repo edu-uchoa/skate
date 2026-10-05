@@ -64,6 +64,10 @@
                       <span class="material-symbols-outlined"><%= overdue?(review) ? "alarm" : "schedule" %></span>
                       <%= waiting_label(review) %>
                     </p>
+                    <%= link_to edit_mentor_review_path(review), class: "tactile-btn-primary" do %>
+                      <span>Responder</span>
+                      <span class="material-symbols-outlined btn-arrow">rate_review</span>
+                    <% end %>
                   <% else %>
                     <p class="zine-status <%= stage[:tone] %>">
                       <span class="material-symbols-outlined"><%= stage[:icon] %></span>

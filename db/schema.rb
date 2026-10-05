@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_05_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -61,10 +61,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_130000) do
     t.text "mistake"
     t.text "next_focus"
     t.text "raw_response"
+    t.integer "reviewer_id"
     t.integer "status", default: 0, null: false
     t.text "strengths"
     t.integer "training_session_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["reviewer_id"], name: "index_ai_reviews_on_reviewer_id"
     t.index ["training_session_id"], name: "index_ai_reviews_on_training_session_id", unique: true
   end
 
@@ -214,6 +216,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_130000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "ai_reviews", "training_sessions"
+  add_foreign_key "ai_reviews", "users", column: "reviewer_id"
   add_foreign_key "comebacks", "users"
   add_foreign_key "diagnoses", "users"
   add_foreign_key "diagnosis_blockers", "diagnoses"

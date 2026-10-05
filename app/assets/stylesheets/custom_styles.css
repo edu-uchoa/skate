@@ -2104,3 +2104,14 @@ a.guide-tab {
 .mentor-request-actions .auth-secondary-btn {
   width: 100%;
 }
+
+/* Tela de resposta do mentor: rótulos coloridos iguais aos blocos que o aprendiz vê. */
+.review-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.review-label .material-symbols-outlined {
+  font-size: 16px;
+}
