@@ -44,7 +44,7 @@ class ZineTest < ActionDispatch::IntegrationTest
     get zine_path
     assert_response :success
     assert_select "##{ActionView::RecordIdentifier.dom_id(session, :zine)}" do
-      assert_select "video[src*='active_storage']"
+      assert_select "video[src^=?]", clip_path(@user.training_sessions.last)
       assert_select "h3", "OLLIE"
       assert_select ".zine-status", /Registre o resultado/
       assert_select "a[href=?]", result_training_session_path(session)

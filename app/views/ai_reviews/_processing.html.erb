@@ -15,8 +15,7 @@
 
   <% if training_session.clip.attached? %>
     <div class="video-container" style="margin: 0;">
-      <video src="<%= url_for(training_session.clip) %>#t=0.1" controls playsinline preload="metadata"
-             style="width: 100%; height: 100%; object-fit: cover;"></video>
+      <%= training_video_tag(training_session, style: "width: 100%; height: 100%; object-fit: cover;") %>
     </div>
   <% end %>
 

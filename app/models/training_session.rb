@@ -3,6 +3,7 @@ class TrainingSession < ApplicationRecord
   belongs_to :maneuver
 
   has_one :ai_review, dependent: :destroy
+  has_many :clip_accesses, dependent: :delete_all # quem (além do dono) assistiu ao vídeo
   has_one_attached :clip   # vídeo de até ~15s da análise de queda
 
   enum :status, {
@@ -57,6 +58,12 @@ class TrainingSession < ApplicationRecord
   end
 
   def successful? = outcome_felt_safe?
+
+  # Quem pode assistir ao vídeo: o dono e, se o dono é aprendiz, mentores e administradores.
+  def clip_visible_to?(viewer)
+    return false if viewer.nil?
+    user_id == viewer.id || (viewer.mentor_access? && user.role_learner?)
+  end
 
   # Andamento do vídeo até a devolutiva:
   #   awaiting_result -> queued_offline -> pending -> processing -> completed | failed

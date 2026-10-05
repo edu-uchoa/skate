@@ -56,7 +56,8 @@
             <%= [ ("#{mentor.age} anos" if mentor.age),
                   ("aprovado em #{mentor.mentor_approved_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y")}" if mentor.mentor_approved_at),
                   (mentor.mentor_approved_by ? "por #{mentor.mentor_approved_by.contact}" : "pelo terminal"),
-                  pluralize(mentor.given_reviews.count, "devolutiva", plural: "devolutivas") ].compact.join(" · ") %>
+                  pluralize(mentor.given_reviews.count, "devolutiva", plural: "devolutivas"),
+                  "#{pluralize(mentor.clip_accesses.where(created_at: 30.days.ago..).count, "vídeo assistido", plural: "vídeos assistidos")} em 30 dias" ].compact.join(" · ") %>
           </span>
           <%= button_to "Remover acesso de mentor", mentor_mentor_path(mentor), method: :delete,
                 class: "auth-secondary-btn danger",

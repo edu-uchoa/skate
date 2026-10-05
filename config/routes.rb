@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" }
   resource  :zine,      only: :show, path: "zine"
 
+  # Vídeos dos treinos, só com login e permissão (ClipsController).
+  resources :clips, only: :show, path: "videos"
+
   # Pedido para ser mentor (feito no cadastro ou em "Minha conta").
   resource :mentor_application, only: %i[new create], path: "quero-ser-mentor", path_names: { new: "" }
 

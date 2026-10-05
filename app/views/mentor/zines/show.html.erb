@@ -45,7 +45,7 @@
               <% review = training_session.ai_review %>
               <li class="zine-card" id="<%= dom_id(training_session, :mentor) %>">
                 <div class="zine-video">
-                  <video src="<%= url_for(training_session.clip) %>#t=0.1" controls playsinline preload="metadata"></video>
+                  <%= training_video_tag(training_session) %>
                 </div>
 
                 <div class="zine-body">

@@ -23,5 +23,10 @@ module Skate
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Sem as rotas públicas do Active Storage (/rails/active_storage/...): elas abriam
+    # os vídeos dos treinos para qualquer pessoa com o link, sem login e sem expirar.
+    # Os vídeos saem só por /videos/:id (ClipsController), com login e permissão.
+    config.active_storage.draw_routes = false
   end
 end
