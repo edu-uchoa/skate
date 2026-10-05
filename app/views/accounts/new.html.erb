@@ -18,6 +18,24 @@
   <% end %>
 
   <%= form_with model: @user, url: account_path, method: :post, class: "auth-form" do |f| %>
+    <fieldset class="choice-list">
+      <legend class="auth-label" style="margin-bottom: 8px;">Tipo de conta</legend>
+      <% [
+           [ "learner", "skateboarding", "Aprendiz", "Quero aprender com a trilha e receber devolutivas." ],
+           [ "mentor",  "school",        "Mentor",   "Quero ver os vídeos dos aprendizes e responder. Precisa de aprovação." ]
+         ].each do |value, icon, title, hint| %>
+        <label class="choice-card">
+          <%= radio_button_tag "account_type", value, (params[:account_type] || "learner") == value %>
+          <span class="material-symbols-outlined choice-icon"><%= icon %></span>
+          <span class="choice-text">
+            <strong><%= title %></strong>
+            <small><%= hint %></small>
+          </span>
+          <span class="choice-mark"></span>
+        </label>
+      <% end %>
+    </fieldset>
+
     <div class="auth-field">
       <%= f.label :contact, "E-mail ou telefone (WhatsApp)", class: "auth-label" %>
       <%= f.text_field :contact, value: params.dig(:user, :contact), class: "auth-input", required: true,

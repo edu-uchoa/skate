@@ -12,16 +12,7 @@
     </p>
   </header>
 
-  <nav class="guide-tabs" aria-label="Abas da Zine do mentor">
-    <%= link_to mentor_zine_path(aba: "fila"), class: [ "guide-tab", ("is-active" if @tab == "fila") ],
-                aria: { current: (@tab == "fila" ? "page" : nil) } do %>
-      <span class="material-symbols-outlined">schedule</span> Na fila (<%= @queue_count %>)
-    <% end %>
-    <%= link_to mentor_zine_path(aba: "todos"), class: [ "guide-tab", ("is-active" if @tab == "todos") ],
-                aria: { current: (@tab == "todos" ? "page" : nil) } do %>
-      <span class="material-symbols-outlined">video_library</span> Todos (<%= @video_count %>)
-    <% end %>
-  </nav>
+  <%= render "mentor/tabs", current: @tab %>
 
   <% if @learners.empty? %>
     <div class="zine-empty">

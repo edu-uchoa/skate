@@ -1,0 +1,41 @@
+<% content_for :section, "Mentor" %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">school</span>
+    <span class="step-indicator">Pedido de mentor</span>
+    <h2 class="screen-title">Quero ser mentor</h2>
+    <p class="screen-desc">
+      Mentores assistem aos vídeos dos aprendizes e respondem com a devolutiva. Como muitos
+      aprendizes são menores de idade, todo pedido é aprovado pela equipe antes.
+    </p>
+  </header>
+
+  <%= render "shared/errors", record: current_user %>
+
+  <%= form_with scope: :mentor_application, url: mentor_application_path, method: :post, class: "auth-form" do |f| %>
+    <div class="auth-field">
+      <%= f.label :birth_year, "Ano de nascimento", class: "auth-label" %>
+      <%= f.number_field :birth_year, value: params.dig(:mentor_application, :birth_year) || current_user.birth_year,
+            class: "auth-input auth-input-code", inputmode: "numeric", placeholder: "1995",
+            min: 1900, max: Date.current.year, required: true %>
+      <span class="auth-hint">Mentor precisa ter <%= User::MENTOR_MINIMUM_AGE %> anos ou mais.</span>
+    </div>
+
+    <div class="auth-field">
+      <%= f.label :note, "Sua experiência no skate", class: "auth-label" %>
+      <%= f.text_area :note, value: params.dig(:mentor_application, :note), rows: 4, class: "auth-input", required: true,
+            maxlength: User::MENTOR_NOTE_LENGTH,
+            placeholder: "Há quanto tempo anda, onde, se já deu aula, se é de alguma crew ou skateshop..." %>
+    </div>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Enviar pedido</span>
+      <span class="material-symbols-outlined btn-arrow">send</span>
+    <% end %>
+  <% end %>
+
+  <div class="auth-links">
+    <%= link_to "Agora não — seguir como aprendiz", track_path, class: "auth-muted-link" %>
+  </div>
+</section>

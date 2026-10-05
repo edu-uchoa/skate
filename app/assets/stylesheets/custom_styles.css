@@ -2065,3 +2065,42 @@ a.guide-tab {
 .mentor-outcome strong {
   color: var(--text-on-surface);
 }
+
+/* Três abas na área do mentor: mais compactas que as abas dos guias. */
+.guide-tabs.mentor-tabs {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.mentor-tabs .guide-tab {
+  gap: 4px;
+  padding: 8px 4px;
+  font-size: 11px;
+}
+
+.mentor-tabs .guide-tab .material-symbols-outlined {
+  font-size: 16px;
+}
+
+/* Pedido de mentor: cartão com a experiência contada e os botões de decisão. */
+.mentor-request-note {
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+.mentor-request-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.mentor-request-actions form {
+  display: flex;
+}
+
+.mentor-request-actions .tactile-btn-primary,
+.mentor-request-actions .auth-secondary-btn {
+  width: 100%;
+}

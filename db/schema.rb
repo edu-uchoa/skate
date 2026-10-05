@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_130000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -195,6 +195,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_120000) do
     t.datetime "created_at", null: false
     t.string "email"
     t.datetime "last_seen_at"
+    t.text "mentor_request_note"
+    t.datetime "mentor_requested_at"
     t.string "password_digest"
     t.string "phone"
     t.datetime "registered_at"

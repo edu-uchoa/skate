@@ -8,9 +8,7 @@ module Mentor
     def show
       @tab = TABS.include?(params[:aba]) ? params[:aba] : "fila"
 
-      sessions = TrainingSession.with_clip.joins(:user).merge(User.role_learner).includes(user: :diagnosis).recent.to_a
-      @queue_count = sessions.count(&:analysis_running?)
-      @video_count = sessions.size
+      sessions = learner_clips.includes(user: :diagnosis).recent.to_a
       @learners = @tab == "fila" ? queue_by_learner(sessions) : sessions.group_by(&:user)
     end
 

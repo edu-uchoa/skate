@@ -12,9 +12,15 @@ class User < ApplicationRecord
   has_many :support_requests, dependent: :destroy
   has_many :comebacks, dependent: :destroy
 
-  # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Não existe
-  # cadastro de mentor pelo app: a conta é promovida pelo terminal (lib/tasks/mentor.rake).
+  # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
+  # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e um mentor
+  # aprova na área do mentor. O primeiro mentor é promovido pelo terminal (lib/tasks/mentor.rake).
   enum :role, { learner: 0, mentor: 1 }, prefix: true
+
+  MENTOR_MINIMUM_AGE = 18
+  MENTOR_NOTE_LENGTH = 500
+
+  scope :mentor_requests, -> { role_learner.where.not(mentor_requested_at: nil).order(:mentor_requested_at) }
 
   normalizes :email, with: ->(value) { value.to_s.strip.downcase.presence }
   normalizes :phone, with: ->(value) { value.to_s.gsub(/\D/, "").presence }
@@ -116,7 +122,37 @@ class User < ApplicationRecord
   # Invalida o cookie em todos os aparelhos.
   def sign_out_everywhere! = regenerate_token
 
+  def mentor_requested? = role_learner? && mentor_requested_at.present?
+
+  # Pedido de mentor: precisa ter 18+ (muitos aprendizes são menores) e contar a
+  # experiência no skate, para quem aprova saber quem é. Devolve false com erros.
+  def request_mentor(birth_year:, note:)
+    self.birth_year = birth_year.presence
+    self.mentor_request_note = note.to_s.strip.first(MENTOR_NOTE_LENGTH).presence
+
+    if (problem = mentor_request_problem)
+      errors.add(:base, problem)
+      return false
+    end
+
+    update(mentor_requested_at: Time.current)
+  end
+
+  def approve_mentor! = update!(role: :mentor, mentor_requested_at: nil)
+
+  def reject_mentor! = update!(mentor_requested_at: nil, mentor_request_note: nil)
+
   private
+
+  def mentor_request_problem
+    if birth_year.blank? || !birth_year.between?(1900, Date.current.year)
+      "Informe um ano de nascimento válido."
+    elsif age < MENTOR_MINIMUM_AGE
+      "Para ser mentor é preciso ter #{MENTOR_MINIMUM_AGE} anos ou mais."
+    elsif mentor_request_note.blank?
+      "Conte um pouco da sua experiência no skate."
+    end
+  end
 
   def validate_contact
     if @contact_input && contact.blank?

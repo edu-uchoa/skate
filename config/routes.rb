@@ -29,9 +29,13 @@ Rails.application.routes.draw do
   resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" }
   resource  :zine,      only: :show, path: "zine"
 
-  # Área do mentor: só contas promovidas com bin/rails "mentor:promover[...]".
+  # Pedido para ser mentor (feito no cadastro ou em "Minha conta").
+  resource :mentor_application, only: %i[new create], path: "quero-ser-mentor", path_names: { new: "" }
+
+  # Área do mentor: só contas aprovadas (ou promovidas pelo terminal).
   namespace :mentor do
-    resource :zine, only: :show, path: "zine"
+    resource  :zine,     only: :show, path: "zine"
+    resources :requests, only: %i[index update destroy], path: "pedidos"
   end
 
   # Funcionalidades Front-end

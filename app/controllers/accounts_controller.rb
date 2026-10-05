@@ -15,7 +15,12 @@ class AccountsController < ApplicationController
 
     if @user.persisted?
       start_session_for(@user)
-      redirect_to install_path, notice: "Conta criada! Bora começar."
+      # Escolher "Mentor" não dá acesso de mentor: leva ao pedido, que um mentor aprova.
+      if params[:account_type] == "mentor"
+        redirect_to new_mentor_application_path, notice: "Conta criada! Agora complete seu pedido de mentor."
+      else
+        redirect_to install_path, notice: "Conta criada! Bora começar."
+      end
     else
       render :new, status: :unprocessable_entity
     end

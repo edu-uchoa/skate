@@ -1,0 +1,24 @@
+<% content_for :section, "Mentor" %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">hourglass_top</span>
+    <span class="step-indicator">Pedido de mentor</span>
+    <h2 class="screen-title">Pedido em análise</h2>
+    <p class="screen-desc">
+      Recebemos seu pedido em <%= current_user.mentor_requested_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y") %>.
+      Quando um mentor da equipe aprovar, o ícone de capelo aparece no topo do app e você
+      passa a ver os vídeos dos aprendizes.
+    </p>
+  </header>
+
+  <div class="auth-card">
+    <span class="auth-card-label">O que você contou</span>
+    <p class="sub-headline-body">“<%= current_user.mentor_request_note %>”</p>
+  </div>
+
+  <%= link_to track_path, class: "tactile-btn-primary" do %>
+    <span>Enquanto isso, explorar a trilha</span>
+    <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+  <% end %>
+</section>

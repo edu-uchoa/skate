@@ -1,0 +1,14 @@
+<%# Abas da área do mentor. current: "fila", "todos" ou "pedidos". %>
+<% tabs = [
+     [ "fila",    "schedule",      "Na fila (#{@queue_count})",   mentor_zine_path(aba: "fila") ],
+     [ "todos",   "video_library", "Todos (#{@video_count})",     mentor_zine_path(aba: "todos") ],
+     [ "pedidos", "person_add",    "Pedidos (#{@request_count})", mentor_requests_path ]
+   ] %>
+<nav class="guide-tabs mentor-tabs" aria-label="Abas da área do mentor">
+  <% tabs.each do |key, icon, label, path| %>
+    <%= link_to path, class: [ "guide-tab", ("is-active" if current == key) ],
+                aria: { current: (current == key ? "page" : nil) } do %>
+      <span class="material-symbols-outlined"><%= icon %></span> <%= label %>
+    <% end %>
+  <% end %>
+</nav>

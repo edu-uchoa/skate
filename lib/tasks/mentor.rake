@@ -1,5 +1,6 @@
-# Contas de mentor. Não há cadastro de mentor pelo app: só quem tem acesso ao
-# servidor promove uma conta já criada (pelo e-mail ou telefone dela).
+# Contas de mentor. No app, a pessoa pede para ser mentor no cadastro e um mentor
+# aprova em /mentor/pedidos. Pelo terminal, quem acessa o servidor promove direto
+# uma conta já criada (é assim que nasce o primeiro mentor).
 #
 #   bin/rails "mentor:promover[voce@email.com]"
 #   bin/rails "mentor:remover[voce@email.com]"
@@ -12,7 +13,7 @@ namespace :mentor do
   desc "Transforma uma conta existente em mentor"
   task :promover, [ :contato ] => :environment do |_, args|
     user = mentor_find!(args[:contato])
-    user.role_mentor!
+    user.approve_mentor!
     puts "#{user.contact} agora é mentor."
   end
 

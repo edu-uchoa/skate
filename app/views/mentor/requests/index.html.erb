@@ -1,0 +1,42 @@
+<% content_for :section, "Mentor" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Área do mentor</span>
+    <h2 class="screen-title">Pedidos de mentor</h2>
+    <p class="screen-desc">
+      Aprovar libera o acesso aos vídeos de todos os aprendizes, inclusive menores de idade.
+      Confira quem é a pessoa antes (por exemplo, falando com ela no WhatsApp).
+    </p>
+  </header>
+
+  <%= render "mentor/tabs", current: "pedidos" %>
+
+  <% if @requests.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">how_to_reg</span>
+      <p>Nenhum pedido de mentor esperando.</p>
+    </div>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @requests.each do |user| %>
+        <li class="auth-card mentor-request" id="<%= dom_id(user, :mentor_request) %>">
+          <span class="auth-card-label">Pedido de <%= user.mentor_requested_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y às %H:%M") %></span>
+          <span class="auth-card-value"><%= user.contact %></span>
+          <span class="auth-hint"><%= "#{user.age} anos" if user.age %></span>
+          <p class="mentor-request-note">“<%= user.mentor_request_note %>”</p>
+
+          <div class="mentor-request-actions">
+            <%= button_to mentor_request_path(user), method: :patch, class: "tactile-btn-primary",
+                  form: { data: { turbo_confirm: "Aprovar #{user.contact} como mentor? Essa pessoa vai ver os vídeos de todos os aprendizes." } } do %>
+              <span>Aprovar</span>
+              <span class="material-symbols-outlined btn-arrow">check</span>
+            <% end %>
+            <%= button_to "Recusar", mentor_request_path(user), method: :delete, class: "auth-secondary-btn danger",
+                  form: { data: { turbo_confirm: "Recusar o pedido de #{user.contact}?" } } %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>
