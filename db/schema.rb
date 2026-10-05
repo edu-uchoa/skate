@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_05_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_05_130000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -197,6 +197,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_05_120000) do
     t.datetime "created_at", null: false
     t.string "email"
     t.datetime "last_seen_at"
+    t.datetime "mentor_approved_at"
+    t.integer "mentor_approved_by_id"
     t.text "mentor_request_note"
     t.datetime "mentor_requested_at"
     t.string "password_digest"
@@ -208,6 +210,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_05_120000) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true, where: "email IS NOT NULL"
+    t.index ["mentor_approved_by_id"], name: "index_users_on_mentor_approved_by_id"
     t.index ["phone"], name: "index_users_on_phone", unique: true, where: "phone IS NOT NULL"
     t.index ["token"], name: "index_users_on_token", unique: true
   end
@@ -229,4 +232,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_05_120000) do
   add_foreign_key "support_requests", "users"
   add_foreign_key "training_sessions", "maneuvers"
   add_foreign_key "training_sessions", "users"
+  add_foreign_key "users", "users", column: "mentor_approved_by_id"
 end

@@ -2,15 +2,18 @@
 
 <section class="zine-screen">
   <header class="auth-head">
-    <span class="step-indicator">Área do mentor</span>
-    <h2 class="screen-title">Pedidos de mentor</h2>
+    <span class="step-indicator">Administrador</span>
+    <h2 class="screen-title">Mentores</h2>
     <p class="screen-desc">
-      Aprovar libera o acesso aos vídeos de todos os aprendizes, inclusive menores de idade.
-      Confira quem é a pessoa antes (por exemplo, falando com ela no WhatsApp).
+      Só administradores veem esta página. Aprovar libera o acesso aos vídeos de todos os
+      aprendizes, inclusive menores de idade: confira quem é a pessoa antes (por exemplo,
+      falando com ela no WhatsApp).
     </p>
   </header>
 
   <%= render "mentor/tabs", current: "pedidos" %>
+
+  <h3 class="guide-card-label">Pedidos esperando (<%= @requests.size %>)</h3>
 
   <% if @requests.empty? %>
     <div class="zine-empty">
@@ -35,6 +38,29 @@
             <%= button_to "Recusar", mentor_request_path(user), method: :delete, class: "auth-secondary-btn danger",
                   form: { data: { turbo_confirm: "Recusar o pedido de #{user.contact}?" } } %>
           </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+
+  <h3 class="guide-card-label">Mentores ativos (<%= @mentors.size %>)</h3>
+
+  <% if @mentors.empty? %>
+    <p class="auth-hint">Nenhum mentor aprovado ainda.</p>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @mentors.each do |mentor| %>
+        <li class="auth-card" id="<%= dom_id(mentor, :active_mentor) %>">
+          <span class="auth-card-value"><%= mentor.contact %></span>
+          <span class="auth-hint">
+            <%= [ ("#{mentor.age} anos" if mentor.age),
+                  ("aprovado em #{mentor.mentor_approved_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y")}" if mentor.mentor_approved_at),
+                  (mentor.mentor_approved_by ? "por #{mentor.mentor_approved_by.contact}" : "pelo terminal"),
+                  pluralize(mentor.given_reviews.count, "devolutiva", plural: "devolutivas") ].compact.join(" · ") %>
+          </span>
+          <%= button_to "Remover acesso de mentor", mentor_mentor_path(mentor), method: :delete,
+                class: "auth-secondary-btn danger",
+                form: { data: { turbo_confirm: "Remover #{mentor.contact}? O acesso aos vídeos acaba agora e as sessões dele são encerradas." } } %>
         </li>
       <% end %>
     </ol>

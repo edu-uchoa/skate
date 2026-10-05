@@ -38,7 +38,7 @@
           </button>
         </div>
         <div class="header-right" style="display: flex; align-items: center;">
-          <% if signed_in? && current_user.role_mentor? %>
+          <% if signed_in? && current_user.mentor_access? %>
             <%= link_to mentor_zine_path, class: "icon-btn", title: "Zine do mentor", aria: { label: "Zine do mentor" } do %>
               <span class="material-symbols-outlined" style="font-size: 22px;">school</span>
             <% end %>

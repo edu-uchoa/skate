@@ -15,9 +15,11 @@ class User < ApplicationRecord
                            inverse_of: :reviewer, dependent: :nullify # devolutivas que respondeu como mentor
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
-  # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e um mentor
-  # aprova na área do mentor. O primeiro mentor é promovido pelo terminal (lib/tasks/mentor.rake).
-  enum :role, { learner: 0, mentor: 1 }, prefix: true
+  # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um
+  # administrador aprova. Administrador faz tudo que o mentor faz, mais aprovar e
+  # remover mentores, e só é criado pelo terminal (lib/tasks/admin.rake).
+  enum :role, { learner: 0, mentor: 1, admin: 2 }, prefix: true
+  belongs_to :mentor_approved_by, class_name: "User", optional: true
 
   MENTOR_MINIMUM_AGE = 18
   MENTOR_NOTE_LENGTH = 500
@@ -140,9 +142,23 @@ class User < ApplicationRecord
     update(mentor_requested_at: Time.current)
   end
 
-  def approve_mentor! = update!(role: :mentor, mentor_requested_at: nil)
+  # Pode entrar na área do mentor (ver vídeos de aprendizes e responder).
+  def mentor_access? = role_mentor? || role_admin?
+
+  # by: o administrador que aprovou (nil quando foi pelo terminal).
+  def approve_mentor!(by: nil)
+    update!(role: :mentor, mentor_requested_at: nil, mentor_approved_by: by, mentor_approved_at: Time.current)
+  end
 
   def reject_mentor! = update!(mentor_requested_at: nil, mentor_request_note: nil)
+
+  # Tira o acesso aos vídeos na hora: volta a aprendiz e derruba as sessões abertas.
+  def revoke_mentor!
+    transaction do
+      update!(role: :learner, mentor_approved_by: nil, mentor_approved_at: nil)
+      sign_out_everywhere!
+    end
+  end
 
   private
 

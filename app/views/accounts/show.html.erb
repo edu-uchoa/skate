@@ -18,7 +18,7 @@
     <span class="material-symbols-outlined btn-arrow">route</span>
   <% end %>
 
-  <% if current_user.role_mentor? %>
+  <% if current_user.mentor_access? %>
     <%= link_to "Abrir a Zine do mentor", mentor_zine_path, class: "auth-link" %>
   <% elsif current_user.mentor_requested? %>
     <%= link_to "Pedido de mentor em análise", new_mentor_application_path, class: "auth-muted-link" %>

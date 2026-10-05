@@ -57,16 +57,16 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
     assert candidate.reload.role_learner?
   end
 
-  test "mentor vê o pedido, aprova e o candidato passa a ter acesso" do
+  test "administrador vê o pedido, aprova e o candidato passa a ter acesso" do
     sign_up("candidato@example.com", account_type: "mentor")
     apply(birth_year: 1990)
     candidate = User.find_by(email: "candidato@example.com")
     delete sign_out_path
 
     sign_up("mentor@example.com")
-    User.find_by(email: "mentor@example.com").role_mentor!
+    User.find_by(email: "mentor@example.com").role_admin!
     get mentor_requests_path
-    assert_select ".guide-tab.is-active", /Pedidos \(1\)/
+    assert_select ".guide-tab.is-active", /Mentores \(1\)/
     assert_select "#" + ActionView::RecordIdentifier.dom_id(candidate, :mentor_request) do
       assert_select ".auth-card-value", "candidato@example.com"
       assert_match "dou aula na pista", response.body
@@ -83,14 +83,14 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "mentor recusa o pedido e a conta segue como aprendiz" do
+  test "administrador recusa o pedido e a conta segue como aprendiz" do
     sign_up("candidato@example.com", account_type: "mentor")
     apply(birth_year: 1990)
     candidate = User.find_by(email: "candidato@example.com")
     delete sign_out_path
 
     sign_up("mentor@example.com")
-    User.find_by(email: "mentor@example.com").role_mentor!
+    User.find_by(email: "mentor@example.com").role_admin!
     delete mentor_request_path(candidate)
 
     assert candidate.reload.role_learner?

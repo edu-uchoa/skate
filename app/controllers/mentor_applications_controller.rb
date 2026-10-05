@@ -18,7 +18,7 @@ class MentorApplicationsController < ApplicationController
   private
 
   def redirect_mentor
-    redirect_to mentor_zine_path if current_user.role_mentor?
+    redirect_to mentor_zine_path if current_user.mentor_access?
   end
 
   def application_params

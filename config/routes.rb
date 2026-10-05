@@ -32,10 +32,11 @@ Rails.application.routes.draw do
   # Pedido para ser mentor (feito no cadastro ou em "Minha conta").
   resource :mentor_application, only: %i[new create], path: "quero-ser-mentor", path_names: { new: "" }
 
-  # Área do mentor: só contas aprovadas (ou promovidas pelo terminal).
+  # Área do mentor: mentores aprovados por um administrador, e administradores.
   namespace :mentor do
     resource  :zine,     only: :show, path: "zine"
-    resources :requests, only: %i[index update destroy], path: "pedidos"
+    resources :requests, only: %i[index update destroy], path: "pedidos"   # só administrador
+    resources :mentors,  only: :destroy, path: "mentores"                   # só administrador
     resources :reviews,  only: %i[edit update], path: "devolutivas", path_names: { edit: "responder" }
   end
 

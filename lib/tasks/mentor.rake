@@ -1,6 +1,5 @@
-# Contas de mentor. No app, a pessoa pede para ser mentor no cadastro e um mentor
-# aprova em /mentor/pedidos. Pelo terminal, quem acessa o servidor promove direto
-# uma conta já criada (é assim que nasce o primeiro mentor).
+# Contas de mentor pelo terminal: plano de emergência. No dia a dia, a pessoa pede
+# para ser mentor no cadastro e um administrador aprova ou remove em /mentor/pedidos.
 #
 #   bin/rails "mentor:promover[voce@email.com]"
 #   bin/rails "mentor:remover[voce@email.com]"
@@ -13,14 +12,16 @@ namespace :mentor do
   desc "Transforma uma conta existente em mentor"
   task :promover, [ :contato ] => :environment do |_, args|
     user = mentor_find!(args[:contato])
+    abort "#{user.contact} é administrador (já tem as funções de mentor)." if user.role_admin?
     user.approve_mentor!
     puts "#{user.contact} agora é mentor."
   end
 
-  desc "Volta uma conta de mentor para aprendiz"
+  desc "Volta uma conta de mentor para aprendiz e encerra as sessões dela"
   task :remover, [ :contato ] => :environment do |_, args|
     user = mentor_find!(args[:contato])
-    user.role_learner!
+    abort "#{user.contact} não é mentor." unless user.role_mentor?
+    user.revoke_mentor!
     puts "#{user.contact} voltou a ser aprendiz."
   end
 
