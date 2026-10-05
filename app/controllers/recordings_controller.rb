@@ -2,7 +2,7 @@
 #
 # O vídeo vira o `clip` de um novo TrainingSession (Active Storage guarda o
 # arquivo no serviço configurado em config/storage.yml). Em seguida o skatista
-# registra o resultado e o envio dispara a análise da IA (AiReview).
+# registra o resultado e o envio coloca o vídeo na fila do mentor (AiReview pendente).
 class RecordingsController < ApplicationController
   before_action :require_age_gate
   before_action :require_diagnosis
@@ -17,7 +17,7 @@ class RecordingsController < ApplicationController
     @training_session = build_training_session
 
     if @training_session.save(context: :recording)
-      flash[:notice] = "Vídeo salvo na sua Zine. Registre o resultado para a IA analisar."
+      flash[:notice] = "Vídeo salvo na sua Zine. Registre o resultado para ele ir ao mentor."
       respond_to do |format|
         format.json { render json: { redirect_url: result_training_session_path(@training_session) }, status: :created }
         format.html { redirect_to result_training_session_path(@training_session) }

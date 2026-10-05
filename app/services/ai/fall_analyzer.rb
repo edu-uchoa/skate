@@ -1,10 +1,14 @@
 module Ai
-  # Ponto único de integração com o modelo que analisa o vídeo do drill de queda.
+  # Ponto único de integração com a análise automática do vídeo do drill de queda
+  # (IA ou reconhecimento corporal, decisão em aberto da equipe).
   #
-  # Hoje devolve uma análise determinística (placeholder) para o fluxo rodar
-  # ponta a ponta. Troque #call pela chamada real ao provedor mantendo o mesmo
-  # contrato de retorno.
+  # Ainda não existe análise real: hoje o vídeo vai para a fila do mentor e este
+  # código só roda com config.x.stance.automatic_review ligado. Ao implementar,
+  # devolva um Result com headline, strengths (o que fez bem), mistake (onde foi o
+  # erro), next_focus (foco da próxima sessão) e raw (resposta bruta do provedor).
   class FallAnalyzer
+    NotConfigured = Class.new(StandardError)
+
     Result = Struct.new(:headline, :strengths, :mistake, :next_focus, :raw, keyword_init: true)
 
     def initialize(training_session)
@@ -14,14 +18,8 @@ module Ai
     def call
       raise ArgumentError, "sessão sem vídeo" unless session.clip.attached?
 
-      # TODO: enviar session.clip para o provedor de visão e mapear a resposta.
-      Result.new(
-        headline: "Análise do seu #{session.maneuver.name.downcase}",
-        strengths: "Você encolheu os joelhos corretamente e manteve a base firme na aterrissagem.",
-        mistake: "O ombro tocou o chão muito tenso, o que reduz o amortecimento.",
-        next_focus: "Solte o ar e relaxe os ombros instantes antes de iniciar o rolamento.",
-        raw: { provider: "stub", version: 0 }
-      ).to_h
+      # Nunca devolva uma análise de exemplo: a pessoa acharia que o vídeo dela foi visto.
+      raise NotConfigured, "Análise automática ainda não implementada; o vídeo segue para o mentor."
     end
 
     private

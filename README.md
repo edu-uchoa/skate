@@ -141,7 +141,7 @@ Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e 
 ## Estado atual
 
 - O envio de codigo de acesso ainda e representado nos logs.
-- A analise de video usa um analisador deterministico de demonstracao.
+- O video do treino vai para a fila do mentor (resposta prometida em ate 48h); ainda nao ha analise automatica nem tela para o mentor responder. Ligar a analise automatica: `config.x.stance.automatic_review` + `Ai::FallAnalyzer#call`.
 - A fila offline esta modelada, mas o service worker completo ainda pode ser evoluido.
 - A trilha e cadastrada por `db/seeds.rb`.
 

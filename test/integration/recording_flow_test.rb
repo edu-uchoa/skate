@@ -55,13 +55,35 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     assert_match "Vídeo salvo", response.body
   end
 
-  test "enviar o resultado de um treino com vídeo cria a análise da IA" do
+  test "enviar o resultado de um treino com vídeo coloca o vídeo na fila do mentor" do
     upload
     session = @user.training_sessions.last
 
-    patch submit_training_session_path(session), params: { training_session: { outcome: "felt_safe" } }
+    assert_no_enqueued_jobs(only: AnalyzeTrainingSessionJob) do
+      patch submit_training_session_path(session), params: { training_session: { outcome: "felt_safe" } }
+    end
     assert session.reload.status_submitted?
-    assert session.ai_review.present?
+    assert session.ai_review.status_pending?, "sem análise automática, a devolutiva fica esperando o mentor"
+    assert_nil session.ai_review.headline
+
+    follow_redirect!
+    assert_select ".screen-title", /fila do mentor/
+    assert_match "48 horas", response.body
+    assert_no_match(/Scanner|Análise da IA/i, response.body)
+  end
+
+  test "a análise automática ligada antes de existir recusa inventar uma devolutiva" do
+    upload
+    session = @user.training_sessions.last
+    Rails.configuration.x.stance.automatic_review = true
+
+    assert_enqueued_jobs 1, only: AnalyzeTrainingSessionJob do
+      patch submit_training_session_path(session), params: { training_session: { outcome: "felt_safe" } }
+    end
+    assert_raises(Ai::FallAnalyzer::NotConfigured) { perform_enqueued_jobs }
+    assert session.reload.ai_review.status_failed?
+  ensure
+    Rails.configuration.x.stance.automatic_review = false
   end
 
   test "rejeita vídeo longo, formato inválido, sem vídeo e sem checklist" do

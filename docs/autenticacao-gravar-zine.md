@@ -122,24 +122,25 @@ Todo vídeo gravado ou enviado aparece automaticamente, do mais recente para o m
 
 - player do vídeo, nome e código da manobra;
 - data e hora (no fuso do usuário, `users.time_zone`), duração e origem;
-- linha de andamento: **Gravado → Resultado → Análise → Devolutiva**;
+- linha de andamento: **Gravado → Resultado → Mentor → Devolutiva**;
 - status atual e botão para o próximo passo.
 
 | Etapa (`TrainingSession#analysis_stage`) | Status exibido | Botão |
 | --- | --- | --- |
-| `awaiting_result` | Registre o resultado para iniciar a análise | Registrar resultado |
+| `awaiting_result` | Registre o resultado para enviar ao mentor | Registrar resultado |
 | `queued_offline` | Aguardando conexão para enviar | Registrar resultado |
-| `pending` | Na fila da análise | Acompanhar análise |
-| `processing` | Analisando seu vídeo… | Acompanhar análise |
+| `pending` | Na fila do mentor · resposta em até 48h | Acompanhar devolutiva |
+| `processing` | O mentor está vendo seu vídeo | Acompanhar devolutiva |
 | `completed` | Devolutiva pronta (+ frase de destaque) | Ver devolutiva |
 | `failed` | Não foi possível analisar | Ver detalhes |
 
-Enquanto houver análise na fila ou em andamento, a página se atualiza sozinha a cada 5 s (`poll_controller.js`), pausando se algum vídeo estiver tocando. A prévia de cache do Turbo foi desligada nessa página para o status nunca aparecer desatualizado.
+Enquanto houver vídeo na fila ou sendo visto, a página se atualiza sozinha a cada 1 minuto (`poll_controller.js`), pausando se algum vídeo estiver tocando. A prévia de cache do Turbo foi desligada nessa página para o status nunca aparecer desatualizado.
 
 ### Atenção
 
-- A análise só começa **depois que a pessoa registra o resultado** do treino (fluxo original do app).
-- O `Ai::FallAnalyzer` ainda é um **placeholder** que devolve uma análise fixa e instantânea. Por isso, hoje, o card vai direto para "Devolutiva pronta". Os estados intermediários já estão prontos para quando a IA real for conectada.
+- O vídeo só vai para a fila **depois que a pessoa registra o resultado** do treino.
+- **Não há análise automática.** O vídeo fica `pending` ("na fila do mentor") até alguém preencher a devolutiva (`AiReview`): o que fez bem, onde foi o erro e o foco da próxima sessão. Ainda não existe tela para o mentor responder.
+- A equipe vai decidir entre IA e reconhecimento corporal. Para ligar a análise automática: implemente `Ai::FallAnalyzer#call` e ative `config.x.stance.automatic_review` em `config/initializers/stance.rb`. Até lá, o `FallAnalyzer` recusa rodar (`NotConfigured`) em vez de inventar uma análise.
 
 ---
 
@@ -162,6 +163,6 @@ Além dos testes, os fluxos foram verificados em navegador real (Edge com câmer
 ## Pendências sugeridas
 
 1. Integrar o envio real do código de recuperação (e-mail/WhatsApp) em `AccessCodeDelivery`.
-2. Conectar o provedor real de análise de vídeo em `Ai::FallAnalyzer`.
+2. Definir como o mentor responde (tela própria ou WhatsApp) e, se a equipe escolher análise automática (IA ou reconhecimento corporal), implementá-la em `Ai::FallAnalyzer`.
 3. Configurar o storage em nuvem em produção (seção acima).
 4. Corrigir o espaçamento das telas antigas que usam margens do Tailwind (ex.: `/comecar/idade`): o reset `* { margin: 0 }` do `custom_styles.css` anula essas classes.

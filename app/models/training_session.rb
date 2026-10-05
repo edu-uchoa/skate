@@ -51,7 +51,8 @@ class TrainingSession < ApplicationRecord
       create_ai_review!(status: :pending) if clip.attached? && ai_review.blank?
     end
 
-    AnalyzeTrainingSessionJob.perform_later(self) if ai_review&.status_pending?
+    # Sem análise automática, o vídeo fica pendente na fila do mentor.
+    AnalyzeTrainingSessionJob.perform_later(self) if ai_review&.status_pending? && self.class.automatic_review?
     self
   end
 
@@ -70,6 +71,7 @@ class TrainingSession < ApplicationRecord
 
   def self.max_clip_seconds = Rails.configuration.x.stance.max_clip_seconds
   def self.max_clip_bytes   = Rails.configuration.x.stance.max_clip_bytes
+  def self.automatic_review? = Rails.configuration.x.stance.automatic_review
 
   # Duração informada pelo navegador na gravação/seleção (salva no blob).
   def clip_duration = clip.attached? ? clip.blob.custom_metadata["duration_seconds"]&.to_f : nil

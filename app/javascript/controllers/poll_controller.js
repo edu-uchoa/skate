@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Recarrega a página de espera até a devolutiva da IA ficar pronta.
+// Recarrega a página de espera até a devolutiva do mentor ficar pronta.
 // Não recarrega enquanto um vídeo da página estiver tocando.
 export default class extends Controller {
   static values = { interval: { type: Number, default: 5000 } }

@@ -1,4 +1,4 @@
-# Tela de espera ("Processando seu diagnóstico...") e a devolutiva da IA.
+# Tela de espera ("na fila do mentor") e a devolutiva do vídeo do treino.
 class AiReviewsController < ApplicationController
   before_action :require_age_gate
 

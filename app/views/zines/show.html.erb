@@ -2,13 +2,13 @@
 <%# Sem prévia do cache do Turbo: o status da análise muda e não pode aparecer desatualizado. %>
 <% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
 
-<section class="zine-screen" <%= tag.attributes(data: { controller: "poll", poll_interval_value: 5000 }) if @analysis_running %>>
+<section class="zine-screen" <%= tag.attributes(data: { controller: "poll", poll_interval_value: 60000 }) if @analysis_running %>>
   <header class="auth-head">
     <span class="step-indicator">Seus rolês gravados</span>
     <h2 class="screen-title">Zine</h2>
     <p class="screen-desc">
-      Todo vídeo que você grava ou envia fica guardado aqui, com o andamento da análise.
-      <% if @analysis_running %>A página se atualiza sozinha enquanto a IA analisa.<% end %>
+      Todo vídeo que você grava ou envia fica guardado aqui, com o andamento da devolutiva do mentor.
+      <% if @analysis_running %>A página se atualiza sozinha enquanto o mentor responde.<% end %>
     </p>
   </header>
 

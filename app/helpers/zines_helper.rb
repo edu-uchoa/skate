@@ -1,15 +1,15 @@
 module ZinesHelper
-  ANALYSIS_STEPS = %w[Gravado Resultado Análise Devolutiva].freeze
+  ANALYSIS_STEPS = %w[Gravado Resultado Mentor Devolutiva].freeze
 
   # Rótulo, ícone, tom e quantos passos já foram vencidos em cada etapa
   # (o passo seguinte é o atual — ou o que falhou).
   ANALYSIS_STAGES = {
-    awaiting_result: { label: "Registre o resultado para iniciar a análise", icon: "edit_note",    tone: "warn",  step: 1 },
-    queued_offline:  { label: "Aguardando conexão para enviar",              icon: "cloud_off",    tone: "warn",  step: 1 },
-    pending:         { label: "Na fila da análise",                          icon: "schedule",     tone: "info",  step: 2 },
-    processing:      { label: "Analisando seu vídeo…",                       icon: "neurology",    tone: "info",  step: 2 },
-    completed:       { label: "Devolutiva pronta",                           icon: "check_circle", tone: "ok",    step: 4 },
-    failed:          { label: "Não foi possível analisar",                   icon: "error",        tone: "error", step: 2 }
+    awaiting_result: { label: "Registre o resultado para enviar ao mentor",    icon: "edit_note",    tone: "warn",  step: 1 },
+    queued_offline:  { label: "Aguardando conexão para enviar",                icon: "cloud_off",    tone: "warn",  step: 1 },
+    pending:         { label: "Na fila do mentor · resposta em até 48h",       icon: "schedule",     tone: "info",  step: 2 },
+    processing:      { label: "O mentor está vendo seu vídeo",                 icon: "visibility",   tone: "info",  step: 2 },
+    completed:       { label: "Devolutiva pronta",                             icon: "check_circle", tone: "ok",    step: 4 },
+    failed:          { label: "Não foi possível analisar",                     icon: "error",        tone: "error", step: 2 }
   }.freeze
 
   def analysis_stage_for(training_session) = ANALYSIS_STAGES.fetch(training_session.analysis_stage)
@@ -20,7 +20,7 @@ module ZinesHelper
     when :awaiting_result, :queued_offline then [ "Registrar resultado", result_training_session_path(training_session) ]
     when :completed then [ "Ver devolutiva", training_session_ai_review_path(training_session) ]
     when :failed    then [ "Ver detalhes", training_session_ai_review_path(training_session) ]
-    else                 [ "Acompanhar análise", training_session_ai_review_path(training_session) ]
+    else                 [ "Acompanhar devolutiva", training_session_ai_review_path(training_session) ]
     end
   end
 

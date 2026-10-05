@@ -6,7 +6,7 @@
 #
 # criar  -> teste.prints@stance.dev: diagnóstico feito (nível padrão can_push, ou o
 #           informado: never_ridden, can_push, stuck_on_ollie, advanced) e um treino com
-#           vídeo já analisado (para Zine, Resultado e Devolutiva).
+#           vídeo na fila do mentor (para Zine, Resultado e Devolutiva).
 # novo   -> teste.novo@stance.dev: só a conta, para Idade e Diagnóstico.
 # apagar -> remove os dois (rode sempre ao terminar).
 # Senha de ambos: senha1234
@@ -33,9 +33,8 @@ when "criar"
                       filename: "manobra.mp4", content_type: "video/mp4")
   session.save!
   session.update!(outcome: :felt_afraid)
-  session.submit!
-  AnalyzeTrainingSessionJob.perform_now(session.reload)
-  puts "criado #{EMAILS[:pronto]} | manobra atual #{maneuver.slug} | treino #{session.id}"
+  session.submit! # sem análise automática: o vídeo fica na fila do mentor
+  puts "criado #{EMAILS[:pronto]} | manobra atual #{maneuver.slug} | treino #{session.id} (na fila do mentor)"
 when "novo"
   User.find_by(email: EMAILS[:novo])&.destroy!
   User.register(contact: EMAILS[:novo], password: SENHA, password_confirmation: SENHA)

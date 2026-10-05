@@ -52,15 +52,15 @@ class ZineTest < ActionDispatch::IntegrationTest
     assert_select "[data-controller=poll]", count: 0
   end
 
-  test "mostra o andamento: fila, análise, pronta e falha" do
+  test "mostra o andamento: fila do mentor, vendo, pronta e falha" do
     session = record_clip
     patch submit_training_session_path(session), params: { training_session: { outcome: "felt_safe" } }
     review = session.reload.ai_review
 
-    { "pending"    => [ /Na fila da análise/, "Acompanhar análise", true ],
-      "processing" => [ /Analisando/,         "Acompanhar análise", true ],
-      "completed"  => [ /Devolutiva pronta/,  "Ver devolutiva",     false ],
-      "failed"     => [ /Não foi possível/,   "Ver detalhes",       false ] }.each do |status, (label, action, polling)|
+    { "pending"    => [ /Na fila do mentor/,      "Acompanhar devolutiva", true ],
+      "processing" => [ /O mentor está vendo/,    "Acompanhar devolutiva", true ],
+      "completed"  => [ /Devolutiva pronta/,      "Ver devolutiva",        false ],
+      "failed"     => [ /Não foi possível/,       "Ver detalhes",          false ] }.each do |status, (label, action, polling)|
       review.update_columns(status: AiReview.statuses[status])
 
       get zine_path
