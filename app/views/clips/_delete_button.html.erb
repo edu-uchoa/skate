@@ -1,0 +1,10 @@
+<%# "Apagar vídeo" (ClipsController#destroy): o dono na Zine, o administrador na área do mentor. %>
+<% confirm = if training_session.user_id == current_user.id
+               "Apagar este vídeo? Ele some para você e para os mentores, e não dá para desfazer."
+             else
+               "Apagar o vídeo deste aprendiz? Ele some para o aprendiz e para os mentores, e não dá para desfazer."
+             end %>
+<%= button_to clip_path(training_session), method: :delete, class: "zine-delete",
+      form: { data: { turbo_confirm: confirm } } do %>
+  <span class="material-symbols-outlined">delete</span> Apagar vídeo
+<% end %>

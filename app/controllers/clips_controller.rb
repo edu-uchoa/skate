@@ -30,17 +30,24 @@ class ClipsController < ApplicationController
     end
   end
 
-  # Só o dono apaga. O arquivo sai do armazenamento na hora (não fica para depois)
-  # e, se o vídeo ainda esperava o mentor, sai da fila. O progresso na trilha e uma
-  # devolutiva já recebida continuam.
+  # Apagam o dono e o administrador (mentor não). O arquivo sai do armazenamento na
+  # hora (não fica para depois) e, se o vídeo ainda esperava o mentor, sai da fila.
+  # O progresso na trilha e uma devolutiva já recebida continuam.
   def destroy
-    training_session = current_user.training_sessions.with_clip.find(params[:id])
+    training_session = TrainingSession.with_clip.find(params[:id])
+    return head(:not_found) unless training_session.clip_deletable_by?(current_user)
 
     training_session.transaction do
       training_session.ai_review.destroy! if training_session.ai_review&.awaiting_mentor?
       training_session.clip.purge
     end
-    redirect_to zine_path, notice: "Vídeo apagado. Ninguém mais consegue ver."
+
+    if training_session.user_id == current_user.id
+      redirect_to zine_path, notice: "Vídeo apagado. Ninguém mais consegue ver."
+    else
+      Rails.logger.warn("[Stance] administrador #{current_user.id} apagou o vídeo do treino #{training_session.id} (aprendiz #{training_session.user_id})")
+      redirect_to mentor_zine_path, notice: "Vídeo do aprendiz apagado. Ninguém mais consegue ver."
+    end
   end
 
   private

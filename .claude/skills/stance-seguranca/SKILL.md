@@ -25,9 +25,12 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 
 **Área do mentor (vê vídeos de todos os aprendizes, inclusive menores)**
 - Ninguém vira mentor sozinho: o cadastro como "Mentor" só cria um pedido
-  (`User#request_mentor`, exige 18+), e quem aprova é outro mentor em `/mentor/pedidos`
-  ou o terminal (`bin/rails "mentor:promover[...]"`). Nunca libere `role` por formulário.
+  (`User#request_mentor`, exige 18+), e só um **administrador** aprova, recusa ou remove,
+  em `/mentor/pedidos` (`require_admin`). Mentor não aprova mentor. Administrador só se
+  cria pelo terminal (`bin/rails "admin:promover[...]"`). Nunca libere `role` por formulário.
 - Toda tela de mentor herda de `Mentor::BaseController` (404 para quem não é mentor).
+  O administrador tem todas as funções de mentor.
+- Apagar vídeo: só o dono e o administrador (`TrainingSession#clip_deletable_by?`).
 - O mentor vê o contato do aprendiz mascarado (`masked_contact`) e não vê as anotações
   pessoais do treino. Mantenha esse mínimo ao criar telas novas de mentor.
 

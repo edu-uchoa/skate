@@ -57,4 +57,8 @@
       <span class="material-symbols-outlined btn-arrow">send</span>
     <% end %>
   <% end %>
+
+  <% if current_user.role_admin? %>
+    <%= render "clips/delete_button", training_session: @training_session %>
+  <% end %>
 </section>

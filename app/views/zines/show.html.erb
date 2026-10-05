@@ -64,10 +64,7 @@
               <%= action_label %> <span class="material-symbols-outlined">arrow_forward</span>
             <% end %>
 
-            <%= button_to clip_path(training_session), method: :delete, class: "zine-delete",
-                  form: { data: { turbo_confirm: "Apagar este vídeo? Ele some para você e para os mentores, e não dá para desfazer." } } do %>
-              <span class="material-symbols-outlined">delete</span> Apagar vídeo
-            <% end %>
+            <%= render "clips/delete_button", training_session: training_session %>
           </div>
         </li>
       <% end %>

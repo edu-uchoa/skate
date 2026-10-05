@@ -110,14 +110,46 @@ class ClipSecurityTest < ActionDispatch::IntegrationTest
     assert @clip.reload.ai_review.status_completed?
   end
 
-  test "só o dono apaga, nem mentor nem administrador" do
-    [ @mentor, @admin, @stranger ].each do |user|
+  test "o administrador apaga vídeo de aprendiz e volta para a Zine do mentor" do
+    blob = @clip.clip.blob
+    sign_in(@admin)
+
+    delete clip_path(@clip)
+    assert_redirected_to mentor_zine_path
+    assert_not @clip.reload.clip.attached?
+    assert_not blob.service.exist?(blob.key), "o arquivo não pode ficar no disco"
+    assert_nil @clip.ai_review, "vídeo apagado sai da fila do mentor"
+  end
+
+  test "mentor e outro aprendiz não apagam, e o administrador não apaga vídeo de mentor" do
+    [ @mentor, @stranger ].each do |user|
       sign_in(user)
       delete clip_path(@clip)
       assert_response :not_found
       delete sign_out_path
     end
     assert @clip.reload.clip.attached?
+
+    mentor_clip = clip_for(@mentor)
+    sign_in(@admin)
+    delete clip_path(mentor_clip)
+    assert_response :not_found
+    assert mentor_clip.reload.clip.attached?
+  end
+
+  test "o botão Apagar aparece para o administrador na área do mentor, não para o mentor" do
+    sign_in(@admin)
+    get mentor_zine_path
+    assert_select "form[action=?] button.zine-delete", clip_path(@clip)
+    get edit_mentor_review_path(@clip.ai_review)
+    assert_select "form[action=?] button.zine-delete", clip_path(@clip)
+    delete sign_out_path
+
+    sign_in(@mentor)
+    get mentor_zine_path
+    assert_select "button.zine-delete", 0
+    get edit_mentor_review_path(@clip.ai_review)
+    assert_select "button.zine-delete", 0
   end
 
   test "os players do app usam o endereço protegido e sem botão de download" do

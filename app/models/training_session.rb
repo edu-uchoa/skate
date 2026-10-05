@@ -85,6 +85,11 @@ class TrainingSession < ApplicationRecord
     user_id == viewer.id || (viewer.mentor_access? && user.role_learner?)
   end
 
+  # Quem pode apagar o vídeo: o dono e o administrador (mentor não apaga).
+  def clip_deletable_by?(viewer)
+    clip_visible_to?(viewer) && (user_id == viewer.id || viewer.role_admin?)
+  end
+
   # Andamento do vídeo até a devolutiva:
   #   awaiting_result -> queued_offline -> pending -> processing -> completed | failed
   # A análise só começa depois que o skatista registra o resultado do treino.
