@@ -2001,3 +2001,67 @@ a.nav-fab-btn {
   border-color: var(--primary-color);
   color: var(--primary-color);
 }
+
+/* Abas feitas de links (ex.: Zine do mentor): mesmo visual das abas dos guias. */
+a.guide-tab {
+  text-decoration: none;
+}
+
+.guide-tab.is-active {
+  background: var(--primary-color);
+  border-color: black;
+  color: black;
+  box-shadow: 0 3px 0 var(--primary-shadow);
+}
+
+/* Zine do mentor: um grupo por aprendiz, com os vídeos dele dentro. */
+.mentor-learners {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  list-style: none;
+}
+
+.mentor-learner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mentor-learner-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-left: 4px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+  background: var(--surface-color);
+}
+
+.mentor-learner-head > .material-symbols-outlined {
+  color: var(--primary-color);
+}
+
+.mentor-learner-name {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mentor-learner-name strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-on-surface);
+  overflow-wrap: anywhere;
+}
+
+.mentor-outcome {
+  font-size: 12px;
+  color: var(--text-variant);
+}
+
+.mentor-outcome strong {
+  color: var(--text-on-surface);
+}

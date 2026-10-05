@@ -29,6 +29,11 @@ Rails.application.routes.draw do
   resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" }
   resource  :zine,      only: :show, path: "zine"
 
+  # Área do mentor: só contas promovidas com bin/rails "mentor:promover[...]".
+  namespace :mentor do
+    resource :zine, only: :show, path: "zine"
+  end
+
   # Funcionalidades Front-end
   resource  :store,  only: :show, path: "loja"
   resource  :avatar, only: :show, path: "avatar"

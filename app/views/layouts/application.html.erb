@@ -38,6 +38,11 @@
           </button>
         </div>
         <div class="header-right" style="display: flex; align-items: center;">
+          <% if signed_in? && current_user.role_mentor? %>
+            <%= link_to mentor_zine_path, class: "icon-btn", title: "Zine do mentor", aria: { label: "Zine do mentor" } do %>
+              <span class="material-symbols-outlined" style="font-size: 22px;">school</span>
+            <% end %>
+          <% end %>
           <% if signed_in? %>
             <%= link_to my_account_path, class: "icon-btn", title: "Minha conta", aria: { label: "Minha conta" } do %>
               <span class="material-symbols-outlined" style="font-size: 22px;">account_circle</span>

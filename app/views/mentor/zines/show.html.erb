@@ -1,0 +1,90 @@
+<% content_for :section, "Mentor" %>
+<%# Sem prévia do cache do Turbo: a fila muda e não pode aparecer desatualizada. %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Área do mentor</span>
+    <h2 class="screen-title">Zine do mentor</h2>
+    <p class="screen-desc">
+      Vídeos enviados pelos aprendizes, separados por pessoa. Só mentores veem esta página,
+      e cada aprendiz só vê os próprios vídeos.
+    </p>
+  </header>
+
+  <nav class="guide-tabs" aria-label="Abas da Zine do mentor">
+    <%= link_to mentor_zine_path(aba: "fila"), class: [ "guide-tab", ("is-active" if @tab == "fila") ],
+                aria: { current: (@tab == "fila" ? "page" : nil) } do %>
+      <span class="material-symbols-outlined">schedule</span> Na fila (<%= @queue_count %>)
+    <% end %>
+    <%= link_to mentor_zine_path(aba: "todos"), class: [ "guide-tab", ("is-active" if @tab == "todos") ],
+                aria: { current: (@tab == "todos" ? "page" : nil) } do %>
+      <span class="material-symbols-outlined">video_library</span> Todos (<%= @video_count %>)
+    <% end %>
+  </nav>
+
+  <% if @learners.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon"><%= @tab == "fila" ? "task_alt" : "video_library" %></span>
+      <p><%= @tab == "fila" ? "Nenhum vídeo esperando devolutiva." : "Nenhum aprendiz enviou vídeo ainda." %></p>
+    </div>
+  <% else %>
+    <p class="auth-hint">
+      <%= pluralize(@learners.size, "aprendiz", plural: "aprendizes") %>
+      <%= "· de quem espera há mais tempo" if @tab == "fila" %>
+    </p>
+
+    <ol class="mentor-learners">
+      <% @learners.each do |learner, training_sessions| %>
+        <li class="mentor-learner" id="<%= dom_id(learner, :mentor) %>">
+          <header class="mentor-learner-head">
+            <span class="material-symbols-outlined">person</span>
+            <div class="mentor-learner-name">
+              <strong><%= masked_contact(learner) %></strong>
+              <span class="auth-hint"><%= learner_summary(learner) %></span>
+            </div>
+            <% if learner.needs_supervision? %>
+              <span class="guide-tag is-must">Menor de idade</span>
+            <% end %>
+          </header>
+
+          <ol class="zine-list">
+            <% training_sessions.each do |training_session| %>
+              <% stage = analysis_stage_for(training_session) %>
+              <% review = training_session.ai_review %>
+              <li class="zine-card" id="<%= dom_id(training_session, :mentor) %>">
+                <div class="zine-video">
+                  <video src="<%= url_for(training_session.clip) %>#t=0.1" controls playsinline preload="metadata"></video>
+                </div>
+
+                <div class="zine-body">
+                  <div class="zine-title-row">
+                    <h3><%= training_session.maneuver.name %></h3>
+                    <span class="zine-code"><%= training_session.maneuver.code %></span>
+                  </div>
+                  <p class="auth-hint"><%= zine_clip_details(training_session) %></p>
+
+                  <% if outcome_label(training_session) %>
+                    <p class="mentor-outcome">Resultado declarado: <strong><%= outcome_label(training_session) %></strong></p>
+                  <% end %>
+
+                  <% if training_session.analysis_running? %>
+                    <p class="zine-status <%= overdue?(review) ? "error" : "info" %>">
+                      <span class="material-symbols-outlined"><%= overdue?(review) ? "alarm" : "schedule" %></span>
+                      <%= waiting_label(review) %>
+                    </p>
+                  <% else %>
+                    <p class="zine-status <%= stage[:tone] %>">
+                      <span class="material-symbols-outlined"><%= stage[:icon] %></span>
+                      <%= stage[:label] %>
+                    </p>
+                  <% end %>
+                </div>
+              </li>
+            <% end %>
+          </ol>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>
