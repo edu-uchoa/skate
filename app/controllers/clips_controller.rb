@@ -30,6 +30,19 @@ class ClipsController < ApplicationController
     end
   end
 
+  # Só o dono apaga. O arquivo sai do armazenamento na hora (não fica para depois)
+  # e, se o vídeo ainda esperava o mentor, sai da fila. O progresso na trilha e uma
+  # devolutiva já recebida continuam.
+  def destroy
+    training_session = current_user.training_sessions.with_clip.find(params[:id])
+
+    training_session.transaction do
+      training_session.ai_review.destroy! if training_session.ai_review&.awaiting_mentor?
+      training_session.clip.purge
+    end
+    redirect_to zine_path, notice: "Vídeo apagado. Ninguém mais consegue ver."
+  end
+
   private
 
   def send_range(blob, filename)

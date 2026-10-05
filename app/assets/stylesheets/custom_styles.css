@@ -2115,3 +2115,28 @@ a.guide-tab {
 .review-label .material-symbols-outlined {
   font-size: 16px;
 }
+
+/* Zine: botão discreto para o aprendiz apagar o próprio vídeo. */
+.zine-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-variant);
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.zine-delete .material-symbols-outlined {
+  font-size: 15px;
+}
+
+.zine-delete:hover {
+  color: var(--error-color);
+  opacity: 1;
+}

@@ -86,6 +86,40 @@ class ClipSecurityTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "o dono apaga o vídeo: o arquivo some do armazenamento e sai da fila do mentor" do
+    blob = @clip.clip.blob
+    sign_in(@owner)
+
+    delete clip_path(@clip)
+    assert_redirected_to zine_path
+    assert_not @clip.reload.clip.attached?
+    assert_not blob.service.exist?(blob.key), "o arquivo não pode ficar no disco"
+    assert_nil @clip.ai_review, "vídeo apagado não espera mais o mentor"
+
+    get clip_path(@clip)
+    assert_response :not_found
+    get zine_path
+    assert_match "ainda não gravou", response.body
+  end
+
+  test "devolutiva já recebida continua depois de apagar o vídeo" do
+    @clip.ai_review.update!(status: :completed, headline: "Boa!", strengths: "a", mistake: "b", next_focus: "c")
+    sign_in(@owner)
+
+    delete clip_path(@clip)
+    assert @clip.reload.ai_review.status_completed?
+  end
+
+  test "só o dono apaga, nem mentor nem administrador" do
+    [ @mentor, @admin, @stranger ].each do |user|
+      sign_in(user)
+      delete clip_path(@clip)
+      assert_response :not_found
+      delete sign_out_path
+    end
+    assert @clip.reload.clip.attached?
+  end
+
   test "os players do app usam o endereço protegido e sem botão de download" do
     sign_in(@owner)
     get zine_path
