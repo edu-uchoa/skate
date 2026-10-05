@@ -23,6 +23,14 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - Parâmetros com `params.require(:x).permit(...)` ou `params.fetch(:x, {}).permit(...)`.
   Nunca permita `user_id`, `status`, `registered_at` ou similares vindos do formulário.
 
+**Área do mentor (vê vídeos de todos os aprendizes, inclusive menores)**
+- Ninguém vira mentor sozinho: o cadastro como "Mentor" só cria um pedido
+  (`User#request_mentor`, exige 18+), e quem aprova é outro mentor em `/mentor/pedidos`
+  ou o terminal (`bin/rails "mentor:promover[...]"`). Nunca libere `role` por formulário.
+- Toda tela de mentor herda de `Mentor::BaseController` (404 para quem não é mentor).
+- O mentor vê o contato do aprendiz mascarado (`masked_contact`) e não vê as anotações
+  pessoais do treino. Mantenha esse mínimo ao criar telas novas de mentor.
+
 **Formulários e redirecionamentos**
 - `form_with` já inclui o token CSRF; não desligue `protect_from_forgery`.
 - `redirect_to ..., allow_other_host: true` só com URL montada no servidor (como o

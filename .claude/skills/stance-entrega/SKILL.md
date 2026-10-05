@@ -46,7 +46,13 @@ commit e que qualquer mudança possa ser desfeita sozinha.
    integração não pegam problemas de Turbo/JS: os botões de Ajuda e Retorno passavam nos
    testes e não funcionavam no navegador.
 5. Limpe o que criou para testar: usuários de teste no banco de desenvolvimento e o
-   servidor da porta 3001. O servidor do usuário (porta 3000) nunca é tocado.
+   servidor da porta 3001. O servidor do usuário (porta 3000) não é tocado, com uma
+   exceção: depois de uma **migração** ele precisa ser reiniciado, senão quebra em toda
+   página (ex.: "Undeclared attribute type for enum"), porque guarda as colunas de
+   quando ligou. Rode `bin/rails db:migrate` e `bin/rails db:test:prepare` e reinicie
+   o servidor avisando o usuário. No Windows, `bin/rails restart` **derruba** o Puma
+   em vez de reiniciar, e `bin/dev` não funciona (o foreman não inicia os processos):
+   pare pelo PID de `tmp/pids/server.pid` e suba de novo com `bin/rails server`.
 
 ## 4. Commit (um por mudança)
 
