@@ -12,6 +12,10 @@ class User < ApplicationRecord
   has_many :support_requests, dependent: :destroy
   has_many :comebacks, dependent: :destroy
 
+  # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Não existe
+  # cadastro de mentor pelo app: a conta é promovida pelo terminal (lib/tasks/mentor.rake).
+  enum :role, { learner: 0, mentor: 1 }, prefix: true
+
   normalizes :email, with: ->(value) { value.to_s.strip.downcase.presence }
   normalizes :phone, with: ->(value) { value.to_s.gsub(/\D/, "").presence }
 

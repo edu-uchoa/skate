@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_27_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -198,6 +198,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_27_200000) do
     t.string "password_digest"
     t.string "phone"
     t.datetime "registered_at"
+    t.integer "role", default: 0, null: false
     t.datetime "terms_accepted_at"
     t.string "time_zone", default: "America/Sao_Paulo", null: false
     t.string "token", null: false
