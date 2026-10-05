@@ -45,8 +45,8 @@ class RecordingsController < ApplicationController
     )
 
     if attrs[:clip].respond_to?(:original_filename)
-      session.clip.attach(attrs[:clip])
-      session.clip.blob.custom_metadata = clip_metadata(attrs)
+      session.clip.attach(attrs[:clip]) # sai limpo, sem localização (ClipSanitizer)
+      session.clip.blob.custom_metadata = clip_metadata(attrs) if session.clip.attached?
     end
 
     session

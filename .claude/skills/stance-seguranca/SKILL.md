@@ -49,7 +49,14 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 **Uploads (vídeos)**
 - Validação sempre no servidor (`TrainingSession#validate_clip`): tipo pelo conteúdo
   (não pela extensão), tamanho (40 MB) e duração. O navegador só dá feedback rápido.
-- Vídeo só pode ser visto pelo dono; não crie URLs públicas permanentes para clipes.
+- Todo vídeo passa pelo `ClipSanitizer` antes de ser guardado (o `TrainingSession#clip=`
+  chama): o ffmpeg tira localização (GPS), data, aparelho e o nome original do arquivo.
+  Não guarde vídeo por outro caminho (ex.: `ActiveStorage::Blob.create_and_upload!`).
+  Sem ffmpeg o vídeo é recusado, de propósito. Vídeos antigos: `bin/rails videos:limpar`.
+- Vídeo só abre por `clip_path` (`ClipsController`: login, permissão e registro de quem
+  assistiu). As rotas públicas do Active Storage estão desligadas; não religue nem use
+  `url_for(clip)`/`rails_blob_path`, que davam link sem login e sem prazo.
+- Testes de vídeo precisam do ffmpeg e do ffprobe instalados (o CI instala).
 
 **Views**
 - O ERB já escapa o texto. Evite `raw`, `html_safe` e `<%==` com qualquer coisa que

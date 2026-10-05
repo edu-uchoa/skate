@@ -55,6 +55,41 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     assert_match "Vídeo salvo", response.body
   end
 
+  test "o vídeo do iPhone é guardado sem localização, data, aparelho nem o nome do arquivo" do
+    upload(file: "manobra_iphone.mov", type: "video/quicktime")
+    assert_response :created
+
+    blob = @user.training_sessions.last.clip.blob
+    assert_equal "video.mov", blob.filename.to_s
+    assert_equal "video/quicktime", blob.content_type
+    metadata = blob.open { |file| video_metadata(file.path) }
+    assert_empty metadata[:tags].keys - CLEAN_VIDEO_TAGS
+    assert_equal 90, metadata[:rotation]
+  end
+
+  test "o vídeo enviado na tela de resultado também é limpo" do
+    session = @user.training_sessions.create!(maneuver: @maneuver, scheduled_on: Date.current, status: :in_progress, **CHECKLIST)
+    patch submit_training_session_path(session),
+          params: { training_session: { outcome: "felt_safe", clip: fixture_file_upload("manobra.mp4", "video/mp4", true) } }
+
+    blob = session.reload.clip.blob
+    assert_equal "video.mp4", blob.filename.to_s
+    assert_empty blob.open { |file| video_metadata(file.path) }[:tags].keys - CLEAN_VIDEO_TAGS
+  end
+
+  test "sem ffmpeg o vídeo é recusado e nada é guardado" do
+    original = Rails.configuration.x.stance.ffmpeg_path
+    Rails.configuration.x.stance.ffmpeg_path = "ffmpeg-que-nao-existe"
+
+    assert_no_difference -> { ActiveStorage::Blob.count } do
+      upload
+    end
+    assert_response :unprocessable_entity
+    assert_equal [ "Não conseguimos proteger este vídeo agora. Tente de novo em alguns minutos." ], response.parsed_body["errors"]
+  ensure
+    Rails.configuration.x.stance.ffmpeg_path = original
+  end
+
   test "enviar o resultado de um treino com vídeo coloca o vídeo na fila do mentor" do
     upload
     session = @user.training_sessions.last

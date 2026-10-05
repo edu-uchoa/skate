@@ -20,8 +20,16 @@ class TrainingSession < ApplicationRecord
   # Formatos aceitos: MP4/MOV (upload e iPhone) e WebM (gravação no Chrome/Android).
   CLIP_CONTENT_TYPES = %w[video/mp4 video/quicktime video/webm video/x-m4v].freeze
 
+  CLIP_PROBLEMS = {
+    format:      "Formato de vídeo não suportado. Envie MP4, MOV ou WebM.",
+    size:        "O vídeo passa de %{mb} MB. Grave um trecho menor.",
+    unreadable:  "Não conseguimos ler este vídeo. Grave de novo ou escolha outro arquivo.",
+    unavailable: "Não conseguimos proteger este vídeo agora. Tente de novo em alguns minutos."
+  }.freeze
+
   validates :scheduled_on, presence: true, if: :status_scheduled?
   validate :validate_clip, if: -> { clip.attached? && attachment_changes.key?("clip") }
+  validate -> { errors.add(:base, clip_problem(@clip_problem)) }, if: -> { @clip_problem }
   validate :validate_recording, on: :recording
 
   scope :recent, -> { order(created_at: :desc) }
@@ -59,6 +67,18 @@ class TrainingSession < ApplicationRecord
 
   def successful? = outcome_felt_safe?
 
+  # Todo vídeo é limpo pelo ClipSanitizer antes de ser guardado: o original, com
+  # a localização de onde foi gravado, nunca chega ao armazenamento. Vale para
+  # clip=, clip.attach e os formulários. Se não der para limpar, o vídeo não entra.
+  def clip=(attachable)
+    @clip_problem = nil
+    return super if attachable.nil? || attachable == ""
+
+    super(ClipSanitizer.new(attachable, max_bytes: self.class.max_clip_bytes).call)
+  rescue ClipSanitizer::Error => e
+    @clip_problem = e.reason
+  end
+
   # Quem pode assistir ao vídeo: o dono e, se o dono é aprendiz, mentores e administradores.
   def clip_visible_to?(viewer)
     return false if viewer.nil?
@@ -85,22 +105,19 @@ class TrainingSession < ApplicationRecord
 
   private
 
+  def clip_problem(reason) = format(CLIP_PROBLEMS.fetch(reason), mb: self.class.max_clip_bytes / 1.megabyte)
+
   # Tela "Gravar": o vídeo é obrigatório e o checklist de segurança também.
   def validate_recording
-    errors.add(:base, "Grave ou escolha um vídeo da manobra.") unless clip.attached?
+    errors.add(:base, "Grave ou escolha um vídeo da manobra.") unless clip.attached? || @clip_problem
     errors.add(:base, "Complete o checklist de segurança antes de enviar.") unless checklist_complete?
   end
 
   def validate_clip
     blob = clip.blob
 
-    unless CLIP_CONTENT_TYPES.include?(blob.content_type)
-      errors.add(:base, "Formato de vídeo não suportado. Envie MP4, MOV ou WebM.")
-    end
-
-    if blob.byte_size > self.class.max_clip_bytes
-      errors.add(:base, "O vídeo passa de #{self.class.max_clip_bytes / 1.megabyte} MB. Grave um trecho menor.")
-    end
+    errors.add(:base, clip_problem(:format)) unless CLIP_CONTENT_TYPES.include?(blob.content_type)
+    errors.add(:base, clip_problem(:size)) if blob.byte_size > self.class.max_clip_bytes
 
     # Margem de 1s: a duração medida no navegador varia um pouco entre aparelhos.
     if clip_duration && clip_duration > self.class.max_clip_seconds + 1

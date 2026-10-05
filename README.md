@@ -9,6 +9,10 @@ O projeto foi desenvolvido com Ruby on Rails, SQLite, Tailwind CSS, Hotwire, Sti
 - Ruby `3.4.1` (definido em `.ruby-version`)
 - Bundler
 - SQLite 3
+- ffmpeg (com ffprobe): limpa a localizacao (GPS) e os outros metadados dos videos antes de guardar. Sem ele, nenhum video e aceito.
+  - Windows: `winget install Gyan.FFmpeg` (depois abra um terminal novo)
+  - macOS: `brew install ffmpeg`
+  - Linux: `sudo apt install ffmpeg`
 - Node.js nao e necessario para o fluxo padrao de desenvolvimento
 
 Confira as versoes instaladas:
@@ -17,7 +21,10 @@ Confira as versoes instaladas:
 ruby -v
 bundle -v
 sqlite3 --version
+ffmpeg -version
 ```
+
+Videos guardados antes da limpeza existir: rode `bin/rails videos:limpar` uma vez.
 
 ## Instalacao
 

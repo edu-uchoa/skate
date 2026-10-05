@@ -12,7 +12,7 @@ class ClipSecurityTest < ActionDispatch::IntegrationTest
     @mentor   = account("mentor@example.com").tap(&:role_mentor!)
     @admin    = account("admin@example.com").tap(&:role_admin!)
     @clip     = clip_for(@owner)
-    @bytes    = File.binread(file_fixture("manobra.mp4"))
+    @bytes    = @clip.clip.download # o vídeo já limpo (ClipSanitizer), não o arquivo original
   end
 
   def account(contact)
