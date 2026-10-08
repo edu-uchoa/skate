@@ -45,6 +45,22 @@ class MentorZineTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", mentor_zine_path, count: 0
   end
 
+  test "para o mentor, a aba Zine de baixo leva à Zine do mentor; o aprendiz segue com a dele" do
+    sign_in("mentor@example.com")
+    get zine_path
+    assert_redirected_to mentor_zine_path, "mentor não usa a Zine de aprendiz"
+    follow_redirect!
+    assert_select ".phone-bottom-nav a.nav-btn.active[href=?]", mentor_zine_path
+    assert_select ".phone-bottom-nav a[href=?]", zine_path, count: 0
+    delete sign_out_path
+
+    sign_in("aprendiz.um@example.com")
+    get zine_path
+    assert_response :success
+    assert_select ".phone-bottom-nav a.nav-btn.active[href=?]", zine_path
+    assert_select ".phone-bottom-nav a[href=?]", mentor_zine_path, count: 0
+  end
+
   test "a fila mostra só quem espera devolutiva, sem o contato completo" do
     sign_in("mentor@example.com")
     get mentor_zine_path

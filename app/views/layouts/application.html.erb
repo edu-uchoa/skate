@@ -87,10 +87,18 @@
           <span class="material-symbols-outlined" style="font-size: 22px;">map</span>
           <span class="nav-label">Picos</span>
         </a>
-        <a href="<%= zine_path %>" class="nav-btn <%= 'active' if current_page?(zine_path) %>">
-          <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
-          <span class="nav-label">Zine</span>
-        </a>
+        <%# Mentor e administrador: a aba Zine leva à Zine do mentor (vídeos dos aprendizes). %>
+        <% if signed_in? && current_user.mentor_access? %>
+          <a href="<%= mentor_zine_path %>" class="nav-btn <%= 'active' if controller_path.start_with?("mentor/") %>">
+            <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
+            <span class="nav-label">Zine</span>
+          </a>
+        <% else %>
+          <a href="<%= zine_path %>" class="nav-btn <%= 'active' if current_page?(zine_path) %>">
+            <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
+            <span class="nav-label">Zine</span>
+          </a>
+        <% end %>
       </nav>
 
     </div>
