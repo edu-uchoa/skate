@@ -27,6 +27,8 @@ class AiReview < ApplicationRecord
     transaction do
       update!(status: :completed, reviewer: mentor, completed_at: Time.current, raw_response: "mentor")
       training_session.update!(status: :analyzed)
+      # A devolutiva conclui a tarefa do aprendiz e a seta da trilha avança.
+      TrackProgression.new(training_session.user).complete!(training_session.maneuver)
     end
     true
   end

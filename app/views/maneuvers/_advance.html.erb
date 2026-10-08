@@ -1,0 +1,19 @@
+<%# "Avançar para a próxima tarefa" (ManeuversController#skip). Sem a devolutiva do
+    mentor, pergunta antes de pular; já concluída ou pulada, só abre a próxima. %>
+<% next_maneuver = maneuver.next_in_track %>
+<% status = progression.status_for(maneuver) %>
+
+<% if next_maneuver && status != "locked" %>
+  <% if %w[completed skipped].include?(status) %>
+    <%= link_to maneuver_path(next_maneuver), class: "auth-secondary-btn maneuver-advance" do %>
+      <span>Avançar para a próxima tarefa</span>
+      <span class="material-symbols-outlined">skip_next</span>
+    <% end %>
+  <% else %>
+    <%= button_to skip_maneuver_path(maneuver), class: "auth-secondary-btn maneuver-advance",
+          form: { data: { turbo_confirm: "Tem certeza que quer pular etapas? A tarefa #{maneuver.code} ainda não teve a devolutiva de um mentor. Ela continua liberada para você voltar quando quiser." } } do %>
+      <span>Avançar para a próxima tarefa</span>
+      <span class="material-symbols-outlined">skip_next</span>
+    <% end %>
+  <% end %>
+<% end %>

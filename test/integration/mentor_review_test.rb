@@ -43,6 +43,7 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     get edit_mentor_review_path(@review)
     assert_response :success
     assert @review.reload.status_processing?, "o aprendiz passa a ver que o mentor está vendo"
+    assert_match "a tarefa 0.3 fica concluída", response.body
 
     patch mentor_review_path(@review), params: { review: ANSWER }
     assert_redirected_to mentor_zine_path
@@ -50,11 +51,13 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     assert @review.status_completed?
     assert_equal @mentor, @review.reviewer
     assert @session.reload.status_analyzed?
+    assert_equal "completed", TrackProgression.new(@learner).status_for(@maneuver), "a devolutiva conclui a tarefa"
 
     delete sign_out_path
     sign_in(@learner)
     get training_session_ai_review_path(@session)
     assert_select ".screen-title", ANSWER[:headline]
+    assert_select ".zine-status.ok", /Tarefa 0.3 concluída/
     ANSWER.except(:headline).each_value { |text| assert_match text, response.body }
     assert_no_match "fila do mentor", response.body
 

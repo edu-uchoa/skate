@@ -49,6 +49,9 @@ class TrainingSessionsController < ApplicationController
 
     if @training_session.save
       @training_session.submit!(offline: params[:offline].present?)
+      if @training_session.ai_review.blank? && !@training_session.status_queued?
+        flash[:notice] = "Resultado salvo. A tarefa é concluída quando um mentor responde a um vídeo seu."
+      end
       redirect_to next_screen_for(@training_session)
     else
       render :result, status: :unprocessable_entity

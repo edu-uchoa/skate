@@ -11,7 +11,13 @@
   </div>
 <% else %>
   <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;"><%= ai_review.headline %></h2>
-  
+  <% if ai_review.reviewer_id.present? %>
+    <p class="zine-status ok">
+      <span class="material-symbols-outlined">check_circle</span>
+      Tarefa <%= ai_review.training_session.maneuver.code %> concluída. A seta da trilha já foi para a próxima.
+    </p>
+  <% end %>
+
   <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; margin-top: 10px;">
     <!-- Feedback: O que fez bem -->
     <div style="background: #1a1b20; border: 1px solid #30D158; border-radius: 8px; padding: 10px; position: relative; overflow: hidden;">

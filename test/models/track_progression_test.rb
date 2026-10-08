@@ -10,45 +10,57 @@ class TrackProgressionTest < ActiveSupport::TestCase
                                name: "SEGUNDO", position: 1, prerequisite: @first)
   end
 
+  def submitted_session(maneuver, outcome: :felt_safe)
+    @user.training_sessions.create!(maneuver: maneuver, scheduled_on: Date.current, outcome: outcome, status: :submitted)
+  end
+
   test "o primeiro nó sem pré-requisito fica disponível e o seguinte, bloqueado" do
     progression = TrackProgression.new(@user).sync!
 
     assert_equal "available", progression.status_for(@first)
     assert_equal "locked",    progression.status_for(@second)
+    assert_equal @first, progression.current_maneuver
   end
 
-  test "concluir o pré-requisito destrava o próximo nó" do
+  test "enviar o treino não conclui a tarefa, nem quando a pessoa se sentiu segura" do
     progression = TrackProgression.new(@user).sync!
-    session = @user.training_sessions.create!(maneuver: @first, scheduled_on: Date.current,
-                                              outcome: :felt_safe, status: :submitted)
+    progression.record_attempt!(submitted_session(@first))
 
-    progression.record_attempt!(session)
-
-    assert_equal "completed", TrackProgression.new(@user).sync!.status_for(@first)
-    assert_equal "available", TrackProgression.new(@user).sync!.status_for(@second)
+    assert_equal "in_progress", progression.status_for(@first)
+    assert_equal "locked",      progression.status_for(@second)
+    assert_equal @first, progression.current_maneuver, "a seta só anda com a devolutiva do mentor"
   end
 
-  test "o diagnóstico pula os nós anteriores sem dar como concluídos" do
-    third = Maneuver.create!(learning_module: @learning_module, code: "9.2", slug: "t-terceiro",
-                             name: "TERCEIRO", position: 2, prerequisite: @second)
+  test "a devolutiva do mentor conclui a tarefa e a seta vai para a próxima" do
+    progression = TrackProgression.new(@user).sync!
+    progression.record_attempt!(submitted_session(@first))
+    progression.complete!(@first)
 
-    progression = TrackProgression.new(@user).start_at!(@second)
-
-    assert_equal "skipped",   progression.status_for(@first)
-    assert_equal "available", progression.status_for(@second), "o nó pulado destrava o ponto de entrada"
-    assert_equal "locked",    progression.status_for(third)
-    assert_equal @second, progression.current_maneuver
-    assert_equal 0, progression.completed_count, "nada foi treinado ainda"
-  end
-
-  test "treinar com sucesso um nó pulado conclui; o que já foi concluído não volta a pulado" do
-    progression = TrackProgression.new(@user).start_at!(@second)
-    session = @user.training_sessions.create!(maneuver: @first, scheduled_on: Date.current,
-                                              outcome: :felt_safe, status: :submitted)
-    progression.record_attempt!(session)
     assert_equal "completed", progression.status_for(@first)
+    assert_equal "available", progression.status_for(@second)
+    assert_equal @second, progression.current_maneuver
+  end
 
-    TrackProgression.new(@user).start_at!(@second) # refazer o diagnóstico
-    assert_equal "completed", TrackProgression.new(@user).status_for(@first)
+  test "avançar sem devolutiva pula a tarefa: sem check, destrava a próxima e a seta anda" do
+    progression = TrackProgression.new(@user).sync!
+
+    assert progression.skip!(@first)
+    assert_equal "skipped",   progression.status_for(@first)
+    assert_equal "available", progression.status_for(@second)
+    assert_equal @second, progression.current_maneuver
+    assert_equal 0, progression.completed_count, "pular não conta como concluído"
+
+    progression.complete!(@first) # o mentor respondeu depois
+    assert_equal "completed", progression.status_for(@first)
+  end
+
+  test "não dá para pular tarefa bloqueada nem a já concluída" do
+    progression = TrackProgression.new(@user).sync!
+    assert_not progression.skip!(@second)
+    assert_equal "locked", progression.status_for(@second)
+
+    progression.complete!(@first)
+    assert_not progression.skip!(@first)
+    assert_equal "completed", progression.status_for(@first)
   end
 end

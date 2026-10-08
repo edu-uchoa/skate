@@ -40,6 +40,7 @@
       <span style="font-weight: 800;">Praticar este Passo</span>
       <span class="material-symbols-outlined">arrow_forward</span>
     <% end %>
+    <%= render "maneuvers/advance", maneuver: maneuver %>
     <%= link_to track_path, class: "secondary-link-btn", style: "text-align: center; display: block;" do %>
       Voltar ao Mapa
     <% end %>

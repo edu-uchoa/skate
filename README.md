@@ -98,9 +98,10 @@ test/                Testes automatizados
 
 1. A pessoa informa o ano de nascimento.
 2. O diagnostico identifica nivel, dificuldades e setup.
-3. O `DiagnosisPlanner` define o ponto de entrada na trilha.
-4. O `TrackProgression` controla nos disponiveis, bloqueados e concluidos.
-5. A pessoa inicia sessoes de treino e registra o resultado.
+3. O `DiagnosisPlanner` resume o diagnostico e recomenda drills; a trilha comeca na 0.1 para todo mundo.
+4. O `TrackProgression` controla nos disponiveis, bloqueados, pulados e concluidos. A seta laranja do mapa marca a tarefa atual.
+5. A pessoa treina, registra o resultado e envia o video para a fila do mentor.
+6. A tarefa so e concluida com a devolutiva do mentor; ai a seta avanca. Sem devolutiva, a pessoa pode usar "Avancar para a proxima tarefa" (com aviso), e a tarefa fica pulada, sem check.
 
 Principais rotas:
 

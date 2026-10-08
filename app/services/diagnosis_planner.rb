@@ -1,15 +1,11 @@
 # Traduz o diagnóstico (nível + travas + setup) em:
 #   - um texto de validação ("Entendido. Você está começando do zero...")
-#   - o nó de entrada na trilha
+#   - o nó de entrada na trilha (a 0.1 para todo mundo)
 #   - drills recomendados por causa das travas declaradas
+#
+# O diagnóstico não pula tarefas: a seta da trilha começa na 0.1 e só anda com a
+# devolutiva do mentor. Quem já domina uma tarefa usa "Avançar para a próxima tarefa".
 class DiagnosisPlanner
-  ENTRY_POINTS = {
-    "never_ridden"    => "0.1",
-    "can_push"        => "1.3",
-    "stuck_on_ollie"  => "2.2",
-    "advanced"        => "3.0"
-  }.freeze
-
   BLOCKER_DRILLS = {
     "fear_of_falling" => "0.3",   # queda controlada
     "foot_technique"  => "1.0"    # postura
@@ -20,9 +16,7 @@ class DiagnosisPlanner
   end
 
   def entry_maneuver
-    code = ENTRY_POINTS.fetch(diagnosis.level, "0.1")
-    Maneuver.find_by(code: code) || Maneuver.ordered.first ||
-      raise("A trilha não possui manobras cadastradas. Execute bin/rails db:seed.")
+    Maneuver.ordered.first || raise("A trilha não possui manobras cadastradas. Execute bin/rails db:seed.")
   end
 
   def recommended_drills
@@ -44,13 +38,13 @@ class DiagnosisPlanner
     elsif diagnosis.diagnosis_blockers.any?(&:kind_fear_of_falling?)
       "Antes de qualquer manobra, você vai aprender a cair. Isso muda tudo."
     else
-      "Vamos direto ao ponto onde você travou, sem repetir o que você já domina."
+      "Você começa pelo básico. O que já domina, dá para avançar na página de cada tarefa."
     end
   end
 
-  # Aplica o plano: destrava a trilha a partir do ponto de entrada.
+  # Aplica o plano: destrava a trilha a partir da 0.1.
   def apply!
-    TrackProgression.new(diagnosis.user).start_at!(entry_maneuver)
+    TrackProgression.new(diagnosis.user).sync!
   end
 
   private

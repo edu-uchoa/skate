@@ -51,6 +51,7 @@
     <% end %>
 
     <p class="auth-hint">O aprendiz vê exatamente estes três blocos, na tela de devolutiva dele. Fale como o amigo mais velho que já caiu, não como quem avalia.</p>
+    <p class="auth-hint">Ao enviar, a tarefa <%= @training_session.maneuver.code %> fica concluída para o aprendiz e a seta da trilha dele vai para a próxima.</p>
 
     <%= f.button type: :submit, class: "tactile-btn-primary" do %>
       <span>Enviar devolutiva</span>

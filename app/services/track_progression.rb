@@ -42,7 +42,9 @@ class TrackProgression
     progresses[maneuver.id]&.status || "locked"
   end
 
-  # Nó atual = primeiro disponível ou em andamento na ordem da trilha.
+  # Nó atual (a seta laranja do mapa) = primeiro disponível ou em andamento na
+  # ordem da trilha. Todo mundo começa na 0.1, e a seta só anda quando a tarefa é
+  # concluída pela devolutiva do mentor ou pulada pela pessoa ("Avançar").
   def current_maneuver
     Maneuver.ordered.find { |m| %w[available in_progress].include?(status_for(m)) }
   end
@@ -55,32 +57,33 @@ class TrackProgression
     (completed_count * 100.0 / total).round
   end
 
-  # Chamado quando um treino é enviado.
+  # Chamado quando um treino é enviado. Não conclui a tarefa (nem quando a pessoa
+  # diz que se sentiu segura): quem conclui é a devolutiva do mentor (complete!).
   def record_attempt!(training_session)
     progress = progress_for(training_session.maneuver)
     progress.increment!(:attempts_count)
-
-    if training_session.successful?
-      progress.complete!
-    elsif progress.status_available?
-      progress.update!(status: :in_progress)
-    end
+    progress.update!(status: :in_progress) if progress.status_available?
 
     sync!
     progress
   end
 
-  # Libera os nós anteriores ao ponto de entrada do diagnóstico como "pulados", não
-  # como concluídos: o check do mapa fica só para o que a pessoa treinou de verdade.
-  # O que ela já tinha treinado ou concluído não muda.
-  def start_at!(maneuver)
-    Maneuver.ordered.each do |m|
-      break if m.id == maneuver.id
-      progress = progress_for(m)
-      progress.update!(status: :skipped) if progress.status_locked? || progress.status_available?
-    end
-    progress_for(maneuver).update!(status: :available)
+  # A devolutiva do mentor conclui a tarefa: ganha o check e a seta vai para a próxima.
+  def complete!(maneuver)
+    progress_for(maneuver).complete!
     sync!
+  end
+
+  # "Avançar para a próxima tarefa" sem a devolutiva do mentor: a tarefa fica pulada
+  # (liberada, sem check) e destrava a próxima. Só vale para a tarefa liberada e
+  # ainda não concluída. Se o mentor responder depois, ela é concluída normalmente.
+  def skip!(maneuver)
+    progress = progress_for(maneuver)
+    return false unless progress.status_available? || progress.status_in_progress?
+
+    progress.update!(status: :skipped)
+    sync!
+    true
   end
 
   private

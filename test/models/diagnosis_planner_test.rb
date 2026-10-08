@@ -24,13 +24,18 @@ class DiagnosisPlannerTest < ActiveSupport::TestCase
     assert_equal "available", @user.maneuver_progresses.first.status
   end
 
-  test "quem já manda ollie entra direto nas primeiras manobras" do
+  test "todo mundo começa na 0.1, até quem já manda ollie" do
     shove_it = Maneuver.create!(learning_module: LearningModule.create!(code: "3", name: "PRIMEIRAS MANOBRAS", position: 3),
-                                code: "3.0", slug: "shove-it", name: "SHOVE-IT", position: 0)
+                                code: "3.0", slug: "shove-it", name: "SHOVE-IT", position: 0,
+                                prerequisite: Maneuver.find_by!(code: "0.1"))
     @diagnosis.update!(level: :advanced)
     planner = DiagnosisPlanner.new(@diagnosis)
+    planner.apply!
 
-    assert_equal shove_it, planner.entry_maneuver
+    assert_equal "0.1", planner.entry_maneuver.code
     assert_includes planner.summary, "já manda ollie com firmeza"
+    progression = TrackProgression.new(@user)
+    assert_equal "available", progression.status_for(planner.entry_maneuver)
+    assert_equal "locked", progression.status_for(shove_it), "o diagnóstico não pula tarefas"
   end
 end

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   resource  :track,     only: :show, path: "trilha"
   resources :maneuvers, only: :show, path: "manobras", param: :slug do
+    post :skip, on: :member, path: "avancar" # "Avançar para a próxima tarefa"
     resources :training_sessions, only: %i[new create], path: "treinos", shallow: true
   end
 

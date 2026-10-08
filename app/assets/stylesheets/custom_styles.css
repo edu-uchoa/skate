@@ -1131,6 +1131,19 @@ body {
   cursor: pointer;
 }
 
+/* "Avançar para a próxima tarefa" nas páginas da trilha (link ou botão com aviso). */
+.maneuver-advance {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.maneuver-advance .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .auth-secondary-btn.danger {
   border-color: rgba(255, 90, 95, 0.45);
   color: var(--error-color);

@@ -65,8 +65,6 @@ class TrainingSession < ApplicationRecord
     self
   end
 
-  def successful? = outcome_felt_safe?
-
   # Todo vídeo é limpo pelo ClipSanitizer antes de ser guardado: o original, com
   # a localização de onde foi gravado, nunca chega ao armazenamento. Vale para
   # clip=, clip.attach e os formulários. Se não der para limpar, o vídeo não entra.

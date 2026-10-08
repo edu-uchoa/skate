@@ -19,4 +19,10 @@ class Maneuver < ApplicationRecord
   def to_param = slug
 
   def label = "#{code} · #{name}"
+
+  # Próxima tarefa na ordem da trilha (nil na última).
+  def next_in_track
+    ordered = Maneuver.ordered.to_a
+    ordered[ordered.index(self) + 1]
+  end
 end

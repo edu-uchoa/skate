@@ -47,6 +47,7 @@
       <span class="material-symbols-outlined">skateboarding</span>
       <span style="font-weight: 800;">Treinar essa manobra</span>
     <% end %>
+    <%= render "maneuvers/advance", maneuver: maneuver %>
     <%= link_to new_schedule_path(maneuver_slug: maneuver.slug), class: "secondary-link-btn", style: "text-align: center; display: block;" do %>
       Agendar para depois
     <% end %>
