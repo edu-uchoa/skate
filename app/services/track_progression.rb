@@ -19,12 +19,12 @@ class TrackProgression
       progress = progress_for(maneuver)
       current  = statuses[maneuver.id] || progress.status
 
-      if %w[completed in_progress].include?(current)
+      if %w[completed skipped in_progress].include?(current)
         statuses[maneuver.id] = current
         next
       end
 
-      unlocked = maneuver.prerequisite_id.nil? || statuses[maneuver.prerequisite_id] == "completed"
+      unlocked = maneuver.prerequisite_id.nil? || ManeuverProgress::UNLOCKING.include?(statuses[maneuver.prerequisite_id])
       status   = unlocked ? "available" : "locked"
 
       progress.update!(status: status) unless progress.status == status
@@ -70,11 +70,14 @@ class TrackProgression
     progress
   end
 
-  # Marca como concluídos os nós anteriores ao ponto de entrada do diagnóstico.
+  # Libera os nós anteriores ao ponto de entrada do diagnóstico como "pulados", não
+  # como concluídos: o check do mapa fica só para o que a pessoa treinou de verdade.
+  # O que ela já tinha treinado ou concluído não muda.
   def start_at!(maneuver)
     Maneuver.ordered.each do |m|
       break if m.id == maneuver.id
-      progress_for(m).update!(status: :completed, completed_at: Time.current)
+      progress = progress_for(m)
+      progress.update!(status: :skipped) if progress.status_locked? || progress.status_available?
     end
     progress_for(maneuver).update!(status: :available)
     sync!

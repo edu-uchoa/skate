@@ -518,6 +518,12 @@ body {
   color: #0d0e11;
 }
 
+/* Liberado mas ainda não treinado (ex.: pulado pelo diagnóstico): dá para abrir. */
+.map-node.is-open {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
 .map-node.is-current {
   background: #fd591e;
   border-color: #ffb800;

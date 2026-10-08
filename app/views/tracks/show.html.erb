@@ -25,7 +25,11 @@
     <% @learning_modules.flat_map(&:maneuvers).each_with_index do |maneuver, index| %>
       <% status = progression.status_for(maneuver) %>
       <% current = (maneuver == @current_maneuver) %>
-      <% state = status == "completed" ? "is-completed" : ("is-current" if current) %>
+      <%# Check só para o que foi treinado; liberado (inclusive pulado pelo diagnóstico) = cadeado aberto. %>
+      <% state = if status == "completed" then "is-completed"
+                 elsif current then "is-current"
+                 elsif status != "locked" then "is-open"
+                 end %>
 
       <%= link_to maneuver_path(maneuver), class: ["map-node", state], style: map_node_position(index),
                   title: maneuver.label, aria: { label: maneuver.label },
@@ -34,8 +38,10 @@
           <span class="material-symbols-outlined">check</span>
         <% elsif current %>
           <span class="material-symbols-outlined">play_arrow</span>
-        <% else %>
+        <% elsif status == "locked" %>
           <span class="material-symbols-outlined">lock</span>
+        <% else %>
+          <span class="material-symbols-outlined">lock_open</span>
         <% end %>
       <% end %>
     <% end %>
