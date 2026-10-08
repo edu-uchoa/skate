@@ -463,36 +463,181 @@ body {
   border-radius: 20px;
 }
 
-/* O mapa é mais largo que a tela: ocupa a altura disponível e rola na horizontal. */
-.overworld-map-viewport {
-  width: 100%;
+/* Mapa da trilha (TracksHelper#track_map_layout). A moldura quadriculada azul vem
+   do mapa antigo; dentro dela o mapa ocupa a altura disponível e rola na vertical,
+   com a barra de rolagem à direita. */
+.track-map-frame {
   flex: 1;
-  min-height: 320px;
-  position: relative;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: #343538 #0d0e11;
-  background-color: #0d0e11;
+  min-height: 240px; /* cabe inteiro com o cartão "Módulo atual" até em celular de 568px */
+  display: flex;
+  padding: 4px;
+  background: repeating-conic-gradient(#2f7de1 0 25%, #0d0e11 0 50%) 0 0 / 8px 8px;
+  border-radius: 6px;
 }
 
-/* Tem a mesma proporção da imagem (aspect-ratio vem da view), então as posições
-   dos nós em % caem sempre nos mesmos pontos do desenho, em qualquer tela. */
-.overworld-map-canvas {
+.track-map {
+  flex: 1;
   position: relative;
-  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 3px;
+  background-color: #141519;
+  /* Quarteirões: grade discreta, como num mapa de rua. */
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 2px, transparent 2px);
+  background-size: 48px 48px;
+  scrollbar-width: auto;
+  scrollbar-color: var(--primary-color) #0d0e11;
 }
 
-.map-graphic-img {
-  display: block;
+/* Safari (iPhone) usa estes; Chrome e Edge usam o scrollbar-color acima. */
+.track-map::-webkit-scrollbar { width: 10px; }
+.track-map::-webkit-scrollbar-track { background: #0d0e11; }
+.track-map::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border: 2px solid #0d0e11;
+  border-radius: 6px;
+}
+
+/* Tem a proporção do desenho (aspect-ratio vem da view): as posições em % caem
+   sempre sobre a rua, em qualquer largura de tela. Os textos usam "cqi" (1% da
+   largura do mapa) para encolher junto em celulares estreitos. */
+.track-map-canvas {
+  position: relative;
+  width: 100%;
+  container-type: inline-size;
+}
+
+/* Nome do mapa, em letras coloridas (TracksHelper::MAP_TITLE). */
+.map-title {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 9.5cqi, 36px);
+  font-weight: 900;
+  line-height: 0.95;
+  text-transform: uppercase;
+  -webkit-text-stroke: 6px #0d0e11;
+  paint-order: stroke fill;
+  text-shadow: 3px 4px 0 #0d0e11;
+  z-index: 4;
+}
+
+.map-title-line { display: flex; gap: 0.3em; }
+.map-title-word { white-space: nowrap; }
+.map-title .is-red    { color: #ff4b4b; }
+.map-title .is-yellow { color: #ffd23f; }
+.map-title .is-green  { color: #3ddc5f; }
+.map-title .is-blue   { color: #3b8cff; }
+.map-title .is-orange { color: #fd7a1e; }
+
+/* Rua transversal de cada módulo. */
+.map-street {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 30px;
+  transform: translateY(-50%);
+  background:
+    linear-gradient(90deg, rgba(255, 184, 0, 0.45) 50%, transparent 50%) center / 18px 2px repeat-x,
+    #202126;
+  border-top: 2px solid #2c2d33;
+  border-bottom: 2px solid #2c2d33;
+  z-index: 1;
+}
+
+.map-road {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  user-select: none;
+  z-index: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.map-road-edge    { stroke: #33343a; stroke-width: 34; }
+.map-road-asphalt { stroke: #24252b; stroke-width: 28; }
+
+/* A linha azul tracejada do mapa antigo, no meio da rua. */
+.map-road-line {
+  stroke: #49b6ff;
+  stroke-width: 4;
+  stroke-dasharray: 0 12;
+  filter: drop-shadow(0 0 3px rgba(73, 182, 255, 0.9));
+}
+
+/* Placa azul com o nome do módulo, como as placas de rua do mapa antigo. */
+.map-sign {
+  position: absolute;
+  transform: translateY(-50%);
+  padding: 4px 10px;
+  background: #2f6fd6;
+  border: 2px solid #e3e2e6;
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 #0d0e11;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(8px, 2.8cqi, 10px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 4;
+}
+
+.map-sign.is-left  { left: 10px; }
+.map-sign.is-right { right: 10px; }
+
+.map-flag {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 2px solid #0d0e11;
+  border-radius: 20px;
+  box-shadow: 2px 2px 0 #0d0e11;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 4;
+}
+
+.map-flag .material-symbols-outlined { font-size: 16px; }
+.map-flag.is-start  { background: var(--tertiary-color); color: #0d0e11; }
+.map-flag.is-finish { background: #e3e2e6; color: #0d0e11; }
+
+/* Enfeites da cidade (prédios, lojas, árvores) ao lado da rua. */
+.map-decoration {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  color: #d5c4ab;
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.map-decoration.is-tree {
+  color: var(--tertiary-color);
+  opacity: 0.35;
 }
 
 .map-node {
   position: absolute;
-  width: clamp(32px, 4%, 44px);
+  width: 40px;
   aspect-ratio: 1;
   border-radius: 50%;
   display: flex;
@@ -505,11 +650,45 @@ body {
   transform: translate(-50%, -50%);
   transition: transform 0.2s;
   text-decoration: none;
+  z-index: 3;
 }
 
-.map-node .material-symbols-outlined {
+.map-node .map-node-icon {
   font-size: 18px;
   font-weight: 800;
+}
+
+/* Nome da tarefa ao lado da bolinha, como os adesivos do mapa antigo. Fica do
+   lado em que a rua não passa (is-left / is-right). */
+.map-node-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 7px;
+  background: #e3e2e6;
+  border: 2px solid #0d0e11;
+  border-radius: 5px;
+  box-shadow: 2px 2px 0 #0d0e11;
+  color: #0d0e11;
+  font-family: var(--font-display);
+  font-size: clamp(8.5px, 2.8cqi, 10px);
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+  /* Nome comprido quebra a linha em vez de passar da borda do mapa. */
+  width: max-content;
+  max-width: 40cqi;
+}
+
+.map-node-label.is-right { left: calc(100% + 8px); }
+.map-node-label.is-left  { right: calc(100% + 8px); }
+
+.map-node:not(.is-completed):not(.is-current):not(.is-open) .map-node-label {
+  opacity: 0.55;
+}
+
+.map-node.is-current .map-node-label {
+  background: var(--primary-color);
 }
 
 .map-node.is-completed {
@@ -532,7 +711,7 @@ body {
   z-index: 10;
 }
 
-.map-node.is-current .material-symbols-outlined {
+.map-node.is-current .map-node-icon {
   font-size: 24px;
 }
 

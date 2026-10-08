@@ -42,7 +42,9 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 ## Trilha e guias
 | Classe | Para quê |
 | --- | --- |
-| `overworld-map-viewport` / `overworld-map-canvas` / `map-node` (`.is-completed`, `.is-current`) | Mapa da trilha. Posições dos nós em `TracksHelper::MAP_POINTS` (pixels da imagem) |
+| `track-map-frame` / `track-map` / `track-map-canvas` | Mapa da trilha, desenhado no app (sem imagem): desce de cima para baixo e rola na vertical, barra à direita. Layout calculado em `TracksHelper#track_map_layout`; nome colorido em `TracksHelper::MAP_TITLE` |
+| `map-node` (`.is-completed` check, `.is-current` seta, `.is-open` cadeado aberto; sem classe = bloqueado) + `map-node-label` | Bolinha de cada tarefa e o adesivo com o nome ao lado |
+| `map-road` / `map-street` / `map-sign` / `map-flag` / `map-decoration` | Rua em curvas (SVG), rua transversal e placa azul de cada módulo, Largada/Chegada e enfeites da cidade |
 | `floating-lesson-card` | Cartão "Módulo atual" abaixo do mapa |
 | `video-container` / `play-circle` / `video-badge` | Vídeo (ou placeholder) no topo do passo |
 | `guide`, `guide-head`, `guide-title`, `guide-lead` | Estrutura do guia de um passo |

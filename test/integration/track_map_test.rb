@@ -26,8 +26,21 @@ class TrackMapTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select ".map-node.is-current[title=?]", @setup.label
     assert_select ".map-node.is-completed", 0
-    assert_select ".map-node", text: "lock", count: 3
+    assert_select ".map-node .map-node-icon", text: "lock", count: 3
     assert_match "0.1", css_select(".floating-lesson-card").text
+  end
+
+  test "o mapa desce de cima para baixo, com o nome colorido e uma placa por módulo" do
+    get track_path
+
+    assert_select ".track-map[data-controller=track-map] .track-map-canvas"
+    assert_select "h3.map-title[aria-label=?]", TracksHelper::MAP_TITLE
+    assert_select ".map-sign", 2
+    assert_select ".map-node", 4
+    assert_select ".track-map img", 0 # o mapa não é mais uma imagem (com os ícones de Store, Profile...)
+
+    tops = css_select(".map-node").map { |node| node["style"][/top: ([\d.]+)%/, 1].to_f }
+    assert_equal tops.sort, tops, "as tarefas descem na ordem da trilha"
   end
 
   test "a seta só anda quando o mentor dá a devolutiva" do

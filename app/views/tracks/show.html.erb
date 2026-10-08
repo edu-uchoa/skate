@@ -18,33 +18,70 @@
   </div>
 </div>
 
-<div class="overworld-map-viewport" data-controller="track-map">
-  <div class="overworld-map-canvas" style="aspect-ratio: <%= map_aspect_ratio %>;">
-    <img src="<%= asset_path("skate_overworld_map.jpg") %>" alt="Mapa de Rua" class="map-graphic-img" draggable="false">
+<%# Mapa desenhado no app (TracksHelper#track_map_layout): desce de cima para baixo e
+    rola na vertical, com a barra de rolagem à direita. %>
+<% layout = track_map_layout(@learning_modules) %>
+<div class="track-map-frame">
+  <div class="track-map" data-controller="track-map">
+    <div class="track-map-canvas" style="aspect-ratio: <%= TracksHelper::MAP_WIDTH %> / <%= layout.height %>;">
+      <h3 class="map-title" aria-label="<%= TracksHelper::MAP_TITLE %>">
+        <% map_title_lines.each do |line| %>
+          <span class="map-title-line"><%= line %></span>
+        <% end %>
+      </h3>
 
-    <% @learning_modules.flat_map(&:maneuvers).each_with_index do |maneuver, index| %>
-      <% status = progression.status_for(maneuver) %>
-      <% current = (maneuver == @current_maneuver) %>
-      <%# Check só para o que foi treinado; liberado (inclusive pulado pelo diagnóstico) = cadeado aberto. %>
-      <% state = if status == "completed" then "is-completed"
-                 elsif current then "is-current"
-                 elsif status != "locked" then "is-open"
-                 end %>
+      <% layout.districts.each do |district| %>
+        <div class="map-street" style="<%= map_top(district.y, layout) %>" aria-hidden="true"></div>
+      <% end %>
 
-      <%= link_to maneuver_path(maneuver), class: ["map-node", state], style: map_node_position(index),
-                  title: maneuver.label, aria: { label: maneuver.label },
-                  data: ({ track_map_target: "current" } if current) do %>
-        <% if status == "completed" %>
-          <span class="material-symbols-outlined">check</span>
-        <% elsif current %>
-          <span class="material-symbols-outlined">play_arrow</span>
-        <% elsif status == "locked" %>
-          <span class="material-symbols-outlined">lock</span>
-        <% else %>
-          <span class="material-symbols-outlined">lock_open</span>
+      <svg class="map-road" viewBox="0 0 <%= TracksHelper::MAP_WIDTH %> <%= layout.height %>" aria-hidden="true">
+        <path class="map-road-edge" d="<%= layout.road_path %>" />
+        <path class="map-road-asphalt" d="<%= layout.road_path %>" />
+        <path class="map-road-line" d="<%= layout.road_path %>" />
+      </svg>
+
+      <% layout.districts.each do |district| %>
+        <span class="map-sign is-<%= district.sign_side %>" style="<%= map_top(district.y, layout) %>">
+          Módulo <%= district.learning_module.code %> · <%= district.learning_module.name %>
+        </span>
+      <% end %>
+
+      <span class="map-flag is-start" style="<%= map_position(layout.start.x, layout.start.y, layout) %>">
+        <span class="material-symbols-outlined">flag</span> Largada
+      </span>
+      <span class="map-flag is-finish" style="<%= map_position(layout.finish.x, layout.finish.y, layout) %>">
+        <span class="material-symbols-outlined">sports_score</span> Chegada
+      </span>
+
+      <% layout.nodes.each do |node| %>
+        <% maneuver = node.maneuver %>
+        <span class="map-decoration material-symbols-outlined <%= "is-tree" if node.decoration[:tree] %>"
+              style="<%= map_position(node.decoration[:x], node.point.y, layout) %>" aria-hidden="true"><%= node.decoration[:icon] %></span>
+
+        <% status = progression.status_for(maneuver) %>
+        <% current = (maneuver == @current_maneuver) %>
+        <%# Check só para o que foi concluído; liberado ou pulado = cadeado aberto. %>
+        <% state = if status == "completed" then "is-completed"
+                   elsif current then "is-current"
+                   elsif status != "locked" then "is-open"
+                   end %>
+
+        <%= link_to maneuver_path(maneuver), class: ["map-node", state], style: map_position(node.point.x, node.point.y, layout),
+                    title: maneuver.label, aria: { label: maneuver.label },
+                    data: ({ track_map_target: "current" } if current) do %>
+          <% if status == "completed" %>
+            <span class="material-symbols-outlined map-node-icon">check</span>
+          <% elsif current %>
+            <span class="material-symbols-outlined map-node-icon">play_arrow</span>
+          <% elsif status == "locked" %>
+            <span class="material-symbols-outlined map-node-icon">lock</span>
+          <% else %>
+            <span class="material-symbols-outlined map-node-icon">lock_open</span>
+          <% end %>
+          <span class="map-node-label is-<%= node.label_side %>"><%= maneuver.code %> · <%= maneuver.name %></span>
         <% end %>
       <% end %>
-    <% end %>
+    </div>
   </div>
 </div>
 
