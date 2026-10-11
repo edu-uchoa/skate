@@ -29,8 +29,13 @@ class AccountsController < ApplicationController
     render :new, status: :unprocessable_entity
   end
 
-  # Tela "Minha conta".
-  def show; end
+  # Tela "Perfil" (aba de baixo): nível, XP, ofensiva, estilo, avatar, skate e a conta.
+  def show
+    @stats = ProfileStats.new(current_user)
+    @look  = Avatar.new(current_user.avatar_options)
+    @deck  = Deck.new(current_user.board_options)
+    @tab   = params[:aba] == "skate" ? "skate" : "avatar"
+  end
 
   def destroy
     sign_out

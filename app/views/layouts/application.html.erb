@@ -69,11 +69,11 @@
 
       <!-- Bottom Navigation -->
       <nav class="phone-bottom-nav">
-        <a href="<%= root_path %>" class="nav-btn">
-          <span class="material-symbols-outlined" style="font-size: 22px;">home</span>
-          <span class="nav-label">Início</span>
+        <a href="<%= my_account_path %>" class="nav-btn <%= 'active' if controller_name == "accounts" && action_name == "show" %>">
+          <span class="material-symbols-outlined" style="font-size: 22px;">person</span>
+          <span class="nav-label">Perfil</span>
         </a>
-        <a href="<%= track_path %>" class="nav-btn">
+        <a href="<%= track_path %>" class="nav-btn <%= 'active' if controller_name == "tracks" %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">route</span>
           <span class="nav-label">Trilha</span>
         </a>

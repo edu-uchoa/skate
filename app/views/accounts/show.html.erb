@@ -1,34 +1,80 @@
-<% content_for :section, "Minha conta" %>
+<% content_for :section, "Perfil" %>
+<% level = @stats.level %>
+<% progress = level.progress(@stats.xp) %>
 
-<section class="auth-screen">
-  <header class="auth-head">
-    <span class="material-symbols-outlined auth-icon">account_circle</span>
-    <h2 class="screen-title">Minha conta</h2>
-    <p class="screen-desc">Use este contato e sua senha para entrar em qualquer aparelho.</p>
+<section class="profile-screen">
+  <header class="profile-hero">
+    <div class="profile-hero-avatar"><%= render "avatars/avatar", look: @look, uid: "hero" %></div>
+    <div class="profile-hero-info">
+      <span class="step-indicator">Seu perfil</span>
+      <h2 class="screen-title">Nível <%= level.number %></h2>
+      <span class="auth-hint"><%= masked_contact(current_user) %></span>
+      <div class="profile-xp" role="progressbar" aria-label="XP até o próximo nível"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= progress %>">
+        <span style="width: <%= progress %>%;"></span>
+      </div>
+      <span class="profile-xp-label">
+        <strong><%= @stats.xp %> XP</strong> · faltam <%= level.ceiling - @stats.xp %> para o nível <%= level.number + 1 %>
+      </span>
+    </div>
   </header>
 
-  <div class="auth-card">
-    <span class="auth-card-label"><%= current_user.email ? "E-mail" : "Telefone (WhatsApp)" %></span>
-    <span class="auth-card-value"><%= current_user.contact %></span>
-    <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %></span>
+  <div class="profile-stats">
+    <div class="profile-stat is-streak">
+      <span class="material-symbols-outlined">local_fire_department</span>
+      <strong><%= pluralize(@stats.streak, "dia", plural: "dias") %></strong>
+      <span>Ofensiva<%= " · recorde de #{@stats.best_streak}" if @stats.best_streak > @stats.streak %></span>
+    </div>
+    <div class="profile-stat">
+      <span class="material-symbols-outlined">skateboarding</span>
+      <strong><%= SkateStyle.name(@stats.favorite_style) || "Descobrindo" %></strong>
+      <span>Estilo favorito</span>
+    </div>
+    <div class="profile-stat">
+      <span class="material-symbols-outlined">task_alt</span>
+      <strong><%= @stats.completed_count %> de <%= @stats.total_count %></strong>
+      <span>Tarefas concluídas</span>
+    </div>
+    <div class="profile-stat is-soon">
+      <span class="material-symbols-outlined">military_tech</span>
+      <strong>Em breve</strong>
+      <span>Rank</span>
+    </div>
   </div>
+  <p class="auth-hint">
+    A ofensiva conta os dias seguidos com treino enviado. Tudo bem parar: ela recomeça quando você voltar.
+    O XP vem de cada tarefa que o mentor conclui, e o estilo favorito, das tarefas que você mais treina.
+  </p>
 
-  <%= link_to track_path, class: "tactile-btn-primary" do %>
-    <span>Voltar para a trilha</span>
-    <span class="material-symbols-outlined btn-arrow">route</span>
-  <% end %>
-
-  <% if current_user.mentor_access? %>
-    <%= link_to "Abrir a Zine do mentor", mentor_zine_path, class: "auth-link" %>
-  <% elsif current_user.mentor_requested? %>
-    <%= link_to "Pedido de mentor em análise", new_mentor_application_path, class: "auth-muted-link" %>
-  <% else %>
-    <%= link_to "Quero ser mentor", new_mentor_application_path, class: "auth-link" %>
-  <% end %>
-
-  <div class="auth-actions">
-    <%= button_to "Sair deste aparelho", sign_out_path, method: :delete, class: "auth-secondary-btn" %>
-    <%= button_to "Sair de todos os aparelhos", sign_out_everywhere_path, method: :delete,
-          class: "auth-secondary-btn danger" %>
+  <div class="profile-tabs" id="personalizar">
+    <input type="radio" name="profile-tab" id="profile-tab-avatar" value="avatar" <%= "checked" if @tab == "avatar" %>>
+    <label for="profile-tab-avatar"><span class="material-symbols-outlined">face</span> Avatar</label>
+    <input type="radio" name="profile-tab" id="profile-tab-skate" value="skate" <%= "checked" if @tab == "skate" %>>
+    <label for="profile-tab-skate"><span class="material-symbols-outlined">skateboarding</span> Skate</label>
   </div>
+  <div class="profile-panel is-avatar"><%= render "avatars/editor", look: @look %></div>
+  <div class="profile-panel is-skate"><%= render "decks/editor", deck: @deck %></div>
+
+  <section class="profile-account">
+    <h3 class="auth-card-label">Conta</h3>
+    <div class="auth-card">
+      <span class="auth-card-label"><%= current_user.email ? "E-mail" : "Telefone (WhatsApp)" %></span>
+      <span class="auth-card-value"><%= current_user.contact %></span>
+      <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %>. Use este contato e sua senha para entrar em qualquer aparelho.</span>
+    </div>
+
+    <% if current_user.mentor_access? %>
+      <%= link_to "Abrir a Zine do mentor", mentor_zine_path, class: "auth-link" %>
+    <% elsif current_user.mentor_requested? %>
+      <%= link_to "Pedido de mentor em análise", new_mentor_application_path, class: "auth-muted-link" %>
+    <% else %>
+      <%= link_to "Quero ser mentor", new_mentor_application_path, class: "auth-link" %>
+    <% end %>
+
+    <div class="auth-actions">
+      <%= button_to "Sair deste aparelho", sign_out_path, method: :delete, class: "auth-secondary-btn" %>
+      <%= button_to "Sair de todos os aparelhos", sign_out_everywhere_path, method: :delete,
+            class: "auth-secondary-btn danger" %>
+    </div>
+  </section>
 </section>

@@ -1,0 +1,210 @@
+<%# Avatar de skatista (Avatar). locals: look (Avatar), uid (único na página),
+    editable (true no editor: vão todas as opções e a prévia troca na hora). %>
+<% editable = local_assigns.fetch(:editable, false) %>
+<% layer = ->(part, option, &block) { customizer_layer(look, part, option, editable, &block) } %>
+<svg class="avatar" viewBox="0 0 200 300" role="img" aria-label="Avatar de skatista"
+     data-base="<%= look[:base] %>" data-head="<%= look[:head] %>" style="<%= look.css_variables %>"
+     <%= tag.attributes(data: { customizer_target: "preview" }) if editable %>>
+  <defs>
+    <clipPath id="face-<%= uid %>"><ellipse cx="100" cy="70" rx="30" ry="34" /></clipPath>
+    <pattern id="plaid-<%= uid %>" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect class="av-top" width="16" height="16" />
+      <rect y="5" width="16" height="5" fill="#000" opacity="0.22" />
+      <rect x="5" width="5" height="16" fill="#000" opacity="0.22" />
+      <rect y="12" width="16" height="1" fill="#fff" opacity="0.35" />
+    </pattern>
+    <pattern id="checker-<%= uid %>" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#e9e6df" />
+      <rect width="3" height="3" fill="#1f1f23" />
+      <rect x="3" y="3" width="3" height="3" fill="#1f1f23" />
+    </pattern>
+  </defs>
+
+  <%# 1. Cabelo de trás (fica atrás do corpo e do rosto) %>
+  <%= layer.(:hair, "longo") do %><path class="av-hair" d="M64 70 Q60 34 100 30 Q140 34 136 70 L142 152 Q122 162 100 160 Q78 162 58 152 Z" /><% end %>
+  <%= layer.(:hair, "trancas") do %>
+    <path class="av-hair" d="M64 70 Q60 34 100 30 Q140 34 136 70 L144 166 Q122 172 100 170 Q78 172 56 166 Z" />
+    <path class="av-braid" d="M62 92 L60 166 M71 96 L70 168 M129 96 L130 168 M138 92 L140 166" />
+    <circle class="av-bead" cx="60" cy="167" r="2.4" /><circle class="av-bead" cx="70" cy="169" r="2.4" />
+    <circle class="av-bead" cx="130" cy="169" r="2.4" /><circle class="av-bead" cx="140" cy="167" r="2.4" />
+  <% end %>
+  <%= layer.(:hair, "rabo") do %><path class="av-hair" d="M120 42 Q158 46 152 104 Q148 128 134 120 Q144 84 116 60 Z" /><% end %>
+  <%= layer.(:hair, "black-power") do %><circle class="av-hair hair-top" cx="100" cy="60" r="47" /><% end %>
+  <%= layer.(:hair, "coque") do %><circle class="av-hair hair-top" cx="100" cy="28" r="14" /><% end %>
+
+  <%# 2. Pescoço e corpo (a base feminina é um pouco mais estreita, no CSS) %>
+  <path class="av-skin-shade" d="M88 94 L112 94 L113 122 L87 122 Z" />
+  <g class="avatar-body">
+    <%# Braços e mãos %>
+    <rect class="av-skin" x="46" y="120" width="15" height="68" rx="7.5" />
+    <rect class="av-skin" x="139" y="120" width="15" height="68" rx="7.5" />
+    <circle class="av-skin" cx="53.5" cy="190" r="8" />
+    <circle class="av-skin" cx="146.5" cy="190" r="8" />
+    <%= layer.(:vitiligo, true) do %>
+      <circle class="av-vitiligo" cx="50" cy="191" r="4.5" /><ellipse class="av-vitiligo" cx="147" cy="160" rx="4" ry="7" />
+    <% end %>
+
+    <%# Meias (por baixo da calça e do tênis) %>
+    <% { "curta" => [ 258, 8 ], "branca" => [ 242, 24 ], "listrada" => [ 242, 24 ], "amarela" => [ 242, 24 ] }.each do |sock, (top, height)| %>
+      <%= layer.(:socks, sock) do %>
+        <% [ 76, 106 ].each do |x| %>
+          <rect class="av-sock<%= "-yellow" if sock == "amarela" %>" x="<%= x %>" y="<%= top %>" width="18" height="<%= height %>" />
+          <% if sock == "listrada" %>
+            <rect class="av-stripe-a" x="<%= x %>" y="246" width="18" height="3" /><rect class="av-stripe-b" x="<%= x %>" y="251" width="18" height="3" />
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%# Calça %>
+    <%= layer.(:bottom, "jeans") do %>
+      <path class="av-jeans" d="M70 186 L130 186 L132 256 L102 256 L100 206 L98 256 L68 256 Z" />
+      <path class="av-seam" d="M84 200 L83 254 M116 200 L117 254 M70 192 L130 192" />
+    <% end %>
+    <%= layer.(:bottom, "cargo") do %>
+      <path class="av-cargo" d="M70 186 L130 186 L132 256 L102 256 L100 206 L98 256 L68 256 Z" />
+      <rect class="av-shadow" x="70" y="214" width="13" height="15" rx="2" /><rect class="av-shadow" x="117" y="214" width="13" height="15" rx="2" />
+    <% end %>
+    <%= layer.(:bottom, "bermuda") do %>
+      <rect class="av-skin" x="75" y="224" width="19" height="34" rx="4" /><rect class="av-skin" x="106" y="224" width="19" height="34" rx="4" />
+      <path class="av-bermuda" d="M70 186 L130 186 L132 230 L102 230 L100 208 L98 230 L68 230 Z" />
+    <% end %>
+
+    <%# Tênis %>
+    <% Avatar::OPTIONS[:shoes].each do |shoe| %>
+      <%= layer.(:shoes, shoe.key) do %>
+        <% fill = shoe.key == "slip-on-xadrez" ? "fill: url(#checker-#{uid})" : "fill: #{shoe.color}" %>
+        <% if shoe.key == "cano-alto-branco" %>
+          <rect style="<%= fill %>" x="74" y="242" width="22" height="24" rx="4" /><rect style="<%= fill %>" x="104" y="242" width="22" height="24" rx="4" />
+          <circle class="av-shadow" cx="85" cy="252" r="3" /><circle class="av-shadow" cx="115" cy="252" r="3" />
+        <% end %>
+        <path style="<%= fill %>" d="M64 272 Q64 261 75 261 L92 261 Q98 261 98 268 L98 276 Q98 281 93 281 L68 281 Q63 281 64 272 Z" />
+        <path style="<%= fill %>" d="M136 272 Q136 261 125 261 L108 261 Q102 261 102 268 L102 276 Q102 281 107 281 L132 281 Q137 281 136 272 Z" />
+        <rect style="fill: <%= shoe.shade %>" x="62" y="277" width="37" height="6" rx="3" />
+        <rect style="fill: <%= shoe.shade %>" x="101" y="277" width="37" height="6" rx="3" />
+        <path class="av-laces" d="M78 266 L90 266 M80 270 L92 270 M110 266 L122 266 M108 270 L120 270" />
+      <% end %>
+    <% end %>
+
+    <%# Roupa %>
+    <% torso = "M60 130 Q60 116 76 114 L124 114 Q140 116 140 130 L134 194 L66 194 Z" %>
+    <%= layer.(:top, "camiseta") do %>
+      <path class="av-top" d="<%= torso %>" />
+      <rect class="av-top" x="44" y="116" width="19" height="34" rx="8" /><rect class="av-top" x="137" y="116" width="19" height="34" rx="8" />
+      <path class="av-skin-shade" d="M88 114 Q100 128 112 114 Z" />
+      <circle class="av-print" cx="100" cy="152" r="10" /><path class="av-print-mark" d="M96 148 Q100 144 104 148 Q100 152 96 156 Q100 160 104 156" />
+    <% end %>
+    <%= layer.(:top, "moletom") do %>
+      <path class="av-top" d="<%= torso %>" />
+      <rect class="av-top" x="44" y="116" width="19" height="70" rx="8" /><rect class="av-top" x="137" y="116" width="19" height="70" rx="8" />
+      <rect class="av-shadow" x="44" y="178" width="19" height="8" rx="3" /><rect class="av-shadow" x="137" y="178" width="19" height="8" rx="3" />
+      <path class="av-top" d="M76 118 Q100 102 124 118 L118 128 Q100 118 82 128 Z" /><path class="av-shadow" d="M76 118 Q100 102 124 118 L118 128 Q100 118 82 128 Z" />
+      <path class="av-shadow" d="M78 162 L122 162 L126 188 L74 188 Z" />
+      <path class="av-string" d="M94 124 L93 144 M106 124 L107 144" />
+    <% end %>
+    <%= layer.(:top, "xadrez") do %>
+      <path style="fill: url(#plaid-<%= uid %>)" d="<%= torso %>" />
+      <rect style="fill: url(#plaid-<%= uid %>)" x="44" y="116" width="19" height="70" rx="8" />
+      <rect style="fill: url(#plaid-<%= uid %>)" x="137" y="116" width="19" height="70" rx="8" />
+      <path class="av-skin-shade" d="M90 114 Q100 124 110 114 Z" />
+      <path class="av-collar" d="M86 113 L100 128 L114 113 L108 111 L100 120 L92 111 Z" />
+      <circle class="av-button" cx="100" cy="140" r="1.8" /><circle class="av-button" cx="100" cy="156" r="1.8" /><circle class="av-button" cx="100" cy="172" r="1.8" />
+    <% end %>
+    <%= layer.(:top, "regata") do %>
+      <path class="av-top" d="M72 130 Q72 116 82 114 L90 114 Q100 130 110 114 L118 114 Q128 116 128 130 L134 194 L66 194 Z" />
+    <% end %>
+    <%= layer.(:top, "jaqueta") do %>
+      <path class="av-top" d="<%= torso %>" />
+      <rect class="av-top" x="44" y="116" width="19" height="70" rx="8" /><rect class="av-top" x="137" y="116" width="19" height="70" rx="8" />
+      <path class="av-tee" d="M91 114 L109 114 L107 194 L93 194 Z" />
+      <path class="av-shadow" d="M91 114 L82 144 L93 138 Z M109 114 L118 144 L107 138 Z" />
+      <path class="av-seam" d="M92 140 L92 192 M108 140 L108 192" />
+    <% end %>
+  </g>
+
+  <%# 3. Cabeça %>
+  <ellipse class="av-skin" cx="70" cy="74" rx="6" ry="8" /><ellipse class="av-skin" cx="130" cy="74" rx="6" ry="8" />
+  <ellipse class="av-skin" cx="100" cy="70" rx="30" ry="34" />
+  <%= layer.(:vitiligo, true) do %>
+    <g clip-path="url(#face-<%= uid %>)">
+      <path class="av-vitiligo" d="M76 56 Q86 50 93 59 Q95 70 86 75 Q75 73 76 56 Z" />
+      <path class="av-vitiligo" d="M108 48 Q118 42 124 50 Q124 58 116 59 Q108 57 108 48 Z" />
+    </g>
+  <% end %>
+
+  <path class="av-brow" d="M82 62 Q88 58 94 61" /><path class="av-brow" d="M106 61 Q112 58 118 62" />
+  <% [ 88, 112 ].each do |x| %>
+    <ellipse cx="<%= x %>" cy="72" rx="5.6" ry="4.6" fill="#fff" />
+    <circle class="av-eyes" cx="<%= x %>" cy="72.4" r="3.3" />
+    <circle cx="<%= x %>" cy="72.4" r="1.6" fill="#141414" />
+    <circle cx="<%= x + 1.2 %>" cy="71.2" r="0.9" fill="#fff" />
+  <% end %>
+  <path class="av-lashes" d="M82 70 Q88 65.5 94 70 M94 70 L96 68.6 M106 70 Q112 65.5 118 70 M106 70 L104 68.6" />
+  <path class="av-nose" d="M100 76 Q97 84 101 86" />
+
+  <%= layer.(:beard, "rala") do %><path class="av-hair av-stubble" d="M71 78 Q72 106 100 110 Q128 106 129 78 Q124 98 100 100 Q76 98 71 78 Z" /><% end %>
+  <% mustache = "M89 89 Q95 85 100 88 Q105 85 111 89 Q106 93 100 91 Q94 93 89 89 Z" %>
+  <%= layer.(:beard, "bigode") do %><path class="av-hair" d="<%= mustache %>" /><% end %>
+  <%= layer.(:beard, "cavanhaque") do %>
+    <path class="av-hair" d="<%= mustache %>" /><path class="av-hair" d="M93 99 Q100 113 107 99 Q100 103 93 99 Z" />
+  <% end %>
+  <%= layer.(:beard, "cheia") do %>
+    <path class="av-hair" d="M70 74 Q68 110 100 115 Q132 110 130 74 Q128 92 116 96 Q100 90 84 96 Q72 92 70 74 Z" />
+    <path class="av-hair" d="<%= mustache %>" />
+  <% end %>
+  <path class="av-mouth" d="M92 93 Q100 99 108 93" />
+
+  <%# Cabelo da frente %>
+  <% cap = "M68 70 Q64 34 100 32 Q136 34 132 70 Q126 46 100 44 Q74 46 68 70 Z" %>
+  <%= layer.(:hair, "raspado") do %><path class="av-hair av-buzz" d="M70 64 Q70 36 100 36 Q130 36 130 64 Q124 48 100 46 Q76 48 70 64 Z" /><% end %>
+  <%= layer.(:hair, "curto") do %>
+    <path class="av-hair" d="M68 68 Q64 30 100 30 Q136 30 132 68 Q130 54 122 48 Q114 56 102 50 Q90 56 80 50 Q72 56 68 68 Z" />
+  <% end %>
+  <%= layer.(:hair, "cacheado") do %>
+    <path class="av-hair" d="M68 70 Q64 34 100 32 Q136 34 132 70 Q120 52 100 52 Q80 52 68 70 Z" />
+    <g class="av-hair hair-top">
+      <circle cx="72" cy="56" r="10" /><circle cx="81" cy="42" r="11" /><circle cx="94" cy="34" r="11" />
+      <circle cx="107" cy="34" r="11" /><circle cx="120" cy="42" r="11" /><circle cx="129" cy="56" r="10" />
+    </g>
+  <% end %>
+  <%= layer.(:hair, "black-power") do %><path class="av-hair" d="M68 66 Q66 36 100 34 Q134 36 132 66 Q122 52 100 52 Q78 52 68 66 Z" /><% end %>
+  <%= layer.(:hair, "moicano") do %>
+    <path class="av-hair av-buzz" d="M70 64 Q70 36 100 36 Q130 36 130 64 Q124 48 100 46 Q76 48 70 64 Z" />
+    <path class="av-hair hair-top" d="M93 60 Q90 22 100 10 Q110 22 107 60 Q100 54 93 60 Z" />
+  <% end %>
+  <%= layer.(:hair, "coque") do %><path class="av-hair" d="<%= cap %>" /><% end %>
+  <%= layer.(:hair, "rabo") do %><path class="av-hair" d="<%= cap %>" /><% end %>
+  <%= layer.(:hair, "longo") do %>
+    <path class="av-hair" d="M66 82 Q62 32 100 30 Q138 32 134 82 Q130 56 116 46 Q96 62 72 64 Q68 70 66 82 Z" />
+  <% end %>
+  <%= layer.(:hair, "trancas") do %>
+    <path class="av-hair" d="M66 74 Q62 32 100 30 Q138 32 134 74 Q128 48 100 44 Q72 48 66 74 Z" />
+    <path class="av-braid" d="M100 32 L100 44" />
+  <% end %>
+
+  <%# Boné ou capacete (cabelo que passaria por cima some, no CSS: .hair-top) %>
+  <% %w[capacete-amarelo capacete-preto].each do |helmet| %>
+    <%= layer.(:head, helmet) do %>
+      <path style="fill: <%= Avatar::OPTIONS[:head].find { |o| o.key == helmet }.color %>" d="M62 64 Q60 18 100 16 Q140 18 138 64 Q122 54 100 54 Q78 54 62 64 Z" />
+      <path class="av-shadow" d="M62 64 Q78 54 100 54 Q122 54 138 64 Q122 60 100 60 Q78 60 62 64 Z" />
+      <rect class="av-vent" x="89" y="24" width="5" height="13" rx="2.5" /><rect class="av-vent" x="106" y="24" width="5" height="13" rx="2.5" />
+      <path class="av-shine" d="M74 40 Q82 25 97 22" />
+      <path class="av-strap" d="M66 62 Q70 92 88 104 M134 62 Q130 92 112 104" />
+    <% end %>
+  <% end %>
+  <%= layer.(:head, "bone") do %>
+    <path class="av-top" d="M66 58 Q66 26 100 24 Q134 26 134 58 Z" />
+    <path class="av-top" d="M65 54 Q100 60 135 54 Q131 65 100 69 Q69 65 65 54 Z" /><path class="av-shadow" d="M65 54 Q100 60 135 54 Q131 65 100 69 Q69 65 65 54 Z" />
+    <path class="av-seam" d="M100 25 L100 56" /><circle class="av-top" cx="100" cy="24" r="3" />
+  <% end %>
+  <%= layer.(:head, "aba-reta") do %>
+    <path class="av-top" d="M66 58 Q66 26 100 24 Q134 26 134 58 Z" />
+    <rect class="av-top" x="62" y="53" width="76" height="8" rx="2" /><rect class="av-shadow" x="62" y="57" width="76" height="4" rx="2" />
+    <rect class="av-sticker" x="94" y="34" width="12" height="9" rx="1.5" />
+  <% end %>
+  <%= layer.(:head, "gorro") do %>
+    <path class="av-top" d="M66 62 Q64 20 100 18 Q136 20 134 62 Z" />
+    <rect class="av-top" x="63" y="50" width="74" height="14" rx="5" /><rect class="av-shadow" x="63" y="50" width="74" height="14" rx="5" />
+    <path class="av-seam" d="M74 52 L74 62 M84 52 L84 62 M94 52 L94 62 M106 52 L106 62 M116 52 L116 62 M126 52 L126 62" />
+  <% end %>
+</svg>

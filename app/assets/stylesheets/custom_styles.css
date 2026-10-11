@@ -2459,3 +2459,267 @@ a.guide-tab {
 .spots-cancel { color: var(--error-color); }
 
 .spots-share-value { word-break: normal; }
+
+/* Perfil (/conta): nível e XP, números, abas Avatar/Skate e a conta. */
+.profile-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0 var(--surface-low);
+}
+
+.profile-hero-avatar {
+  flex: 0 0 92px;
+  height: 128px;
+  border-radius: var(--radius-md);
+  background: radial-gradient(circle at 50% 35%, #2b2c33, var(--surface-low));
+  overflow: hidden;
+}
+
+.profile-hero-avatar .avatar { height: 100%; }
+
+.profile-hero-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-hero-info .screen-title { margin: 0; }
+
+.profile-xp {
+  height: 10px;
+  background: var(--surface-low);
+  border: 1px solid var(--surface-highest);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.profile-xp span {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+  border-radius: 6px;
+}
+
+.profile-xp-label {
+  font-size: 11px;
+  color: var(--text-variant);
+}
+
+.profile-xp-label strong { color: var(--primary-color); }
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profile-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+}
+
+.profile-stat .material-symbols-outlined { color: var(--primary-color); font-size: 22px; }
+.profile-stat.is-streak .material-symbols-outlined { color: var(--secondary-color); }
+
+.profile-stat strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--text-on-surface);
+}
+
+.profile-stat > span:last-child {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-variant);
+}
+
+/* Rank: lugar reservado, ainda sem regra. */
+.profile-stat.is-soon { border-style: dashed; opacity: 0.7; }
+.profile-stat.is-soon .material-symbols-outlined { color: var(--text-variant); }
+
+/* Abas Avatar / Skate, só com CSS (radios). */
+.profile-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  scroll-margin-top: 12px;
+}
+
+.profile-tabs input { position: absolute; opacity: 0; pointer-events: none; }
+
+.profile-tabs label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-variant);
+  cursor: pointer;
+}
+
+.profile-tabs input:checked + label {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #0d0e11;
+}
+
+.profile-tabs input:focus-visible + label { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+.profile-screen:has(#profile-tab-avatar:checked) .profile-panel.is-skate,
+.profile-screen:has(#profile-tab-skate:checked) .profile-panel.is-avatar { display: none; }
+
+.profile-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* A prévia fica grudada no topo enquanto a pessoa rola pelas opções. */
+.profile-preview {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: radial-gradient(circle at 50% 35%, #2b2c33, var(--surface-low));
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+}
+
+.profile-preview.is-avatar .avatar { width: auto; height: 220px; }
+.profile-preview.is-deck .deck { width: auto; height: 240px; }
+
+.customizer-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: none;
+}
+
+.customizer-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.customizer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--surface-highest);
+  border-radius: 20px;
+  background: var(--surface-color);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+  cursor: pointer;
+}
+
+.customizer-chip input { position: absolute; opacity: 0; pointer-events: none; }
+
+.customizer-chip:has(input:checked) {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+  color: var(--primary-color);
+}
+
+.customizer-chip:has(input:focus-visible) { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+.customizer-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.customizer-swatch.is-vitiligo { background: radial-gradient(circle at 35% 35%, #f6e8de 0 30%, #a2663f 32%); }
+.choice-text .customizer-print { color: var(--primary-color); }
+
+.profile-account {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--surface-high);
+}
+
+/* Desenho do avatar (avatars/_avatar). As cores vêm das variáveis --av-*. */
+.avatar { display: block; width: 100%; height: auto; }
+.avatar .av-skin { fill: var(--av-skin); }
+.avatar .av-skin-shade { fill: var(--av-skin-shade); }
+.avatar .av-hair { fill: var(--av-hair); }
+.avatar .av-eyes { fill: var(--av-eyes); }
+.avatar .av-top { fill: var(--av-top); }
+.avatar .av-shadow { fill: #000; opacity: 0.18; }
+.avatar .av-vitiligo { fill: #f6e8de; }
+.avatar .av-stubble { opacity: 0.3; }
+.avatar .av-buzz { opacity: 0.85; }
+.avatar .av-brow { fill: none; stroke: var(--av-hair); stroke-width: 2.6; stroke-linecap: round; }
+.avatar .av-lashes { fill: none; stroke: #141414; stroke-width: 1.5; stroke-linecap: round; }
+.avatar:not([data-base="feminino"]) .av-lashes { display: none; }
+.avatar .av-nose { fill: none; stroke: var(--av-skin-shade); stroke-width: 2; stroke-linecap: round; }
+.avatar .av-mouth { fill: none; stroke: #6b2a2a; stroke-width: 2.2; stroke-linecap: round; }
+.avatar .av-braid { fill: none; stroke: #000; stroke-opacity: 0.28; stroke-width: 2; stroke-dasharray: 3 2; }
+.avatar .av-bead { fill: var(--primary-color); }
+.avatar .av-sock { fill: #f2efe6; }
+.avatar .av-sock-yellow { fill: #ffd23f; }
+.avatar .av-stripe-a { fill: var(--primary-color); }
+.avatar .av-stripe-b { fill: var(--secondary-color); }
+.avatar .av-jeans { fill: #35507a; }
+.avatar .av-cargo { fill: #7d6e4f; }
+.avatar .av-bermuda { fill: #2a2b30; }
+.avatar .av-seam { fill: none; stroke: #000; stroke-opacity: 0.22; stroke-width: 1.2; }
+.avatar .av-laces { fill: none; stroke: #fff; stroke-opacity: 0.7; stroke-width: 1.4; stroke-linecap: round; }
+.avatar .av-print { fill: #fff; opacity: 0.85; }
+.avatar .av-print-mark { fill: none; stroke: var(--av-top); stroke-width: 2.2; stroke-linecap: round; }
+.avatar .av-string { fill: none; stroke: #fff; stroke-opacity: 0.8; stroke-width: 1.6; stroke-linecap: round; }
+.avatar .av-collar { fill: #000; opacity: 0.25; }
+.avatar .av-button { fill: #fff; opacity: 0.8; }
+.avatar .av-tee { fill: #e9e6df; }
+.avatar .av-vent { fill: #000; opacity: 0.3; }
+.avatar .av-shine { fill: none; stroke: #fff; stroke-opacity: 0.5; stroke-width: 3; stroke-linecap: round; }
+.avatar .av-strap { fill: none; stroke: #141414; stroke-width: 2.2; stroke-linecap: round; }
+.avatar .av-sticker { fill: #e9e6df; }
+/* De boné ou capacete, o cabelo que passaria por cima (coque, moicano...) some. */
+.avatar:not([data-head="nenhum"]) .hair-top { display: none; }
+/* A base feminina tem ombros e quadril um pouco mais estreitos. */
+.avatar .avatar-body { transform-origin: 100px 150px; }
+.avatar[data-base="feminino"] .avatar-body { transform: scale(0.9, 1); }
+
+/* Desenho do skate (decks/_deck). Rodas e trucks vêm de --deck-wheels / --deck-trucks. */
+.deck { display: block; width: 100%; height: auto; }
+.deck .deck-wheel { fill: var(--deck-wheels); stroke: #0d0e11; stroke-width: 1.5; }
+.deck .deck-truck { fill: var(--deck-trucks); stroke: #0d0e11; stroke-width: 1.5; }
+.deck .deck-edge { fill: none; stroke: #0d0e11; stroke-width: 3; }
+.deck .deck-bolt { fill: #0d0e11; opacity: 0.55; }
+.deck .deck-word { font-family: var(--font-display); font-size: 22px; font-weight: 900; letter-spacing: 3px; fill: #ffb800; }

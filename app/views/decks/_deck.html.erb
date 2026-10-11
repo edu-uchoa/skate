@@ -1,0 +1,56 @@
+<%# Skate visto de baixo, com a estampa padrão do tipo (Deck). locals: deck, uid,
+    editable (true no editor: vão os 4 tipos e a prévia troca na hora). %>
+<% editable = local_assigns.fetch(:editable, false) %>
+<svg class="deck" viewBox="0 0 140 380" role="img" aria-label="Seu skate" style="<%= deck.css_variables %>"
+     <%= tag.attributes(data: { customizer_target: "preview" }) if editable %>>
+  <% Deck::TYPES.each do |type| %>
+    <%= customizer_layer(deck, :type, type.key, editable) do %>
+      <defs><clipPath id="deck-<%= type.key %>-<%= uid %>"><path d="<%= type.outline %>" /></clipPath></defs>
+
+      <%# Estampa, recortada no formato do shape %>
+      <g clip-path="url(#deck-<%= type.key %>-<%= uid %>)">
+        <% case type.key %>
+        <% when "street" %>
+          <rect width="140" height="380" fill="#ffb800" />
+          <% (-4..14).each do |i| %><path d="M<%= i * 24 - 60 %> 380 L<%= i * 24 + 60 %> 0" stroke="#1a1b20" stroke-width="7" /><% end %>
+          <rect x="54" y="120" width="32" height="140" rx="6" fill="#1a1b20" />
+          <text x="70" y="190" transform="rotate(-90 70 190)" text-anchor="middle" dominant-baseline="central" class="deck-word">STANCE</text>
+        <% when "new_school" %>
+          <rect width="140" height="380" fill="#1f1f23" />
+          <circle cx="62" cy="110" r="26" fill="#fd591e" />
+          <path d="M40 210 L96 170 L92 236 Z" fill="#3b8cff" />
+          <path d="M36 286 L52 270 L68 286 L84 270 L100 286" fill="none" stroke="#ffb800" stroke-width="6" stroke-linejoin="round" />
+          <circle cx="86" cy="320" r="9" fill="#e3e2e6" /><circle cx="54" cy="56" r="5" fill="#ffb800" />
+        <% when "bowl" %>
+          <rect width="140" height="380" fill="#2f6fd6" />
+          <rect y="250" width="140" height="130" fill="#1f4fa3" />
+          <% (0..13).each do |i| %>
+            <path d="M0 <%= 30 + i * 26 %> Q35 <%= 20 + i * 26 %> 70 <%= 30 + i * 26 %> T140 <%= 30 + i * 26 %>" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3" />
+          <% end %>
+          <rect x="30" y="240" width="80" height="6" fill="#e3e2e6" />
+        <% when "old_school" %>
+          <rect width="140" height="380" fill="#e8dcc2" />
+          <% (0..9).each do |i| %>
+            <rect x="<%= 30 + i * 8 %>" y="70" width="8" height="8" fill="<%= i.even? ? "#1a1b20" : "#e8dcc2" %>" />
+            <rect x="<%= 30 + i * 8 %>" y="78" width="8" height="8" fill="<%= i.even? ? "#e8dcc2" : "#1a1b20" %>" />
+          <% end %>
+          <path d="M30 380 L30 250 Q44 280 50 230 Q60 262 70 200 Q80 262 90 230 Q96 280 110 250 L110 380 Z" fill="#d64545" />
+          <path d="M40 380 L40 290 Q52 300 56 266 Q64 290 70 246 Q76 290 84 266 Q88 300 100 290 L100 380 Z" fill="#fd7a1e" />
+          <path d="M52 380 L52 320 Q60 322 62 300 Q68 316 70 292 Q72 316 78 300 Q80 322 88 320 L88 380 Z" fill="#ffd23f" />
+        <% end %>
+      </g>
+      <path d="<%= type.outline %>" class="deck-edge" />
+
+      <%# Trucks e rodas, por cima da estampa (o skate é visto de baixo) %>
+      <% type.trucks.each do |y| %>
+        <% wheel_w, wheel_h = type.wheel %>
+        <rect class="deck-wheel" x="<%= 70 - type.axle - wheel_w %>" y="<%= y - wheel_h / 2 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.5 %>" />
+        <rect class="deck-wheel" x="<%= 70 + type.axle %>" y="<%= y - wheel_h / 2 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.5 %>" />
+        <rect class="deck-truck" x="<%= 70 - type.axle - 2 %>" y="<%= y - 3 %>" width="<%= type.axle * 2 + 4 %>" height="6" rx="3" />
+        <rect class="deck-truck" x="58" y="<%= y - 9 %>" width="24" height="18" rx="3" />
+        <circle class="deck-bolt" cx="62" cy="<%= y - 5 %>" r="1.4" /><circle class="deck-bolt" cx="78" cy="<%= y - 5 %>" r="1.4" />
+        <circle class="deck-bolt" cx="62" cy="<%= y + 5 %>" r="1.4" /><circle class="deck-bolt" cx="78" cy="<%= y + 5 %>" r="1.4" />
+      <% end %>
+    <% end %>
+  <% end %>
+</svg>

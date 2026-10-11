@@ -1,0 +1,43 @@
+<%# Editor do skate: o tipo vem com a estampa padrão; rodas e trucks mudam de cor. %>
+<%= form_with url: deck_path, method: :patch, scope: :deck, class: "profile-editor",
+              data: { controller: "customizer", action: "change->customizer#update" } do |f| %>
+  <div class="profile-preview is-deck"><%= render "decks/deck", deck: deck, uid: "editor", editable: true %></div>
+
+  <fieldset class="customizer-group">
+    <legend class="auth-label">Tipo de skate</legend>
+    <div class="choice-list">
+      <% Deck::TYPES.each do |type| %>
+        <label class="choice-card">
+          <%= f.radio_button :type, type.key, checked: deck[:type] == type.key %>
+          <span class="choice-text">
+            <strong><%= type.label %></strong>
+            <small><%= type.description %></small>
+            <small class="customizer-print">Estampa padrão: <%= type.print %></small>
+          </span>
+          <span class="material-symbols-outlined choice-mark">check_circle</span>
+        </label>
+      <% end %>
+    </div>
+  </fieldset>
+
+  <% { wheels: [ "Rodas", Deck::WHEELS ], trucks: [ "Trucks", Deck::TRUCKS ] }.each do |part, (title, colors)| %>
+    <fieldset class="customizer-group">
+      <legend class="auth-label"><%= title %></legend>
+      <div class="customizer-options">
+        <% colors.each do |color| %>
+          <label class="customizer-chip">
+            <%= f.radio_button part, color.key, checked: deck[part] == color.key,
+                  data: { vars: { Deck::COLOR_VARS[part] => color.color }.to_json } %>
+            <span class="customizer-swatch" style="background: <%= color.color %>;"></span>
+            <span><%= color.label %></span>
+          </label>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+
+  <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+    <span>Salvar skate</span>
+    <span class="material-symbols-outlined btn-arrow">check</span>
+  <% end %>
+<% end %>

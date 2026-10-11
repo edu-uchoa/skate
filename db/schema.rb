@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_11_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_12_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -220,7 +220,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_11_120000) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.json "avatar_options", default: {}, null: false
     t.integer "birth_year"
+    t.json "board_options", default: {}, null: false
     t.datetime "created_at", null: false
     t.string "email"
     t.datetime "last_seen_at"

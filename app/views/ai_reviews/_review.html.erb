@@ -14,7 +14,8 @@
   <% if ai_review.reviewer_id.present? %>
     <p class="zine-status ok">
       <span class="material-symbols-outlined">check_circle</span>
-      Tarefa <%= ai_review.training_session.maneuver.code %> concluída. A seta da trilha já foi para a próxima.
+      <% maneuver = ai_review.training_session.maneuver %>
+      Tarefa <%= maneuver.code %> concluída: +<%= ProfileStats.xp_for(maneuver) %> XP. A seta da trilha já foi para a próxima.
     </p>
   <% end %>
 

@@ -49,10 +49,12 @@ Rails.application.routes.draw do
   resources :meetups, only: %i[create destroy], path: "roles"
   get "role/:token", to: "shared_meetups#show", as: :shared_meetup # link público para os amigos
 
+  # Perfil (/conta): o avatar de skatista e o skate que a pessoa personaliza.
+  resource  :avatar, only: :update, path: "conta/avatar"
+  resource  :deck,   only: :update, path: "conta/skate"
+
   # Funcionalidades Front-end
   resource  :store,  only: :show, path: "loja"
-  resource  :avatar, only: :show, path: "avatar"
-  resource  :deck,   only: :show, path: "deck"
 
   # Conta obrigatória: cadastro/login com e-mail ou telefone e senha.
   resource  :account,        only: %i[new create], path: "cadastro", path_names: { new: "" }

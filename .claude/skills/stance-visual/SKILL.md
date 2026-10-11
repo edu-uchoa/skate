@@ -78,8 +78,10 @@ O público trava por **medo de se machucar** e **vergonha de ser visto**. Por is
   machucados" não tem fonte e não deve aparecer).
 - **Privado por padrão:** nada na tela expõe a pessoa a estranhos (feed, ranking
   público, clipe visível para outros) sem ela escolher.
-- **Sem cobrança diária:** ofensiva/streak e metas diárias punem quem parou por lesão.
-  Se aparecerem em tela existente, avise o usuário em vez de ampliar.
+- **Sem cobrança diária:** metas diárias punem quem parou por lesão. A ofensiva existe
+  (pedido do dono, no Perfil e na Trilha: `ProfileStats#streak`), mas nunca cobra: só
+  zera depois de um dia inteiro sem treino, mostra o recorde e diz "Tudo bem parar".
+  Não crie avisos de "você vai perder a ofensiva" nem metas diárias novas.
 - Imagens e exemplos com representação feminina, e português de rua.
 
 ## Antes de dar como pronto

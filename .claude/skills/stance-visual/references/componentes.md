@@ -46,6 +46,15 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 | `map-node` (`.is-completed` check, `.is-current` seta, `.is-open` cadeado aberto; sem classe = bloqueado) + `map-node-label` | Bolinha de cada tarefa e o adesivo com o nome ao lado |
 | `map-road` / `map-street` / `map-sign` / `map-flag` / `map-decoration` | Rua em curvas (SVG), rua transversal e placa azul de cada módulo, Largada/Chegada e enfeites da cidade |
 | `floating-lesson-card` | Cartão "Módulo atual" abaixo do mapa |
+
+## Perfil, avatar e skate (/conta)
+| Classe | Para quê |
+| --- | --- |
+| `profile-hero` / `profile-xp` / `profile-xp-label` | Topo do Perfil: avatar, nível e barra de XP |
+| `profile-stats` + `profile-stat` (`.is-streak`, `.is-soon`) | Grade de números (ofensiva, estilo, tarefas, rank "Em breve") |
+| `profile-tabs` / `profile-panel` (`.is-avatar`, `.is-skate`) | Abas só com CSS (radios `#profile-tab-avatar` / `#profile-tab-skate`) |
+| `profile-editor` / `profile-preview` / `customizer-group` / `customizer-chip` / `customizer-swatch` | Editor com prévia grudada no topo e opções em "chips". A prévia troca na hora com `data-controller="customizer"` |
+| `avatar` (SVG, `avatars/_avatar`) / `deck` (SVG, `decks/_deck`) | Desenhos em camadas: `customizer_layer` (data-part/data-option); cores por variáveis `--av-*` e `--deck-*`. Opções em `Avatar::OPTIONS` e `Deck::TYPES` |
 | `video-container` / `play-circle` / `video-badge` | Vídeo (ou placeholder) no topo do passo |
 | `guide`, `guide-head`, `guide-title`, `guide-lead` | Estrutura do guia de um passo |
 | `guide-card` + `guide-card-label` | Cartão numerado ("1. Escolha o seu estilo") |

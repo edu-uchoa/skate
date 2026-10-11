@@ -57,7 +57,7 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     sign_in(@learner)
     get training_session_ai_review_path(@session)
     assert_select ".screen-title", ANSWER[:headline]
-    assert_select ".zine-status.ok", /Tarefa 0.3 concluída/
+    assert_select ".zine-status.ok", /Tarefa 0.3 concluída: \+50 XP/
     ANSWER.except(:headline).each_value { |text| assert_match text, response.body }
     assert_no_match "fila do mentor", response.body
 

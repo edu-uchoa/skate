@@ -1,0 +1,33 @@
+<%# Editor do avatar: a prévia troca na hora (customizer_controller.js) e "Salvar" guarda. %>
+<%= form_with url: avatar_path, method: :patch, scope: :avatar, class: "profile-editor",
+              data: { controller: "customizer", action: "change->customizer#update" } do |f| %>
+  <div class="profile-preview is-avatar"><%= render "avatars/avatar", look: look, uid: "editor", editable: true %></div>
+
+  <% Avatar::GROUPS.each do |part, title| %>
+    <fieldset class="customizer-group">
+      <legend class="auth-label"><%= title %></legend>
+      <div class="customizer-options">
+        <% Avatar::OPTIONS[part].each do |option| %>
+          <label class="customizer-chip">
+            <%= f.radio_button part, option.key, checked: look[part] == option.key,
+                  data: { attr: (part if part.in?(%i[base head])), vars: Avatar.color_vars(part, option).presence&.to_json } %>
+            <% if option.color %><span class="customizer-swatch" style="background: <%= option.color %>;"></span><% end %>
+            <span><%= option.label %></span>
+          </label>
+        <% end %>
+        <% if part == :skin %>
+          <label class="customizer-chip">
+            <%= f.check_box :vitiligo, { checked: look[:vitiligo] }, "true", "false" %>
+            <span class="customizer-swatch is-vitiligo"></span>
+            <span>Vitiligo</span>
+          </label>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+
+  <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+    <span>Salvar avatar</span>
+    <span class="material-symbols-outlined btn-arrow">check</span>
+  <% end %>
+<% end %>

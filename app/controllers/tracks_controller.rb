@@ -8,5 +8,6 @@ class TracksController < ApplicationController
     @learning_modules = LearningModule.ordered.includes(:maneuvers)
     @current_maneuver = progression.current_maneuver
     @comeback_due     = current_user.away_for_days.to_i >= 14
+    @streak           = ProfileStats.new(current_user).streak
   end
 end
