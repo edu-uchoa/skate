@@ -2817,6 +2817,59 @@ a.guide-tab {
 
 .streak-review { gap: 10px; }
 
+/* Lista de tarefas (/tarefas): botão "Tarefas concluídas" do Perfil. */
+.profile-stat.is-tasks.is-button:hover,
+.profile-stat.is-tasks.is-button:focus-visible { border-color: var(--primary-color); }
+
+.streak-count.is-tasks { color: var(--primary-color); }
+.tasks-summary { gap: 10px; }
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+}
+
+.tasks-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-sm);
+  color: var(--text-on-surface);
+  text-decoration: none;
+}
+
+.tasks-item:hover,
+.tasks-item:focus-visible { border-color: var(--primary-color); }
+
+.tasks-item > .material-symbols-outlined { font-size: 22px; color: var(--text-variant); }
+.tasks-item.is-done > .material-symbols-outlined { color: var(--tertiary-color); }
+.tasks-item.is-current { border-color: var(--secondary-color); }
+.tasks-item.is-current > .material-symbols-outlined { color: var(--secondary-color); }
+.tasks-item.is-open > .material-symbols-outlined { color: var(--primary-color); }
+.tasks-item.is-locked { opacity: 0.6; }
+
+.tasks-item-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tasks-item-text strong {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tasks-item-text small { font-size: 11px; color: var(--text-variant); }
+
 /* Aviso na tela Gravar quando a pessoa está no horário de um rolê. */
 .rec-meetup {
   flex-direction: row;

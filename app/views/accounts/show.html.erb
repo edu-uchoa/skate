@@ -32,11 +32,14 @@
       <strong><%= SkateStyle.name(@stats.favorite_style) || "Descobrindo" %></strong>
       <span>Estilo favorito</span>
     </div>
-    <div class="profile-stat">
+    <%# Botão: abre a lista de tarefas (concluídas e as que faltam). %>
+    <%= link_to tasks_path, class: "profile-stat is-tasks is-button",
+          aria: { label: "Tarefas concluídas: #{@stats.completed_count} de #{@stats.total_count}. Ver todas" } do %>
       <span class="material-symbols-outlined">task_alt</span>
+      <span class="material-symbols-outlined profile-stat-go">chevron_right</span>
       <strong><%= @stats.completed_count %> de <%= @stats.total_count %></strong>
       <span>Tarefas concluídas</span>
-    </div>
+    <% end %>
     <div class="profile-stat is-soon">
       <span class="material-symbols-outlined">military_tech</span>
       <strong>Em breve</strong>

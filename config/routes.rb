@@ -45,6 +45,9 @@ Rails.application.routes.draw do
     resources :streak_justifications, only: %i[index update], path: "ofensivas" # paradas para avaliar
   end
 
+  # Todas as tarefas da trilha: as concluídas e as que faltam (botão do Perfil).
+  resources :tasks, only: :index, path: "tarefas"
+
   # Ofensiva por sessão de skate: como funciona e justificativa de parada.
   resource  :streak, only: :show, path: "ofensiva"
   resources :streak_justifications, only: :create, path: "ofensiva/justificativas"

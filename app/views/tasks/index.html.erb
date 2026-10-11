@@ -1,0 +1,70 @@
+<% content_for :section, "Tarefas" %>
+<% total = @maneuvers.size %>
+<% percent = total.zero? ? 0 : (@done.size * 100 / total) %>
+
+<section class="streak-screen">
+  <header class="auth-head">
+    <%= link_to my_account_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar ao perfil
+    <% end %>
+    <span class="step-indicator">Sua trilha</span>
+    <h2 class="screen-title">Tarefas</h2>
+    <p class="screen-desc">Cada tarefa é concluída com a devolutiva de um mentor e vale XP. Toque numa tarefa para abrir.</p>
+  </header>
+
+  <div class="auth-card tasks-summary">
+    <div class="streak-count is-tasks">
+      <span class="material-symbols-outlined">task_alt</span>
+      <strong><%= @done.size %></strong>
+      <span>de <%= total %> concluídas</span>
+    </div>
+    <div class="profile-xp" role="progressbar" aria-label="Tarefas concluídas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= percent %>">
+      <span style="width: <%= percent %>%;"></span>
+    </div>
+    <p class="auth-hint"><%= @xp %> XP ganhos com as tarefas · <%= pluralize(@pending.size, "tarefa falta", plural: "tarefas faltam") %></p>
+  </div>
+
+  <section class="streak-section">
+    <h3 class="auth-card-label">Concluídas (<%= @done.size %>)</h3>
+    <% if @done.empty? %>
+      <p class="auth-hint">Nenhuma ainda. Envie o vídeo de uma tarefa: quando o mentor responder, ela aparece aqui.</p>
+    <% else %>
+      <ul class="tasks-list">
+        <% @done.each do |maneuver| %>
+          <li>
+            <%= link_to maneuver_path(maneuver), class: "tasks-item is-done" do %>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span class="tasks-item-text">
+                <strong><%= maneuver.code %> · <%= maneuver.name %></strong>
+                <small><%= task_done_details(maneuver) %></small>
+              </span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+
+  <section class="streak-section">
+    <h3 class="auth-card-label">Ainda não concluídas (<%= @pending.size %>)</h3>
+    <% if @pending.empty? %>
+      <p class="auth-hint">Você concluiu a trilha inteira. Mandou bem!</p>
+    <% else %>
+      <ul class="tasks-list">
+        <% @pending.each do |maneuver| %>
+          <% icon, label, css = task_situation(maneuver, @current) %>
+          <li>
+            <%= link_to maneuver_path(maneuver), class: [ "tasks-item", css ] do %>
+              <span class="material-symbols-outlined"><%= icon %></span>
+              <span class="tasks-item-text">
+                <strong><%= maneuver.code %> · <%= maneuver.name %></strong>
+                <small>Módulo <%= maneuver.learning_module.code %> · <%= maneuver.learning_module.name.capitalize %></small>
+              </span>
+              <span class="guide-tag <%= "is-must" if css == "is-current" %>"><%= label %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+</section>

@@ -28,7 +28,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     end
 
     [ track_path, intro_path, install_path, onboarding_age_gate_path, store_path, spots_path,
-      my_account_path, new_support_request_path ].each do |path|
+      my_account_path, tasks_path, streak_path, new_support_request_path ].each do |path|
       get path
       assert_redirected_to new_session_path, path
     end
