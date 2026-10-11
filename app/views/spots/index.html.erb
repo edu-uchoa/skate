@@ -109,6 +109,12 @@
           </div>
           <p class="spots-card-when"><%= meetup.schedule_label %></p>
           <% if meetup.note %><p class="auth-hint">“<%= meetup.note %>”</p><% end %>
+          <% if meetup.provable_now? %>
+            <%= link_to new_recording_path, class: "tactile-btn-primary" do %>
+              <span>Gravar o rolê</span><span class="material-symbols-outlined btn-arrow">videocam</span>
+            <% end %>
+            <p class="auth-hint">Grave uma tarefa agora e envie o resultado: a sessão vale para a sua ofensiva.</p>
+          <% end %>
           <div class="spots-card-actions">
             <button type="button" class="auth-secondary-btn maneuver-advance" data-action="share#share">
               <span>Compartilhar</span><span class="material-symbols-outlined">share</span>

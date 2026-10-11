@@ -27,7 +27,7 @@ class ProfileTest < ActionDispatch::IntegrationTest
     assert_select ".profile-hero .screen-title", "Nível 1"
     assert_select ".profile-xp-label", /50 XP · faltam 50 para o nível 2/
     assert_select ".profile-xp[aria-valuenow='50']"
-    assert_select ".profile-stat", text: /0 dias\s*Ofensiva/
+    assert_select "a.profile-stat.is-button[href=?]", streak_path, text: /0 sessões\s*Ofensiva · Comece agora/
     assert_select ".profile-stat", text: /Descobrindo\s*Estilo favorito/
     assert_select ".profile-stat", text: /1 de 1\s*Tarefas concluídas/
     assert_select ".profile-stat.is-soon", text: /Em breve\s*Rank/
@@ -68,8 +68,8 @@ class ProfileTest < ActionDispatch::IntegrationTest
     get track_path
     assert_select ".streak-pill", 0
 
-    @user.training_sessions.create!(maneuver: @maneuver, scheduled_on: Date.current, status: :submitted, submitted_at: Time.current)
+    @user.skate_sessions.create!(skated_on: Date.current)
     get track_path
-    assert_select ".streak-pill", /🔥 1D/
+    assert_select "a.streak-pill[href=?]", streak_path, text: /🔥 1/
   end
 end

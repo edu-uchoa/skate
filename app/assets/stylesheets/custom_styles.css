@@ -2723,3 +2723,108 @@ a.guide-tab {
 .deck .deck-edge { fill: none; stroke: #0d0e11; stroke-width: 3; }
 .deck .deck-bolt { fill: #0d0e11; opacity: 0.55; }
 .deck .deck-word { font-family: var(--font-display); font-size: 22px; font-weight: 900; letter-spacing: 3px; fill: #ffb800; }
+
+/* Cartão da ofensiva no Perfil: é um botão que abre /ofensiva. */
+.profile-stat.is-button {
+  position: relative;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.profile-stat.is-button:hover,
+.profile-stat.is-button:focus-visible { border-color: var(--secondary-color); }
+
+.profile-stat .profile-stat-go {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  color: var(--text-variant);
+  font-size: 20px;
+}
+
+/* Página da ofensiva (/ofensiva). */
+.streak-screen,
+.streak-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.streak-screen { gap: 16px; }
+
+.streak-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-variant);
+}
+
+.streak-steps li { display: flex; align-items: flex-start; gap: 8px; }
+.streak-steps .material-symbols-outlined { flex: 0 0 auto; font-size: 20px; color: var(--primary-color); }
+.streak-steps strong { color: var(--text-on-surface); }
+
+.streak-status { gap: 10px; }
+.streak-status.is-lost { border-color: rgba(255, 90, 95, 0.4); }
+
+.streak-count {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--secondary-color);
+}
+
+.streak-count .material-symbols-outlined { font-size: 30px; align-self: center; }
+
+.streak-count strong {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-on-surface);
+}
+
+.streak-count > span:not(.material-symbols-outlined):not(.guide-tag) {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-variant);
+}
+
+.streak-count .guide-tag { margin-left: auto; align-self: center; }
+.streak-status.is-lost .streak-count { color: var(--error-color); }
+
+.streak-sessions li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.streak-reason {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-on-surface);
+  white-space: pre-line;
+}
+
+.streak-justification { gap: 8px; }
+.streak-justification.is-approved { border-color: rgba(48, 209, 88, 0.45); }
+.streak-justification.is-rejected { border-color: rgba(255, 90, 95, 0.45); }
+
+.streak-review { gap: 10px; }
+
+/* Aviso na tela Gravar quando a pessoa está no horário de um rolê. */
+.rec-meetup {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-on-surface);
+  border-color: var(--secondary-color);
+}
+
+.rec-meetup .material-symbols-outlined { color: var(--secondary-color); }

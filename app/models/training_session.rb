@@ -4,6 +4,7 @@ class TrainingSession < ApplicationRecord
 
   has_one :ai_review, dependent: :destroy
   has_many :clip_accesses, dependent: :delete_all # quem (além do dono) assistiu ao vídeo
+  has_one :skate_session, dependent: :nullify      # se este vídeo comprovou um rolê (ofensiva)
   has_one_attached :clip   # vídeo de até ~15s da análise de queda
 
   enum :status, {
@@ -29,6 +30,9 @@ class TrainingSession < ApplicationRecord
 
   validates :scheduled_on, presence: true, if: :status_scheduled?
   validate :validate_clip, if: -> { clip.attached? && attachment_changes.key?("clip") }
+  # Vídeo gravado no horário de um rolê marcado no mapa: vale como sessão da ofensiva.
+  before_save -> { self.recorded_at_meetup = user.meetups.provable_at(Time.current).exists? },
+              if: -> { attachment_changes.key?("clip") && clip.attached? }
   validate -> { errors.add(:base, clip_problem(@clip_problem)) }, if: -> { @clip_problem }
   validate :validate_recording, on: :recording
 
@@ -58,6 +62,7 @@ class TrainingSession < ApplicationRecord
       update!(status: :submitted, queued_offline: false, submitted_at: Time.current)
       TrackProgression.new(user).record_attempt!(self)
       create_ai_review!(status: :pending) if clip.attached? && ai_review.blank?
+      register_skate_session
     end
 
     # Sem análise automática, o vídeo fica pendente na fila do mentor.
@@ -109,6 +114,14 @@ class TrainingSession < ApplicationRecord
   private
 
   def clip_problem(reason) = format(CLIP_PROBLEMS.fetch(reason), mb: self.class.max_clip_bytes / 1.megabyte)
+
+  # Vídeo do rolê + resultado enviado = sessão da ofensiva, no dia em que o vídeo
+  # foi gravado. A devolutiva do mentor valida (AiReview#answer).
+  def register_skate_session
+    return unless clip.attached? && recorded_at_meetup? && skate_session.nil?
+
+    create_skate_session!(user: user, skated_on: clip.blob.created_at.in_time_zone(user.time_zone).to_date)
+  end
 
   # Tela "Gravar": o vídeo é obrigatório e o checklist de segurança também.
   def validate_recording

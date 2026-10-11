@@ -16,6 +16,13 @@
     </p>
   </header>
 
+  <% if @meetup_now %>
+    <p class="auth-card rec-meetup">
+      <span class="material-symbols-outlined">local_fire_department</span>
+      <span>Você está no rolê em <strong><%= @meetup_now.place_name %></strong>: este vídeo vale para a sua ofensiva.</span>
+    </p>
+  <% end %>
+
   <ul class="auth-errors" role="alert" data-recorder-target="errors" <%= "hidden" unless @training_session&.errors&.any? %>>
     <% @training_session&.errors&.full_messages&.each do |message| %>
       <li><%= message %></li>

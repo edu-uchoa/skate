@@ -79,9 +79,10 @@ O público trava por **medo de se machucar** e **vergonha de ser visto**. Por is
 - **Privado por padrão:** nada na tela expõe a pessoa a estranhos (feed, ranking
   público, clipe visível para outros) sem ela escolher.
 - **Sem cobrança diária:** metas diárias punem quem parou por lesão. A ofensiva existe
-  (pedido do dono, no Perfil e na Trilha: `ProfileStats#streak`), mas nunca cobra: só
-  zera depois de um dia inteiro sem treino, mostra o recorde e diz "Tudo bem parar".
-  Não crie avisos de "você vai perder a ofensiva" nem metas diárias novas.
+  (pedido do dono), mas é **por sessão de skate**, não diária (`Streak`): rolê marcado no
+  mapa + vídeo de uma tarefa no horário + resultado enviado; só zera depois de 7 dias
+  sem sessão, e uma parada pode ser justificada (um mentor avalia). Diga "Tudo bem
+  parar". Não crie avisos de "você vai perder a ofensiva" nem metas diárias.
 - Imagens e exemplos com representação feminina, e português de rua.
 
 ## Antes de dar como pronto

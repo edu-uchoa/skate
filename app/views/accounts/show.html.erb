@@ -20,11 +20,13 @@
   </header>
 
   <div class="profile-stats">
-    <div class="profile-stat is-streak">
+    <%# Botão: abre a página da ofensiva (como funciona e justificativa de parada). %>
+    <%= link_to streak_path, class: "profile-stat is-streak is-button", aria: { label: "Ofensiva: #{streak_sessions_label(@streak.count)}. Ver como funciona" } do %>
       <span class="material-symbols-outlined">local_fire_department</span>
-      <strong><%= pluralize(@stats.streak, "dia", plural: "dias") %></strong>
-      <span>Ofensiva<%= " · recorde de #{@stats.best_streak}" if @stats.best_streak > @stats.streak %></span>
-    </div>
+      <span class="material-symbols-outlined profile-stat-go">chevron_right</span>
+      <strong><%= streak_sessions_label(@streak.count) %></strong>
+      <span>Ofensiva · <%= streak_state_label(@streak) %></span>
+    <% end %>
     <div class="profile-stat">
       <span class="material-symbols-outlined">skateboarding</span>
       <strong><%= SkateStyle.name(@stats.favorite_style) || "Descobrindo" %></strong>
@@ -42,7 +44,7 @@
     </div>
   </div>
   <p class="auth-hint">
-    A ofensiva conta os dias seguidos com treino enviado. Tudo bem parar: ela recomeça quando você voltar.
+    A ofensiva soma uma sessão a cada rolê comprovado com vídeo e só zera depois de 7 dias sem andar.
     O XP vem de cada tarefa que o mentor conclui, e o estilo favorito, das tarefas que você mais treina.
   </p>
 

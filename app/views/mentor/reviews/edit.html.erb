@@ -27,6 +27,13 @@
     <% end %>
   </div>
 
+  <% if @training_session.recorded_at_meetup? %>
+    <p class="zine-status info">
+      <span class="material-symbols-outlined">local_fire_department</span>
+      Vídeo de um rolê: ao responder, a sessão fica validada na ofensiva do aprendiz.
+    </p>
+  <% end %>
+
   <%= render "shared/errors", record: @review %>
 
   <%= form_with scope: :review, url: mentor_review_path(@review), method: :patch, class: "auth-form" do |f| %>

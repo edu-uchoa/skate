@@ -15,6 +15,8 @@ class User < ApplicationRecord
                            inverse_of: :reviewer, dependent: :nullify # devolutivas que respondeu como mentor
   has_many :clip_accesses, foreign_key: :viewer_id, inverse_of: :viewer, dependent: :nullify # vídeos de outros que assistiu
   has_many :meetups, dependent: :delete_all # rolês marcados no mapa de Picos
+  has_many :skate_sessions, dependent: :delete_all # sessões da ofensiva (Streak)
+  has_many :streak_justifications, dependent: :delete_all # paradas justificadas, avaliadas por mentor
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um

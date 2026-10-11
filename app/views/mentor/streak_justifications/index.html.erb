@@ -1,0 +1,51 @@
+<% content_for :section, "Mentor" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Área do mentor</span>
+    <h2 class="screen-title">Ofensivas</h2>
+    <p class="screen-desc">
+      Justificativas de parada dos aprendizes. Enquanto você não decide, a ofensiva fica guardada.
+      Mantenha se a parada faz sentido (lesão, chuva, provas); recuse se não.
+    </p>
+  </header>
+
+  <%= render "mentor/tabs", current: "ofensivas" %>
+
+  <% if @justifications.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">task_alt</span>
+      <p>Nenhuma justificativa esperando.</p>
+    </div>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @justifications.each do |justification| %>
+        <% learner = justification.user %>
+        <% streak = Streak.new(learner) %>
+        <li class="auth-card streak-review" id="<%= dom_id(justification) %>">
+          <header class="mentor-learner-head">
+            <span class="material-symbols-outlined">person</span>
+            <div class="mentor-learner-name">
+              <strong><%= masked_contact(learner) %></strong>
+              <span class="auth-hint">
+                Ofensiva de <%= streak_sessions_label(streak.count) %>
+                <% if streak.last_session_on %>· última sessão em <%= short_date(streak.last_session_on) %> (há <%= pluralize(streak.days_without_session, "dia", plural: "dias") %>)<% end %>
+              </span>
+            </div>
+            <% if learner.needs_supervision? %><span class="guide-tag is-must">Menor de idade</span><% end %>
+          </header>
+          <p class="streak-reason">“<%= justification.reason %>”</p>
+          <span class="auth-hint">Enviada em <%= short_date(justification.created_on) %></span>
+          <div class="mentor-request-actions">
+            <%= button_to mentor_streak_justification_path(justification, decision: "approve"), method: :patch, class: "tactile-btn-primary" do %>
+              <span>Manter a ofensiva</span><span class="material-symbols-outlined btn-arrow">local_fire_department</span>
+            <% end %>
+            <%= button_to "Recusar", mentor_streak_justification_path(justification, decision: "reject"), method: :patch,
+                  class: "auth-secondary-btn danger",
+                  form: { data: { turbo_confirm: "Recusar esta justificativa? A parada passa a contar e a ofensiva pode se perder." } } %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

@@ -1,0 +1,98 @@
+<% content_for :section, "Ofensiva" %>
+
+<section class="streak-screen">
+  <header class="auth-head">
+    <%= link_to my_account_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar ao perfil
+    <% end %>
+    <span class="step-indicator">Ofensiva por sessão</span>
+    <h2 class="screen-title">Ofensiva</h2>
+    <p class="screen-desc">Não é diária: ela soma a cada sessão de skate comprovada e só se perde depois de 7 dias sem andar.</p>
+  </header>
+
+  <%# 1. Primeiro, como funciona %>
+  <div class="auth-card">
+    <span class="auth-card-label">Como funciona</span>
+    <ol class="streak-steps">
+      <li><span class="material-symbols-outlined">add_location_alt</span>
+        <span><strong>Marque um rolê</strong> no mapa de Picos: lugar, dia e horário.</span></li>
+      <li><span class="material-symbols-outlined">videocam</span>
+        <span><strong>Grave uma tarefa</strong> da trilha no horário do rolê e envie o resultado.</span></li>
+      <li><span class="material-symbols-outlined">verified</span>
+        <span><strong>O mentor valida</strong> com a devolutiva do vídeo. Enquanto isso, a sessão já conta.</span></li>
+      <li><span class="material-symbols-outlined">local_fire_department</span>
+        <span><strong>Cada sessão soma 1</strong> (uma por dia). A ofensiva só zera depois de 7 dias sem sessão.</span></li>
+      <li><span class="material-symbols-outlined">healing</span>
+        <span><strong>Precisou parar?</strong> Lesão, chuva, provas: justifique abaixo. Um mentor avalia e, até lá, sua ofensiva fica guardada.</span></li>
+    </ol>
+  </div>
+
+  <%# 2. A situação agora %>
+  <div class="auth-card streak-status is-<%= @streak.state %>">
+    <div class="streak-count">
+      <span class="material-symbols-outlined">local_fire_department</span>
+      <strong><%= @streak.count %></strong>
+      <span><%= @streak.count == 1 ? "sessão" : "sessões" %></span>
+      <span class="guide-tag <%= "is-must" if @streak.alive? %>"><%= streak_state_label(@streak) %></span>
+    </div>
+    <p class="auth-hint"><%= streak_summary(@streak) %></p>
+    <% if @streak.best > @streak.count %>
+      <p class="auth-hint">Seu recorde: <%= streak_sessions_label(@streak.best) %>.</p>
+    <% end %>
+    <%= link_to spots_path, class: "tactile-btn-primary" do %>
+      <span>Marcar um rolê</span>
+      <span class="material-symbols-outlined btn-arrow">add_location_alt</span>
+    <% end %>
+  </div>
+
+  <% sessions = @streak.sessions.limit(5) %>
+  <% if sessions.any? %>
+    <section class="streak-section">
+      <h3 class="auth-card-label">Suas últimas sessões</h3>
+      <ul class="card-list streak-sessions">
+        <% sessions.each do |session| %>
+          <li>
+            <span class="card-list-label"><span class="material-symbols-outlined">skateboarding</span> <%= short_date(session.skated_on) %></span>
+            <span class="guide-tag <%= "is-must" if session.validated? %>"><%= session.validated? ? "Validada" : "Aguardando o mentor" %></span>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
+
+  <%# 3. Depois, a justificativa (opcional) %>
+  <section class="streak-section" id="justificar">
+    <h3 class="auth-card-label">Justificar uma parada</h3>
+    <% if (justification = @streak.current_justification) %>
+      <div class="auth-card streak-justification is-<%= justification.status %>">
+        <span class="auth-card-label">Enviada em <%= short_date(justification.created_on) %></span>
+        <p class="streak-reason">“<%= justification.reason %>”</p>
+        <% if justification.status_pending? %>
+          <p class="zine-status info"><span class="material-symbols-outlined">schedule</span> Aguardando um mentor avaliar. Até lá, sua ofensiva fica guardada.</p>
+        <% elsif justification.status_approved? %>
+          <p class="zine-status ok"><span class="material-symbols-outlined">check_circle</span> Aprovada: esta parada não conta para a ofensiva.</p>
+        <% else %>
+          <p class="zine-status error"><span class="material-symbols-outlined">cancel</span> Recusada: a parada conta normalmente. Registre um rolê para seguir.</p>
+        <% end %>
+      </div>
+    <% elsif @streak.can_justify? %>
+      <%= form_with model: @justification, url: streak_justifications_path, class: "auth-form" do |f| %>
+        <%= render "shared/errors", record: @justification %>
+        <p class="auth-hint">
+          Opcional. Se você precisou parar, conte o motivo: um mentor avalia se a ofensiva continua.
+          Só os mentores leem, e não precisa dar detalhes de saúde.
+        </p>
+        <div class="auth-field">
+          <%= f.label :reason, "Por que você parou?", class: "auth-label" %>
+          <%= f.text_area :reason, rows: 4, maxlength: StreakJustification::REASON_LENGTH, required: true, class: "auth-input",
+                placeholder: "Ex.: Torci o tornozelo e vou ficar duas semanas parado." %>
+        </div>
+        <%= f.button type: :submit, class: "auth-secondary-btn maneuver-advance" do %>
+          <span>Enviar justificativa</span><span class="material-symbols-outlined">send</span>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="auth-hint">Quando você tiver uma ofensiva, dá para justificar uma parada aqui.</p>
+    <% end %>
+  </section>
+</section>

@@ -42,7 +42,12 @@ Rails.application.routes.draw do
     resources :requests, only: %i[index update destroy], path: "pedidos"   # só administrador
     resources :mentors,  only: :destroy, path: "mentores"                   # só administrador
     resources :reviews,  only: %i[edit update], path: "devolutivas", path_names: { edit: "responder" }
+    resources :streak_justifications, only: %i[index update], path: "ofensivas" # paradas para avaliar
   end
+
+  # Ofensiva por sessão de skate: como funciona e justificativa de parada.
+  resource  :streak, only: :show, path: "ofensiva"
+  resources :streak_justifications, only: :create, path: "ofensiva/justificativas"
 
   # Mapa de Picos (Google Maps): picos fixos e os rolês que a pessoa marca.
   resources :spots,   only: :index, path: "picos"

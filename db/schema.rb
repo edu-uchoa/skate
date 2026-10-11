@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_12_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_12_200000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -182,6 +182,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_120000) do
     t.index ["user_id"], name: "index_meetups_on_user_id"
   end
 
+  create_table "skate_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "skated_on", null: false
+    t.integer "training_session_id"
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.datetime "validated_at"
+    t.index ["training_session_id"], name: "index_skate_sessions_on_training_session_id", unique: true
+    t.index ["user_id", "skated_on"], name: "index_skate_sessions_on_user_id_and_skated_on"
+    t.index ["user_id"], name: "index_skate_sessions_on_user_id"
+  end
+
+  create_table "streak_justifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.datetime "reviewed_at"
+    t.integer "reviewer_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["reviewer_id"], name: "index_streak_justifications_on_reviewer_id"
+    t.index ["user_id"], name: "index_streak_justifications_on_user_id"
+  end
+
   create_table "support_requests", force: :cascade do |t|
     t.string "contact"
     t.datetime "created_at", null: false
@@ -206,6 +230,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_120000) do
     t.integer "outcome"
     t.integer "period"
     t.boolean "queued_offline", default: false, null: false
+    t.boolean "recorded_at_meetup", default: false, null: false
     t.date "scheduled_on"
     t.boolean "space_safe", default: false, null: false
     t.datetime "started_at"
@@ -260,6 +285,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_120000) do
   add_foreign_key "maneuvers", "learning_modules"
   add_foreign_key "maneuvers", "maneuvers", column: "prerequisite_id"
   add_foreign_key "meetups", "users", on_delete: :cascade
+  add_foreign_key "skate_sessions", "training_sessions", on_delete: :nullify
+  add_foreign_key "skate_sessions", "users", on_delete: :cascade
+  add_foreign_key "streak_justifications", "users", column: "reviewer_id", on_delete: :nullify
+  add_foreign_key "streak_justifications", "users", on_delete: :cascade
   add_foreign_key "support_requests", "maneuvers"
   add_foreign_key "support_requests", "users"
   add_foreign_key "training_sessions", "maneuvers"

@@ -23,6 +23,9 @@ class Meetup < ApplicationRecord
   scope :active,   -> { where("ends_at > ?", Time.current) }
   scope :expired,  -> { where(ends_at: ..Time.current) }
   scope :upcoming, -> { active.order(:starts_at) }
+  # Rolês em que um vídeo gravado agora vale para a ofensiva: de 30 min antes do
+  # começo até o horário de fim.
+  scope :provable_at, ->(time) { where(starts_at: ..(time + 30.minutes), ends_at: time..) }
 
   before_validation :apply_schedule
   normalizes :place_name, with: ->(name) { name.squish }
@@ -43,6 +46,9 @@ class Meetup < ApplicationRecord
   def google_maps_url = "https://www.google.com/maps/search/?api=1&query=#{latitude},#{longitude}"
 
   def happening_now? = starts_at <= Time.current && ends_at > Time.current
+
+  # Dá para gravar agora o vídeo que comprova o rolê (vale para a ofensiva).
+  def provable_now? = starts_at <= 30.minutes.from_now && ends_at >= Time.current
 
   private
 

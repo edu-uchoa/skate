@@ -23,8 +23,9 @@ module Mentor
     # Vídeos dos aprendizes (vídeos de mentores e administradores ficam de fora).
     def learner_clips = TrainingSession.with_clip.joins(:user).merge(User.role_learner)
 
-    # Números das abas "Na fila", "Todos" e (para administrador) "Pedidos".
+    # Números das abas "Na fila", "Todos", "Ofensivas" e (para administrador) "Mentores".
     def load_tab_counts
+      @justification_count = StreakJustification.for_review(current_user).count
       @video_count   = learner_clips.count
       @queue_count   = learner_clips.joins(:ai_review).where(ai_reviews: { status: AiReview.statuses.values_at("pending", "processing") }).count
       @request_count = User.mentor_requests.count if current_user.role_admin?

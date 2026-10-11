@@ -29,6 +29,8 @@ class AiReview < ApplicationRecord
       training_session.update!(status: :analyzed)
       # A devolutiva conclui a tarefa do aprendiz e a seta da trilha avança.
       TrackProgression.new(training_session.user).complete!(training_session.maneuver)
+      # Se o vídeo comprovou um rolê, a sessão da ofensiva fica validada.
+      training_session.skate_session&.update!(validated_at: Time.current)
     end
     true
   end

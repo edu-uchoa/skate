@@ -31,6 +31,9 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - Toda tela de mentor herda de `Mentor::BaseController` (404 para quem não é mentor).
   O administrador tem todas as funções de mentor.
 - Apagar vídeo: só o dono e o administrador (`TrainingSession#clip_deletable_by?`).
+- Justificativas de parada da ofensiva (`StreakJustification`) podem ter dado de saúde:
+  só mentores leem, com o contato mascarado, e ninguém avalia a própria. A sessão da
+  ofensiva (`SkateSession`) guarda só o dia, nunca o lugar do rolê.
 - O mentor vê o contato do aprendiz mascarado (`masked_contact`) e não vê as anotações
   pessoais do treino. Mantenha esse mínimo ao criar telas novas de mentor.
 

@@ -10,6 +10,8 @@ class RecordingsController < ApplicationController
 
   def new
     @maneuver = selected_maneuver(params[:maneuver_slug])
+    # No horário de um rolê marcado no mapa, o vídeo vale para a ofensiva.
+    @meetup_now = current_user.meetups.provable_at(Time.current).order(:starts_at).first
   end
 
   def create

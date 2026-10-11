@@ -32,6 +32,7 @@ class AccountsController < ApplicationController
   # Tela "Perfil" (aba de baixo): nível, XP, ofensiva, estilo, avatar, skate e a conta.
   def show
     @stats = ProfileStats.new(current_user)
+    @streak = Streak.new(current_user)
     @look  = Avatar.new(current_user.avatar_options)
     @deck  = Deck.new(current_user.board_options)
     @tab   = params[:aba] == "skate" ? "skate" : "avatar"

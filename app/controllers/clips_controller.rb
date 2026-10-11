@@ -39,6 +39,8 @@ class ClipsController < ApplicationController
 
     training_session.transaction do
       training_session.ai_review.destroy! if training_session.ai_review&.awaiting_mentor?
+      # Sem o vídeo, o rolê ainda não validado pelo mentor deixa de valer para a ofensiva.
+      training_session.skate_session.destroy! if training_session.skate_session && !training_session.skate_session.validated?
       training_session.clip.purge
     end
 

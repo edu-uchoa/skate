@@ -12,11 +12,11 @@
     </h3>
   </div>
   <div style="display: flex; gap: 6px; align-items: center;">
-    <%# Ofensiva de verdade (ProfileStats): dias seguidos com treino enviado. Some quando é zero. %>
+    <%# Ofensiva de verdade (Streak): sessões de skate comprovadas. Some quando é zero. %>
     <% if @streak.positive? %>
-      <%= link_to my_account_path, class: "streak-pill", title: "Ofensiva: #{pluralize(@streak, "dia", plural: "dias")} seguidos treinando",
+      <%= link_to streak_path, class: "streak-pill", title: "Ofensiva: #{streak_sessions_label(@streak)}",
             style: "background: #24252a; border: 1px solid #343538; border-radius: 12px; padding: 4px 10px; display: flex; align-items: center; gap: 4px; text-decoration: none;" do %>
-        <span style="font-size: 10px; font-weight: 800; color: #ffb800;">🔥 <%= @streak %>D</span>
+        <span style="font-size: 10px; font-weight: 800; color: #ffb800;">🔥 <%= @streak %></span>
       <% end %>
     <% end %>
   </div>

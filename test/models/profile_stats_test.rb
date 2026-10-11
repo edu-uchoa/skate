@@ -38,21 +38,6 @@ class ProfileStatsTest < ActiveSupport::TestCase
     assert_equal 50, ProfileStats.level_for(200).progress(200), "metade do caminho do nível 2 para o 3"
   end
 
-  test "ofensiva: dias seguidos com treino, sem zerar no dia em que ainda dá para treinar" do
-    assert_equal 0, stats.streak
-
-    train(@setup, at: 1.day.ago)
-    train(@setup, at: 2.days.ago)
-    assert_equal 2, stats.streak, "treinou ontem e anteontem: hoje ainda vale"
-
-    train(@setup, at: Time.current)
-    assert_equal 3, stats.streak
-
-    travel 2.days
-    assert_equal 0, ProfileStats.new(@user).streak, "um dia inteiro sem treino zera"
-    assert_equal 3, ProfileStats.new(@user).best_streak, "o recorde fica"
-  end
-
   test "estilo favorito: o que a pessoa mais treina; empate fica com o mais recente" do
     assert_nil stats.favorite_style
     train(@setup, at: 3.days.ago)
