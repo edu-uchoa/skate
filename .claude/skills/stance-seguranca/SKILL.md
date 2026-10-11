@@ -49,6 +49,16 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - O código de recuperação hoje **só é escrito no log** (`AccessCodeDelivery`). Isso não
   pode ir para produção: o envio real por e-mail/WhatsApp é pendência conhecida.
 
+**Localização e rolês (mapa de Picos)**
+- A localização do aparelho só centraliza o mapa no navegador (`spots_map_controller.js`):
+  nunca envie ao servidor nem guarde. O que fica no banco é só o lugar que a pessoa
+  escolheu para o rolê (`Meetup`), e ele é apagado depois do horário de fim.
+- O link para os amigos (`/role/:token`) é público: mostra lugar, dia, horário e recado,
+  nunca nome, e-mail ou telefone de quem marcou. Rolês não aparecem para outros usuários
+  no mapa. Não crie lista pública de rolês: há menores de idade (13+) no app.
+- A chave do Google Maps vai para o navegador; a proteção é a restrição por endereço no
+  Google Cloud (README). Nunca coloque no código: use `GOOGLE_MAPS_API_KEY`.
+
 **Uploads (vídeos)**
 - Validação sempre no servidor (`TrainingSession#validate_clip`): tipo pelo conteúdo
   (não pela extensão), tamanho (40 MB) e duração. O navegador só dá feedback rápido.

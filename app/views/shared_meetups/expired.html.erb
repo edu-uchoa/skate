@@ -1,0 +1,15 @@
+<% content_for :section, "Rolê" %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex, nofollow") %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">event_busy</span>
+    <h2 class="screen-title">Esse rolê já acabou</h2>
+    <p class="screen-desc">O horário passou ou quem marcou cancelou. Combine um novo com a galera.</p>
+  </header>
+
+  <%= link_to root_path, class: "tactile-btn-primary" do %>
+    <span>Conhecer o Stance</span>
+    <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
+  <% end %>
+</section>

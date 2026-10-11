@@ -113,6 +113,8 @@ Principais rotas:
 | Minha conta | `/conta` |
 | Gravar video | `/gravar` |
 | Zine (videos e analises) | `/zine` |
+| Mapa de picos (Google Maps) | `/picos` |
+| Link de um role para os amigos (publico) | `/role/:token` |
 | Idade e seguranca | `/comecar/idade` |
 | Diagnostico | `/comecar/diagnostico?step=level` |
 | Plano do diagnostico | `/comecar/diagnostico/plano` |
@@ -141,6 +143,21 @@ docker run --rm -p 3000:80 \
 ## Variaveis e credenciais
 
 Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e as credenciais necessarias no ambiente de execucao.
+
+### Google Maps (mapa de picos)
+
+O mapa de `/picos` usa a Maps JavaScript API do Google. Sem a chave, a pagina funciona, mas mostra o aviso "O mapa do Google nao carregou" no lugar do mapa.
+
+1. Em [console.cloud.google.com](https://console.cloud.google.com), crie um projeto, ative a **Maps JavaScript API** e cadastre uma conta de faturamento (o Google pede cartao; ha uma cota gratuita mensal, confira os valores atuais).
+2. Em **Credenciais**, crie uma chave de API e **restrinja** (a chave vai para o navegador, e assim no Google Maps):
+   - Restricao de aplicativo: **Sites**, com `http://localhost:3000/*`, `http://127.0.0.1:3000/*` e, depois, `https://SEU-DOMINIO/*`.
+   - Restricao de API: so a **Maps JavaScript API**.
+3. Defina a variavel `GOOGLE_MAPS_API_KEY` antes de ligar o servidor. No Windows: `setx GOOGLE_MAPS_API_KEY "SUA_CHAVE"` e abra um terminal novo (ou feche e abra o VS Code).
+4. Em producao, crie um **Map ID** (Gerenciamento de mapas, tipo JavaScript) e defina `GOOGLE_MAPS_MAP_ID`. Em desenvolvimento o app usa o `DEMO_MAP_ID` do Google.
+
+Os picos fixos do mapa ficam em `config/picos.yml` (nome, tipo, descricao, lat e lng). O teste `test/models/spot_test.rb` confere o arquivo.
+
+A localizacao do aparelho so funciona em `https` ou em `localhost`: abrindo pelo IP da rede no celular (`http://192.168...`), o navegador bloqueia e a pagina mostra como liberar.
 
 ## Documentacao das funcionalidades
 

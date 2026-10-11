@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :given_reviews, class_name: "AiReview", foreign_key: :reviewer_id,
                            inverse_of: :reviewer, dependent: :nullify # devolutivas que respondeu como mentor
   has_many :clip_accesses, foreign_key: :viewer_id, inverse_of: :viewer, dependent: :nullify # vídeos de outros que assistiu
+  has_many :meetups, dependent: :delete_all # rolês marcados no mapa de Picos
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um

@@ -1,48 +1,150 @@
-<% content_for :section, "Spot Finder" %>
+<% content_for :section, "Picos" %>
+<%# Sem prévia do cache do Turbo: o mapa do Google é montado de novo a cada visita. %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-cache") %>
 
-<div style="padding: 10px 12px; background: #0d0e11; border-bottom: 1px solid #292a2d; display: flex; gap: 6px; overflow-x: auto; margin: -16px -16px 0 -16px;">
-  <button class="tape-badge" style="background: #ffb800; color: black; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🏙 STREET</button>
-  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🏀 QUADRAS</button>
-  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🛹 BOWLS</button>
-  <button class="tape-badge" style="background: #24252a; color: #e3e2e6; font-size: 10px; cursor: pointer; border: none; font-family: 'Outfit', sans-serif;">🕳 VAZIOS</button>
-</div>
+<%= tag.section class: "spots-screen", data: spots_map_data(@spots, @meetups) do %>
+  <header class="auth-head">
+    <span class="step-indicator">Mapa de picos</span>
+    <h2 class="screen-title">Picos</h2>
+    <p class="screen-desc">Marque no mapa onde e quando você vai andar e chame a galera pelo link.</p>
+  </header>
 
-<!-- Satellite Map Viewport -->
-<div style="position: relative; width: 100vw; height: 400px; background: #0d0e11; overflow: hidden; margin-left: -16px;">
-  <img src="<%= asset_path 'skate_discipline_spot_map.jpg' %>" alt="Mapa de Picos" style="width: 100%; height: 100%; object-fit: cover;">
-  
-  <!-- Spot Marker 1 -->
-  <div style="position: absolute; top: 40%; left: 35%; cursor: pointer;" onclick="alert('Spot selecionado: Pista do Ibira')">
-    <div style="width: 32px; height: 32px; border-radius: 50%; background: #ffb800; color: black; display: flex; align-items: center; justify-content: center; border: 2px solid black; box-shadow: 0 4px 8px rgba(0,0,0,0.8);">
-      <span class="material-symbols-outlined" style="font-size: 18px; font-weight: bold;">skateboarding</span>
-    </div>
-    <div class="version-badge" style="top: -14px; left: -10px; background: #fd591e; color: black; font-size: 8px; padding: 1px 4px; position: absolute;">IBIRA</div>
-  </div>
-</div>
-
-<!-- Bottom Sheet -->
-<div style="margin-top: -40px; position: relative; z-index: 10; background: #1a1b20; border: 1px solid #343538; border-radius: 10px; padding: 12px; box-shadow: 0 -8px 24px rgba(0,0,0,0.9);">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
-    <div>
-      <h3 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 900; color: #e3e2e6; text-transform: uppercase;">Pista do Ibira (Marquise)</h3>
-      <p style="font-size: 11px; color: #9e8f78; font-family: 'Inter', sans-serif;">Parque Ibirapuera • São Paulo - SP</p>
-    </div>
-    <span class="tape-badge" style="background: #30D158; color: black; font-size: 9px; font-family: 'Outfit', sans-serif;">PISO LISO</span>
+  <%# 1. Pedindo a localização do aparelho %>
+  <div class="auth-card spots-gate" data-spots-map-target="asking">
+    <span class="material-symbols-outlined auth-icon">my_location</span>
+    <strong>Liberando a sua localização…</strong>
+    <p class="auth-hint">
+      O mapa precisa da sua localização para mostrar os picos perto de você. Ela fica só no seu
+      aparelho: o Stance não guarda e não mostra para ninguém.
+    </p>
   </div>
 
-  <div style="display: flex; gap: 8px; margin-bottom: 8px; font-family: 'Inter', sans-serif;">
-    <div style="flex: 1; background: #0d0e11; padding: 8px 10px; border-radius: 6px; border: 1px solid #292a2d;">
-      <span style="font-size: 9px; color: #9e8f78; display: block; margin-bottom: 2px;">ILUMINAÇÃO</span>
-      <span style="font-size: 11px; font-weight: bold; color: #30D158;">💡 Boa até 22h</span>
-    </div>
-    <div style="flex: 1; background: #0d0e11; padding: 8px 10px; border-radius: 6px; border: 1px solid #292a2d;">
-      <span style="font-size: 9px; color: #9e8f78; display: block; margin-bottom: 2px;">HORÁRIO IDEAL</span>
-      <span style="font-size: 11px; font-weight: bold; color: #ffb800;">7h às 10h da manhã</span>
-    </div>
+  <%# 2. Sem localização, a página não funciona: explica como liberar %>
+  <div class="auth-card spots-gate is-denied" data-spots-map-target="denied" hidden>
+    <span class="material-symbols-outlined auth-icon">location_off</span>
+    <strong data-spots-map-target="deniedReason">Você não liberou a localização. Sem ela, o mapa de picos não funciona.</strong>
+    <ul class="card-list spots-how">
+      <li><span class="card-list-label"><span class="material-symbols-outlined">phone_iphone</span> iPhone: Ajustes › Privacidade › Serviços de Localização › Safari › "Ao Usar o App"</span></li>
+      <li><span class="card-list-label"><span class="material-symbols-outlined">android</span> Android: toque no cadeado ao lado do endereço › Permissões › Localização</span></li>
+      <li><span class="card-list-label"><span class="material-symbols-outlined">computer</span> Computador: clique no ícone ao lado do endereço e permita a localização</span></li>
+    </ul>
+    <button type="button" class="tactile-btn-primary" data-action="spots-map#retry">
+      <span>Tentar de novo</span>
+      <span class="material-symbols-outlined btn-arrow">refresh</span>
+    </button>
   </div>
 
-  <button class="tactile-btn-primary" style="width: 100%; display: flex; justify-content: center; align-items: center; gap: 6px; padding: 10px 12px; font-size: 12px; font-family: 'Outfit', sans-serif;" onclick="alert('Abrindo rotas no Google Maps...')">
-    <span style="font-weight: 800;">Como Chegar</span>
-    <span class="material-symbols-outlined" style="font-size: 18px;">directions</span>
-  </button>
-</div>
+  <%# 3. Localização liberada %>
+  <div class="spots-content" data-spots-map-target="content" hidden>
+    <div class="spots-map" data-spots-map-target="map" aria-label="Mapa de picos"></div>
+    <p class="auth-card spots-unavailable" data-spots-map-target="unavailable" hidden>
+      <span class="material-symbols-outlined">map</span>
+      O mapa do Google não carregou agora. Você ainda pode marcar um rolê num dos picos abaixo.
+    </p>
+    <p class="auth-hint">Toque no mapa para marcar um rolê em qualquer lugar, ou escolha um dos picos abaixo.</p>
+
+    <%= form_with model: @meetup, url: meetups_path, class: "auth-card spots-form", html: { hidden: @meetup.errors.none? },
+                  data: { spots_map_target: "form" } do |f| %>
+      <span class="auth-card-label">Marcar um rolê</span>
+      <%= render "shared/errors", record: @meetup %>
+      <%= f.hidden_field :latitude, data: { spots_map_target: "latitude" } %>
+      <%= f.hidden_field :longitude, data: { spots_map_target: "longitude" } %>
+
+      <div class="auth-field">
+        <%= f.label :place_name, "Onde", class: "auth-label" %>
+        <%= f.text_field :place_name, class: "auth-input", maxlength: Meetup::PLACE_LENGTH, required: true,
+              placeholder: "Ex.: Pista do parque, praça da quadra", data: { spots_map_target: "placeName" } %>
+      </div>
+
+      <div class="auth-field">
+        <%= f.label :day, "Dia", class: "auth-label" %>
+        <% today = Time.current.in_time_zone(current_user.time_zone).to_date %>
+        <%= f.date_field :day, class: "auth-input", required: true, min: today, max: today + Meetup::MAX_DAYS_AHEAD %>
+      </div>
+
+      <div class="spots-times">
+        <div class="auth-field">
+          <%= f.label :start_time, "Das", class: "auth-label" %>
+          <%= f.time_field :start_time, class: "auth-input", required: true, step: 900 %>
+        </div>
+        <div class="auth-field">
+          <%= f.label :end_time, "Até", class: "auth-label" %>
+          <%= f.time_field :end_time, class: "auth-input", required: true, step: 900 %>
+        </div>
+      </div>
+
+      <div class="auth-field">
+        <%= f.label :note, "Recado para a galera (opcional)", class: "auth-label" %>
+        <%= f.text_field :note, class: "auth-input", maxlength: Meetup::NOTE_LENGTH, placeholder: "Ex.: Levo um shape extra" %>
+      </div>
+
+      <p class="auth-note spots-safety">
+        <span class="material-symbols-outlined">shield</span>
+        Marque o pico, nunca a sua casa, e mande o link só para amigos que você conhece.
+        <% if current_user.needs_supervision? %>Combine o rolê com um adulto responsável.<% end %>
+      </p>
+
+      <div class="spots-form-actions">
+        <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+          <span>Marcar rolê</span>
+          <span class="material-symbols-outlined btn-arrow">add_location_alt</span>
+        <% end %>
+        <button type="button" class="secondary-link-btn" data-action="spots-map#closeForm">Cancelar</button>
+      </div>
+    <% end %>
+
+    <section class="spots-section">
+      <h3 class="auth-card-label">Seus rolês</h3>
+      <% if @meetups.empty? %>
+        <p class="auth-hint">Você ainda não marcou nenhum rolê. Quando marcar, ele aparece aqui e no mapa até a hora de acabar.</p>
+      <% end %>
+      <% @meetups.each do |meetup| %>
+        <article class="auth-card spots-card is-meetup" id="<%= dom_id(meetup) %>"
+                 data-controller="share" data-share-url-value="<%= shared_meetup_url(meetup.share_token) %>"
+                 data-share-text-value="<%= meetup_share_text(meetup) %>">
+          <div class="spots-card-head">
+            <span class="material-symbols-outlined">skateboarding</span>
+            <strong><%= meetup.place_name %></strong>
+            <% if meetup.happening_now? %><span class="guide-tag is-must">Rolando agora</span><% end %>
+          </div>
+          <p class="spots-card-when"><%= meetup.schedule_label %></p>
+          <% if meetup.note %><p class="auth-hint">“<%= meetup.note %>”</p><% end %>
+          <div class="spots-card-actions">
+            <button type="button" class="auth-secondary-btn maneuver-advance" data-action="share#share">
+              <span>Compartilhar</span><span class="material-symbols-outlined">share</span>
+            </button>
+            <button type="button" class="secondary-link-btn" data-action="share#copy" data-share-target="copyButton">Copiar link</button>
+            <%= link_to "Como chegar", meetup.google_maps_url, class: "secondary-link-btn", target: "_blank", rel: "noopener" %>
+            <%= button_to "Cancelar rolê", meetup_path(meetup), method: :delete, class: "secondary-link-btn spots-cancel",
+                  form: { data: { turbo_confirm: "Cancelar este rolê? O link que você mandou para a galera para de funcionar." } } %>
+          </div>
+        </article>
+      <% end %>
+    </section>
+
+    <section class="spots-section">
+      <h3 class="auth-card-label">Picos da galera</h3>
+      <% if @spots.empty? %>
+        <p class="auth-hint">Os picos fixos de Brasília aparecem aqui e no mapa em breve.</p>
+      <% end %>
+      <% @spots.each_with_index do |spot, index| %>
+        <article class="auth-card spots-card" id="spot_<%= index %>">
+          <div class="spots-card-head">
+            <%= spot_icon(spot) %>
+            <strong><%= spot.name %></strong>
+            <% if spot.kind.present? %><span class="guide-tag"><%= spot.kind %></span><% end %>
+          </div>
+          <% if spot.description.present? %><p class="auth-hint"><%= spot.description %></p><% end %>
+          <div class="spots-card-actions">
+            <button type="button" class="auth-secondary-btn maneuver-advance" data-action="spots-map#pickSpot"
+                    data-spots-map-index-param="<%= index %>">
+              <span>Marcar rolê aqui</span><span class="material-symbols-outlined">add_location_alt</span>
+            </button>
+            <%= link_to "Como chegar", "https://www.google.com/maps/search/?api=1&query=#{spot.latitude},#{spot.longitude}",
+                  class: "secondary-link-btn", target: "_blank", rel: "noopener" %>
+          </div>
+        </article>
+      <% end %>
+    </section>
+  </div>
+<% end %>

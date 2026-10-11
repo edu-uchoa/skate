@@ -2338,3 +2338,124 @@ a.guide-tab {
   color: var(--error-color);
   opacity: 1;
 }
+
+/* Mapa de Picos (spots/index): pedido de localização, mapa do Google, formulário
+   do rolê e as listas "Seus rolês" e "Picos da galera". */
+.spots-screen,
+.spots-content,
+.spots-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spots-screen { gap: 16px; }
+
+.spots-gate {
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.spots-gate strong {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text-on-surface);
+}
+
+.spots-gate.is-denied .auth-icon { color: var(--error-color); }
+
+.spots-how {
+  text-align: left;
+  font-size: 11px;
+}
+
+.spots-map {
+  width: 100%;
+  height: clamp(280px, 52vh, 460px);
+  border: 2px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0 var(--surface-low);
+  overflow: hidden;
+  background: var(--surface-low);
+}
+
+/* "Você está aqui": bolinha azul com borda branca. */
+.spots-me {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #3b8cff;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgba(59, 140, 255, 0.3);
+}
+
+.spots-unavailable {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-variant);
+}
+
+.spots-form { gap: 12px; }
+
+.spots-times {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.spots-safety {
+  justify-content: flex-start;
+  text-align: left;
+  line-height: 1.35;
+}
+
+.spots-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.spots-card { gap: 6px; transition: border-color 0.3s, box-shadow 0.3s; }
+
+/* Ao tocar num alfinete, o cartão do pico ou do rolê pisca em amarelo. */
+.spots-card.is-highlighted {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.spots-card.is-meetup { border-left: 4px solid var(--secondary-color); }
+
+.spots-card-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary-color);
+}
+
+.spots-card-head strong {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--text-on-surface);
+}
+
+.spots-card-when {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.spots-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.spots-card-actions .auth-secondary-btn { flex: 1 1 100%; }
+.spots-cancel { color: var(--error-color); }
+
+.spots-share-value { word-break: normal; }

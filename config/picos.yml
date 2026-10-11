@@ -1,0 +1,19 @@
+# Picos fixos do mapa: aparecem sempre, para todo mundo, como alfinetes amarelos.
+#
+# Para cada pico:
+#   nome:      como a galera chama o pico
+#   tipo:      rua, pista, bowl ou praça
+#   descricao: uma frase curta (piso, obstáculos, melhor horário)
+#   lat e lng: as coordenadas. No Google Maps, clique com o botão direito no lugar:
+#              os dois números que aparecem primeiro são a lat e a lng.
+#
+# Exemplo (apague o "#" do começo das linhas para usar):
+#
+#   - nome: Nome do pico
+#     tipo: pista
+#     descricao: Piso liso, bom para iniciante.
+#     lat: -15.7939
+#     lng: -47.8828
+#
+# O teste test/models/spot_test.rb confere se cada pico está preenchido certo.
+picos: []

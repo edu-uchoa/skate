@@ -44,11 +44,15 @@ Rails.application.routes.draw do
     resources :reviews,  only: %i[edit update], path: "devolutivas", path_names: { edit: "responder" }
   end
 
+  # Mapa de Picos (Google Maps): picos fixos e os rolês que a pessoa marca.
+  resources :spots,   only: :index, path: "picos"
+  resources :meetups, only: %i[create destroy], path: "roles"
+  get "role/:token", to: "shared_meetups#show", as: :shared_meetup # link público para os amigos
+
   # Funcionalidades Front-end
   resource  :store,  only: :show, path: "loja"
   resource  :avatar, only: :show, path: "avatar"
   resource  :deck,   only: :show, path: "deck"
-  resources :spots,  only: :index, path: "picos"
 
   # Conta obrigatória: cadastro/login com e-mail ou telefone e senha.
   resource  :account,        only: %i[new create], path: "cadastro", path_names: { new: "" }

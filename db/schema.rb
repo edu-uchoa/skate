@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_08_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_11_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -166,6 +166,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_130000) do
     t.index ["slug"], name: "index_maneuvers_on_slug", unique: true
   end
 
+  create_table "meetups", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "ends_at", null: false
+    t.decimal "latitude", precision: 9, scale: 6, null: false
+    t.decimal "longitude", precision: 9, scale: 6, null: false
+    t.string "note"
+    t.string "place_name", null: false
+    t.string "share_token", null: false
+    t.datetime "starts_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["ends_at"], name: "index_meetups_on_ends_at"
+    t.index ["share_token"], name: "index_meetups_on_share_token", unique: true
+    t.index ["user_id"], name: "index_meetups_on_user_id"
+  end
+
   create_table "support_requests", force: :cascade do |t|
     t.string "contact"
     t.datetime "created_at", null: false
@@ -241,6 +257,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_130000) do
   add_foreign_key "maneuver_progresses", "users"
   add_foreign_key "maneuvers", "learning_modules"
   add_foreign_key "maneuvers", "maneuvers", column: "prerequisite_id"
+  add_foreign_key "meetups", "users", on_delete: :cascade
   add_foreign_key "support_requests", "maneuvers"
   add_foreign_key "support_requests", "users"
   add_foreign_key "training_sessions", "maneuvers"

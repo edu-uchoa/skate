@@ -1,0 +1,39 @@
+<% content_for :section, "Rolê" %>
+<%# Prévia do link no WhatsApp: o lugar e o horário, sem dizer quem marcou. %>
+<% content_for :head do %>
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Bora andar de skate?">
+  <meta property="og:description" content="<%= @meetup.place_name %> · <%= @meetup.schedule_label %>">
+<% end %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <span class="material-symbols-outlined auth-icon">skateboarding</span>
+    <span class="step-indicator">Convite para um rolê</span>
+    <h2 class="screen-title">Bora andar de skate?</h2>
+  </header>
+
+  <div class="auth-card">
+    <span class="auth-card-label">Onde</span>
+    <span class="auth-card-value spots-share-value"><%= @meetup.place_name %></span>
+    <span class="auth-card-label">Quando</span>
+    <span class="auth-card-value spots-share-value"><%= @meetup.schedule_label %></span>
+    <% if @meetup.note %>
+      <span class="auth-card-label">Recado</span>
+      <p class="auth-hint">“<%= @meetup.note %>”</p>
+    <% end %>
+    <% if @meetup.happening_now? %><span class="guide-tag is-must">Rolando agora</span><% end %>
+  </div>
+
+  <%= link_to @meetup.google_maps_url, class: "tactile-btn-primary", target: "_blank", rel: "noopener" do %>
+    <span>Abrir no Google Maps</span>
+    <span class="material-symbols-outlined btn-arrow">directions</span>
+  <% end %>
+
+  <p class="auth-note">
+    <span class="material-symbols-outlined">shield</span>
+    Vá com quem você conhece. Capacete e joelheira sempre.
+  </p>
+
+  <%= link_to "Conhecer o Stance", root_path, class: "secondary-link-btn" %>
+</section>
