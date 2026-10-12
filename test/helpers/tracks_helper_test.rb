@@ -40,10 +40,37 @@ class TracksHelperTest < ActionView::TestCase
     end
   end
 
-  test "o nome do mapa sai com uma cor por letra" do
-    lines = map_title_lines("Super Skate World")
+  test "cada módulo é uma ilha, e a rua passa de uma para a outra por uma ponte" do
+    assert_equal 2, @layout.islands.size
+    above, below = @layout.islands
+    assert_equal [ [ above.bottom, below.top ] ], @layout.canals
+    assert_operator above.bottom, :<, below.top
 
-    assert_equal 2, lines.size, "a primeira palavra numa linha, o resto na outra"
-    assert_equal 15, lines.join.scan('class="is-').size
+    @layout.nodes.first(2).each { |node| assert node.point.y.between?(above.top, above.bottom) }
+    assert @layout.nodes.last.point.y.between?(below.top, below.bottom)
+    assert @layout.finish.y.between?(below.top, below.bottom)
+  end
+
+  test "o cenário tem grafite, obstáculos e sujeira, sem cobrir a rua nem as tarefas" do
+    pieces = track_map_scenery(@layout)
+    kinds  = pieces.map(&:kind)
+
+    assert_includes kinds, :graffiti_wall
+    assert (kinds & %i[skatepark halfpipe funbox ledge rail stairs kicker]).any?, "obstáculos de skate"
+    assert (kinds & %i[stain crack litter pothole]).any?, "sujeira na rua"
+
+    road = @layout.road_samples
+    pieces.select { |piece| piece.layer == :object }.each do |piece|
+      area = piece.box.grow(18) # metade da rua, com a calçada
+      assert road.none? { |x, y| x.between?(area.x, area.right) && y.between?(area.y, area.bottom) }, "#{piece.kind} em cima da rua"
+      @layout.nodes.each do |node|
+        task = TracksHelper::Scenery::Box.new(x: node.point.svg_x - 20, y: node.point.y - 20, width: 40, height: 40)
+        refute piece.box.overlaps?(task), "#{piece.kind} em cima da tarefa #{node.maneuver.code}"
+      end
+    end
+  end
+
+  test "o cenário sai sempre igual para a mesma trilha" do
+    assert_equal TracksHelper::Scenery.new(@layout).pieces, TracksHelper::Scenery.new(@layout).pieces
   end
 end

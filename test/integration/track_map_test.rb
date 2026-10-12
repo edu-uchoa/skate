@@ -30,11 +30,14 @@ class TrackMapTest < ActionDispatch::IntegrationTest
     assert_match "0.1", css_select(".floating-lesson-card").text
   end
 
-  test "o mapa desce de cima para baixo, com o nome colorido e uma placa por módulo" do
+  test "o mapa desce de cima para baixo, com uma ilha e uma placa por módulo" do
     get track_path
 
     assert_select ".track-map[data-controller=track-map] .track-map-canvas"
-    assert_select "h3.map-title[aria-label=?]", TracksHelper::MAP_TITLE
+    assert_select ".map-title", 0 # o nome "Super Skate World" saiu do mapa
+    assert_select ".map-scene path.map-ground", 2 # uma ilha da cidade por módulo
+    assert_select ".map-decoration", 0 # os ícones soltos saíram; o cenário é desenhado
+    assert_operator css_select(".map-scene use").size, :>, 10
     assert_select ".map-sign", 2
     assert_select ".map-node", 4
     assert_select ".track-map img", 0 # o mapa não é mais uma imagem (com os ícones de Store, Profile...)

@@ -1,0 +1,80 @@
+<%# Cenário do mapa da trilha, em SVG (locals: layout, de TracksHelper#track_map_layout):
+    água, uma ilha por módulo com o cais embaixo, a rua da trilha (ponte nos canais)
+    e as peças da cidade (TracksHelper::Scenery). É só o fundo: as bolinhas, os nomes
+    das tarefas e as placas vêm por cima, em HTML. %>
+<% width    = TracksHelper::MAP_WIDTH %>
+<% road     = layout.road_path %>
+<% scenery  = track_map_scenery(layout) %>
+<% outlines = layout.islands.map { |island| [ island, map_island_outline(island) ] } %>
+<% draw = ->(layers) do
+     safe_join(scenery.select { |piece| piece.layer.in?(layers) }.map do |piece|
+       tag.use(href: "##{piece.symbol}", x: piece.box.x, y: piece.box.y, width: piece.box.width,
+               height: piece.box.height, style: piece.style)
+     end)
+   end %>
+<svg class="map-scene" viewBox="0 0 <%= width %> <%= layout.height %>" aria-hidden="true" focusable="false">
+  <%= render "tracks/map_symbols" %>
+  <defs>
+    <% outlines.each do |island, outline| %>
+      <clipPath id="map-island-<%= island.index %>"><path d="<%= outline %>" /></clipPath>
+    <% end %>
+    <%# A ponte cobre o canal inteiro; a sombra dela só cai na água. %>
+    <clipPath id="map-bridges">
+      <% layout.canals.each do |above, below| %>
+        <rect x="0" y="<%= above - 6 %>" width="<%= width %>" height="<%= below - above + 12 %>" />
+      <% end %>
+    </clipPath>
+    <clipPath id="map-canal-water">
+      <% layout.canals.each do |above, below| %>
+        <rect x="0" y="<%= above + TracksHelper::WALL %>" width="<%= width %>" height="<%= below - above - TracksHelper::WALL %>" />
+      <% end %>
+    </clipPath>
+  </defs>
+
+  <rect class="map-water" width="<%= width %>" height="<%= layout.height %>" />
+  <rect width="<%= width %>" height="<%= layout.height %>" fill="url(#map-waves)" />
+  <%= draw.(%i[water]) %>
+
+  <%# Ilhas: o paredão do cais aparece embaixo de cada uma %>
+  <% outlines.each do |_island, outline| %>
+    <g transform="translate(0 <%= TracksHelper::WALL %>)">
+      <path class="map-foam" d="<%= outline %>" />
+      <path d="<%= outline %>" fill="url(#map-wall-panels)" />
+    </g>
+    <path class="map-ground" d="<%= outline %>" />
+    <path d="<%= outline %>" fill="url(#map-tiles)" />
+  <% end %>
+  <%= draw.(%i[patch decal]) %>
+
+  <%# Rua da trilha cruzando a rua de cada módulo (com faixa de pedestre) %>
+  <path class="map-road-curb" d="<%= road %>" />
+  <% layout.districts.each do |district| %>
+    <% island = layout.islands.find { |candidate| district.y.between?(candidate.top, candidate.bottom) } %>
+    <g clip-path="url(#map-island-<%= island.index %>)">
+      <rect class="map-street" x="-4" y="<%= district.y - 15 %>" width="<%= width + 8 %>" height="30" />
+      <path class="map-street-line" d="M0 <%= district.y %> H<%= width %>" />
+      <rect x="<%= district.crossing - 36 %>" y="<%= district.y - 13 %>" width="12" height="27" fill="url(#map-zebra)" />
+      <rect x="<%= district.crossing + 24 %>" y="<%= district.y - 13 %>" width="12" height="27" fill="url(#map-zebra)" />
+    </g>
+  <% end %>
+  <path class="map-road-asphalt" d="<%= road %>" />
+  <%= draw.(%i[road]) %>
+  <path class="map-road-line" d="<%= road %>" />
+
+  <%# Pontes sobre os canais %>
+  <path class="map-bridge-shadow" d="<%= road %>" transform="translate(4 7)" clip-path="url(#map-canal-water)" />
+  <g clip-path="url(#map-bridges)">
+    <path class="map-bridge-rail" d="<%= road %>" />
+    <path class="map-bridge-deck" d="<%= road %>" />
+    <path class="map-bridge-planks" d="<%= road %>" />
+  </g>
+  <% layout.canals.each do |above, below| %>
+    <% [ above + 1, below - 1 ].each do |y| %>
+      <% x = layout.road_x_at(y) %>
+      <rect class="map-bridge-post" x="<%= (x - 22).round(1) %>" y="<%= y - 3 %>" width="6" height="6" />
+      <rect class="map-bridge-post" x="<%= (x + 16).round(1) %>" y="<%= y - 3 %>" width="6" height="6" />
+    <% end %>
+  <% end %>
+
+  <%= draw.(%i[object]) %>
+</svg>

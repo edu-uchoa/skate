@@ -1,0 +1,386 @@
+<%# Desenho de cada peça do cenário do mapa (TracksHelper::Scenery), vista de cima e um
+    pouco de lado, como nos mapas de videogame: a face de cima mais clara, a da frente
+    mais escura e a sombra caindo para a direita. As cores que mudam de uma peça para
+    outra (prédio, grafite, carro) vêm de variáveis CSS passadas em cada <use>:
+    --roof, --wall, --tag-a, --tag-b e --paint. %>
+<defs>
+  <pattern id="map-waves" width="56" height="34" patternUnits="userSpaceOnUse">
+    <path d="M6 10 q4 -3.5 8 0 t8 0 M32 26 q4 -3.5 8 0 t8 0" fill="none" stroke="#86cde3" stroke-width="1.5" stroke-linecap="round" opacity="0.45" />
+  </pattern>
+  <pattern id="map-tiles" width="22" height="22" patternUnits="userSpaceOnUse">
+    <path d="M0 0.5 H22 M0.5 0 V22" fill="none" stroke="#000" stroke-opacity="0.09" />
+  </pattern>
+  <pattern id="map-wall-panels" width="16" height="12" patternUnits="userSpaceOnUse">
+    <rect width="16" height="12" fill="#3c3e45" />
+    <path d="M0.5 0 V12" stroke="#000" stroke-opacity="0.35" />
+  </pattern>
+  <pattern id="map-zebra" width="12" height="6" patternUnits="userSpaceOnUse">
+    <rect width="12" height="3.4" fill="#ece9e1" opacity="0.85" />
+  </pattern>
+  <radialGradient id="map-bowl-floor" cx="0.5" cy="0.5" r="0.55" fx="0.58" fy="0.62">
+    <stop offset="0" stop-color="#c4beb0" />
+    <stop offset="0.65" stop-color="#9b9588" />
+    <stop offset="1" stop-color="#6f6a60" />
+  </radialGradient>
+  <linearGradient id="map-quarter" x1="0" x2="1">
+    <stop offset="0" stop-color="#cfc9bc" />
+    <stop offset="1" stop-color="#857f73" />
+  </linearGradient>
+  <linearGradient id="map-kicker-slope" x1="0" x2="0" y1="0" y2="1">
+    <stop offset="0" stop-color="#9c7a55" />
+    <stop offset="1" stop-color="#dcbd90" />
+  </linearGradient>
+  <linearGradient id="map-ramp" x1="0" x2="1">
+    <stop offset="0" stop-color="#8f6c48" />
+    <stop offset="0.3" stop-color="#d8b789" />
+    <stop offset="0.7" stop-color="#d8b789" />
+    <stop offset="1" stop-color="#8f6c48" />
+  </linearGradient>
+
+  <%# Prédio baixo: telhado com ar-condicionado e caixa d'água, porta de enrolar grafitada %>
+  <symbol id="map-building" viewBox="0 0 60 58">
+    <rect x="6" y="6" width="54" height="52" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="27" width="53" height="26" style="fill: var(--wall)" />
+      <rect x="1" y="1" width="53" height="27" rx="1.5" style="fill: var(--roof)" />
+      <rect x="7" y="6" width="11" height="8" fill="#a3a9b0" />
+      <circle cx="43" cy="13" r="6" fill="#7a5f45" />
+      <rect x="19" y="36" width="18" height="17" fill="#8d939b" stroke-width="1" />
+      <path d="M5 31 h6 v6 h-6 z M13 31 h4 v6 h-4 z M40 31 h6 v6 h-6 z M48 31 h4 v6 h-4 z" fill="#22303e" stroke-width="0.9" />
+    </g>
+    <rect x="4" y="4" width="47" height="21" fill="none" stroke="#fff" stroke-opacity="0.22" />
+    <path d="M9 9 h7 M9 11.5 h7 M19.5 40 h17 M19.5 44 h17 M19.5 48 h17" stroke="#000" stroke-opacity="0.25" stroke-width="0.8" />
+    <circle cx="43" cy="13" r="3" fill="none" stroke="#fff" stroke-opacity="0.25" />
+    <path d="M17 49 c0 -5 3 -7 6 -6 c1 -3 5 -4 7 -1 c3 -1 6 1 5 5 c0 4 -4 5 -6 4 c-2 2 -6 2 -7 0 c-3 1 -5 0 -5 -2 z" style="fill: var(--tag-a)" stroke="#16171b" stroke-width="1" />
+    <path d="M20.5 46 q1.5 -2 3.5 -1" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" />
+    <path d="M40 48 l2 -4 l2 5 l2 -6 l2 6 l3 -3" fill="none" style="stroke: var(--tag-b)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+
+  <%# Prédio alto, com grafite no pé da parede %>
+  <symbol id="map-tower" viewBox="0 0 42 74">
+    <rect x="6" y="6" width="36" height="68" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="22" width="36" height="48" style="fill: var(--wall)" />
+      <rect x="1" y="1" width="36" height="22" rx="1.5" style="fill: var(--roof)" />
+      <rect x="6" y="5" width="10" height="9" fill="#8e8478" />
+      <path d="M5 27 h5 v6 h-5 z M13 27 h5 v6 h-5 z M21 27 h5 v6 h-5 z M29 27 h5 v6 h-5 z M5 37 h5 v6 h-5 z M13 37 h5 v6 h-5 z M21 37 h5 v6 h-5 z M29 37 h5 v6 h-5 z M5 47 h5 v6 h-5 z M13 47 h5 v6 h-5 z M21 47 h5 v6 h-5 z M29 47 h5 v6 h-5 z" fill="#22303e" stroke-width="0.9" />
+      <rect x="27" y="58" width="7" height="12" fill="#2b2c31" stroke-width="1" />
+    </g>
+    <rect x="4" y="4" width="30" height="16" fill="none" stroke="#fff" stroke-opacity="0.22" />
+    <circle cx="28" cy="11" r="1.8" fill="#ff5a5f" />
+    <path d="M4 66 c0 -4 2 -6 5 -5 c1 -3 5 -3 6 0 c3 -1 6 1 5 4 c0 3 -3 4 -5 3 c-2 2 -5 2 -6 0 c-3 1 -5 0 -5 -2 z" style="fill: var(--tag-a)" stroke="#16171b" stroke-width="1" />
+    <path d="M8 67 v2.6 M15 67.5 v2" style="stroke: var(--tag-a)" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M7 63 q1.5 -1.6 3 -1" fill="none" stroke="#fff" stroke-width="0.9" stroke-linecap="round" />
+  </symbol>
+
+  <%# Galpão com um grafite grande na parede %>
+  <symbol id="map-warehouse" viewBox="0 0 84 56">
+    <rect x="6" y="6" width="78" height="50" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="23" width="77" height="29" style="fill: var(--wall)" />
+      <rect x="1" y="1" width="77" height="23" rx="1.5" style="fill: var(--roof)" />
+      <rect x="12" y="6" width="12" height="7" fill="#9fd3e6" stroke-width="1" />
+      <rect x="34" y="6" width="12" height="7" fill="#9fd3e6" stroke-width="1" />
+      <rect x="56" y="6" width="12" height="7" fill="#9fd3e6" stroke-width="1" />
+      <rect x="58" y="32" width="15" height="20" fill="#8d939b" stroke-width="1" />
+    </g>
+    <path d="M2 17 H77 M2 20 H77 M58.5 36 H72.5 M58.5 40 H72.5 M58.5 44 H72.5 M58.5 48 H72.5" stroke="#000" stroke-opacity="0.18" stroke-width="0.8" />
+    <path d="M5 44 C4 36 10 30 17 33 C21 27 30 27 34 32 C39 27 49 29 51 35 C55 38 54 46 49 47 C45 50 38 49 35 47 C30 50 21 50 18 47 C12 50 6 48 5 44 Z" style="fill: var(--tag-b)" stroke="#16171b" stroke-width="1.2" />
+    <text class="map-graffiti" x="29" y="45" font-size="16" transform="rotate(-6 29 40)" style="fill: var(--tag-a)">PICO</text>
+    <path d="M14 47 v3 M38 47 v2.4" style="stroke: var(--tag-b)" stroke-width="1.3" stroke-linecap="round" />
+  </symbol>
+
+  <%# Loja de skate: toldo listrado, shapes na vitrine e placa com um skate no telhado %>
+  <symbol id="map-shop" viewBox="0 0 56 54">
+    <rect x="6" y="6" width="50" height="48" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="22" width="51" height="28" style="fill: var(--wall)" />
+      <rect x="1" y="1" width="51" height="22" rx="1.5" style="fill: var(--roof)" />
+      <rect x="11" y="5" width="30" height="12" rx="2" fill="#16171b" />
+      <rect x="6" y="32" width="26" height="14" fill="#9fd3e6" stroke-width="1" />
+      <rect x="37" y="32" width="11" height="18" fill="#2b2c31" stroke-width="1" />
+    </g>
+    <rect x="15" y="8.5" width="22" height="4.6" rx="2.3" fill="#ffb800" />
+    <circle cx="19" cy="14.6" r="1.4" fill="#e3e2e6" />
+    <circle cx="33" cy="14.6" r="1.4" fill="#e3e2e6" />
+    <g stroke="#16171b" stroke-width="0.8">
+      <rect x="2" y="23" width="49" height="7" fill="#f2efe8" />
+      <path d="M2 23 h7 v7 h-7 z M16 23 h7 v7 h-7 z M30 23 h7 v7 h-7 z M44 23 h7 v7 h-7 z" style="fill: var(--paint)" />
+    </g>
+    <g stroke="#16171b" stroke-width="0.7">
+      <rect x="10" y="34" width="4" height="11" rx="2" style="fill: var(--tag-a)" />
+      <rect x="17" y="34" width="4" height="11" rx="2" style="fill: var(--tag-b)" />
+      <rect x="24" y="34" width="4" height="11" rx="2" fill="#f2efe8" />
+    </g>
+  </symbol>
+
+  <%# Contêiner do porto %>
+  <symbol id="map-container" viewBox="0 0 50 28">
+    <rect x="5" y="5" width="45" height="23" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2" stroke-linejoin="round">
+      <rect x="1" y="14" width="45" height="11" style="fill: var(--paint)" />
+      <rect x="1" y="1" width="45" height="14" style="fill: var(--paint)" />
+    </g>
+    <rect x="1.6" y="14.6" width="43.8" height="9.8" fill="#000" opacity="0.28" />
+    <path d="M6 2 v12 M11 2 v12 M16 2 v12 M21 2 v12 M26 2 v12 M31 2 v12 M36 2 v12 M41 2 v12" stroke="#000" stroke-opacity="0.18" />
+    <path d="M6 22 l2 -4 l2 4 l2 -5 l2 5 l2 -3" fill="none" style="stroke: var(--tag-a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+
+  <%# Pista: bowl, quarter, ledge e corrimão numa base de concreto %>
+  <symbol id="map-skatepark" viewBox="0 0 112 76">
+    <rect x="6" y="7" width="106" height="69" rx="10" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3">
+      <rect x="1" y="7" width="106" height="64" rx="9" fill="#8a8478" />
+      <rect x="1" y="1" width="106" height="63" rx="9" fill="#cfc9bc" />
+    </g>
+    <path d="M62 2 V63 M62 34 H106" stroke="#000" stroke-opacity="0.08" />
+    <path d="M10 26 C10 11 30 8 39 16 C45 21 52 20 55 28 C58 42 49 57 33 57 C17 57 10 41 10 26 Z" fill="url(#map-bowl-floor)" stroke="#16171b" stroke-width="4.4" />
+    <path d="M10 26 C10 11 30 8 39 16 C45 21 52 20 55 28 C58 42 49 57 33 57 C17 57 10 41 10 26 Z" fill="none" stroke="#f3f0e8" stroke-width="2" />
+    <circle cx="35" cy="38" r="1.8" fill="#55514a" />
+    <rect x="80" y="38" width="22" height="24" fill="url(#map-quarter)" />
+    <rect x="102" y="38" width="4" height="24" fill="#a39c8e" />
+    <path d="M102 38 V62" stroke="#f3f0e8" stroke-width="2.2" />
+    <g stroke="#16171b" stroke-width="1">
+      <rect x="68" y="16" width="30" height="4" fill="#9b9487" />
+      <rect x="68" y="10" width="30" height="6.5" fill="#e6e0d3" />
+    </g>
+    <path d="M66 32 H96" stroke="#000" stroke-opacity="0.3" stroke-width="3" transform="translate(1.5 2)" />
+    <path d="M66 30 H96" stroke="#16171b" stroke-width="3.6" stroke-linecap="round" />
+    <path d="M66 30 H96" stroke="#e1e6eb" stroke-width="1.8" stroke-linecap="round" />
+    <path d="M66 50 c3 -5 9 -5 11 -1 c2 4 -3 8 -7 6 c-3 2 -6 -1 -4 -5 z" style="fill: var(--tag-a)" opacity="0.85" />
+    <path d="M68 58 l2 -3 l2 3 l2 -4 l2 4" fill="none" style="stroke: var(--tag-b)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+
+  <%# Mini rampa de madeira, com grafite na lateral %>
+  <symbol id="map-halfpipe" viewBox="0 0 72 46">
+    <rect x="5" y="6" width="67" height="40" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="30" width="66" height="12" fill="#7a5a3c" />
+      <rect x="1" y="1" width="66" height="30" fill="url(#map-ramp)" />
+      <rect x="1" y="1" width="9" height="30" fill="#8a6a4a" />
+      <rect x="58" y="1" width="9" height="30" fill="#8a6a4a" />
+    </g>
+    <path d="M10 1.5 V30.5 M58 1.5 V30.5" stroke="#eef0f2" stroke-width="2.2" />
+    <path d="M3 8 H8 M3 15 H8 M3 22 H8 M60 8 H65 M60 15 H65 M60 22 H65" stroke="#000" stroke-opacity="0.25" />
+    <path d="M10 31 Q10 40 21 40 H47 Q58 40 58 31" fill="none" stroke="#5a3f27" stroke-width="1.4" />
+    <path d="M24 39 c0 -3 2 -5 4 -4 c1 -2 4 -2 5 0 c2 -1 5 0 4 3 c0 2 -3 3 -4 2 c-2 1 -4 1 -5 0 c-2 1 -4 0 -4 -1 z" style="fill: var(--tag-a)" stroke="#16171b" stroke-width="0.9" />
+    <path d="M41 38 l2 -3 l2 3 l2 -4 l2 4" fill="none" style="stroke: var(--tag-b)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+
+  <%# Funbox com corrimão em cima %>
+  <symbol id="map-funbox" viewBox="0 0 52 36">
+    <rect x="5" y="6" width="47" height="30" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.3" stroke-linejoin="round">
+      <rect x="1" y="23" width="46" height="9" fill="#857f73" />
+      <rect x="1" y="1" width="46" height="23" rx="1.5" fill="#c6c0b3" />
+      <rect x="1" y="1" width="12" height="23" fill="#ddd7ca" />
+      <rect x="35" y="1" width="12" height="23" fill="#a49d90" />
+    </g>
+    <path d="M13 1.5 V23.5 M35 1.5 V23.5" stroke="#f3f0e8" stroke-width="1.8" />
+    <path d="M16 13 H32" stroke="#16171b" stroke-width="3.4" stroke-linecap="round" />
+    <path d="M16 13 H32" stroke="#e1e6eb" stroke-width="1.6" stroke-linecap="round" />
+    <path d="M5 30 l2 -4 l2 4 l2 -5 l2 5" fill="none" style="stroke: var(--tag-a)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="38" cy="27.5" r="2.4" style="fill: var(--tag-b)" />
+  </symbol>
+
+  <%# Rampinha (kicker) de madeira com chapa na ponta %>
+  <symbol id="map-kicker" viewBox="0 0 26 22">
+    <rect x="4" y="5" width="22" height="17" rx="1.5" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.1" stroke-linejoin="round">
+      <rect x="1" y="14" width="21" height="5" fill="#6b4c30" />
+      <rect x="1" y="1" width="21" height="14" fill="url(#map-kicker-slope)" />
+    </g>
+    <path d="M1.6 14.4 H21.4" stroke="#e1e6eb" stroke-width="1.6" />
+    <path d="M6 1.6 V13.6 M11.5 1.6 V13.6 M17 1.6 V13.6" stroke="#000" stroke-opacity="0.15" stroke-width="0.7" />
+  </symbol>
+
+  <%# Muro grafitado %>
+  <symbol id="map-graffiti-wall" viewBox="0 0 58 28">
+    <rect x="4" y="5" width="54" height="23" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2">
+      <rect x="1" y="5" width="54" height="19" fill="#d9d3c6" />
+      <rect x="1" y="1" width="54" height="5" fill="#a49e92" />
+    </g>
+    <path d="M5 19 C4 13 9 9 14 11 C17 7 24 7 27 11 C31 7 39 8 41 12 C46 10 52 13 51 18 C51 22 45 23 42 21 C38 24 31 23 29 21 C25 24 17 23 15 21 C11 23 6 22 5 19 Z" style="fill: var(--tag-b)" stroke="#16171b" stroke-width="1.1" />
+    <text class="map-graffiti" x="28" y="20.5" font-size="13.5" transform="rotate(-5 28 16)" style="fill: var(--tag-a)">ROLÊ</text>
+    <path d="M16 21.5 v2.5 M34 21.5 v2" style="stroke: var(--tag-b)" stroke-width="1.2" stroke-linecap="round" />
+  </symbol>
+
+  <%# Caçamba com sacos de lixo %>
+  <symbol id="map-dumpster" viewBox="0 0 34 24">
+    <rect x="4" y="5" width="30" height="19" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2" stroke-linejoin="round">
+      <rect x="1" y="10" width="24" height="10" fill="#1f6a41" />
+      <rect x="1" y="1" width="24" height="10" rx="1" fill="#2f8a57" />
+      <path d="M26 20 c-1 -4 1 -7 4 -7 c3 0 4 3 3 7 z" fill="#34363c" />
+      <path d="M23 21 c0 -3 2 -5 4 -4 c2 0 2 3 1 4 z" fill="#4a4c53" />
+    </g>
+    <path d="M13 1.5 V10.5" stroke="#000" stroke-opacity="0.3" />
+    <path d="M4 17 l2 -3 l2 3 l2 -4 l2 4 l2 -3" fill="none" style="stroke: var(--tag-a)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="5" cy="21" r="1.6" fill="#16171b" />
+    <circle cx="21" cy="21" r="1.6" fill="#16171b" />
+  </symbol>
+
+  <%# Canteiro de concreto (dá para andar na borda) %>
+  <symbol id="map-planter" viewBox="0 0 44 30">
+    <rect x="5" y="5" width="39" height="25" rx="2" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2" stroke-linejoin="round">
+      <rect x="1" y="18" width="40" height="8" fill="#7d776c" />
+      <rect x="1" y="1" width="40" height="18" rx="1.5" fill="#a39d91" />
+      <rect x="4.5" y="4.5" width="33" height="11" fill="#4f9d4a" />
+      <circle cx="12" cy="10" r="5" fill="#3f8a3e" />
+      <circle cx="28" cy="9" r="5.5" fill="#3f8a3e" />
+    </g>
+    <circle cx="10.5" cy="8.5" r="2.2" fill="#66bd5f" />
+    <circle cx="26.5" cy="7.5" r="2.4" fill="#66bd5f" />
+    <path d="M2 18.6 H40" stroke="#f3f0e8" stroke-opacity="0.6" />
+  </symbol>
+
+  <%# Gramado com caminho de terra %>
+  <symbol id="map-lawn" viewBox="0 0 72 46">
+    <rect x="1" y="1" width="70" height="44" rx="10" fill="#4d9547" stroke="#a5a197" stroke-width="2" />
+    <path d="M6 38 Q24 28 36 30 T66 14" fill="none" stroke="#8c7a5e" stroke-width="3" stroke-linecap="round" opacity="0.7" />
+    <path d="M12 12 l2 -3 l2 3 M30 18 l2 -3 l2 3 M50 9 l2 -3 l2 3 M16 26 l2 -3 l2 3 M46 36 l2 -3 l2 3 M58 26 l2 -3 l2 3" fill="none" stroke="#2f6e2c" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+
+  <%# Praça de concreto claro %>
+  <symbol id="map-plaza" viewBox="0 0 84 52">
+    <rect x="1" y="1" width="82" height="50" rx="6" fill="#a7a296" stroke="#c9c4b8" stroke-width="2" />
+    <path d="M15 2 V50 M29 2 V50 M43 2 V50 M57 2 V50 M71 2 V50 M2 14 H82 M2 27 H82 M2 40 H82" stroke="#000" stroke-opacity="0.1" />
+    <circle cx="42" cy="26" r="8" fill="#8f8a7f" stroke="#c9c4b8" stroke-width="1.5" />
+    <circle cx="42" cy="26" r="4.5" fill="#5aa9c4" />
+  </symbol>
+
+  <%# Estacionamento %>
+  <symbol id="map-parking" viewBox="0 0 80 44">
+    <rect x="1" y="1" width="78" height="42" rx="3" fill="#3a3b41" stroke="#9a968c" stroke-width="2" />
+    <path d="M12 3 V15 M26 3 V15 M40 3 V15 M54 3 V15 M68 3 V15 M12 29 V41 M26 29 V41 M40 29 V41 M54 29 V41 M68 29 V41" stroke="#e9e6df" stroke-opacity="0.75" stroke-width="1.1" />
+    <path d="M6 22 H74" stroke="#ffb800" stroke-opacity="0.55" stroke-width="1.1" stroke-dasharray="6 5" />
+  </symbol>
+
+  <%# Quadra %>
+  <symbol id="map-court" viewBox="0 0 76 46">
+    <rect x="1" y="1" width="74" height="44" rx="3" fill="#2f7d6d" stroke="#a5a197" stroke-width="2" />
+    <g fill="none" stroke="#e9e6df" stroke-opacity="0.85" stroke-width="1.2">
+      <rect x="6" y="6" width="64" height="34" />
+      <path d="M38 6 V40" />
+      <circle cx="38" cy="23" r="6" />
+      <path d="M6 15 h10 v16 h-10 M70 15 h-10 v16 h10" />
+    </g>
+  </symbol>
+
+  <%# Ledge com cantoneira %>
+  <symbol id="map-ledge" viewBox="0 0 40 18">
+    <rect x="4" y="5" width="36" height="13" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2" stroke-linejoin="round">
+      <rect x="1" y="8" width="35" height="7" fill="#8a8478" />
+      <rect x="1" y="1" width="35" height="8" fill="#d8d2c5" />
+    </g>
+    <path d="M1.6 8.6 H35.4" stroke="#f4f6f8" stroke-width="1.6" />
+    <path d="M8 5 H20" stroke="#000" stroke-opacity="0.2" stroke-width="1.6" stroke-linecap="round" />
+  </symbol>
+
+  <%# Corrimão reto (flat bar) %>
+  <symbol id="map-rail" viewBox="0 0 44 14">
+    <path d="M5 11 H42" stroke="#000" stroke-opacity="0.3" stroke-width="3" stroke-linecap="round" />
+    <g fill="#5c6168" stroke="#16171b" stroke-width="0.9">
+      <rect x="6" y="5" width="3" height="6" />
+      <rect x="34" y="5" width="3" height="6" />
+    </g>
+    <path d="M3 5 H40" stroke="#16171b" stroke-width="4.2" stroke-linecap="round" />
+    <path d="M3 5 H40" stroke="#e1e6eb" stroke-width="2.2" stroke-linecap="round" />
+  </symbol>
+
+  <%# Escada com corrimão %>
+  <symbol id="map-stairs" viewBox="0 0 36 40">
+    <rect x="5" y="5" width="31" height="35" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="1.2" stroke-linejoin="round">
+      <rect x="1" y="1" width="30" height="36" fill="#8a8478" />
+      <rect x="1" y="1" width="30" height="9" fill="#cfc9bc" />
+      <rect x="1" y="13" width="30" height="5" fill="#cfc9bc" />
+      <rect x="1" y="21" width="30" height="5" fill="#cfc9bc" />
+      <rect x="1" y="29" width="30" height="5" fill="#cfc9bc" />
+    </g>
+    <path d="M26 3 V36" stroke="#000" stroke-opacity="0.3" stroke-width="2.6" transform="translate(2 1)" />
+    <path d="M26 3 V36" stroke="#16171b" stroke-width="3.6" stroke-linecap="round" />
+    <path d="M26 3 V36" stroke="#e1e6eb" stroke-width="1.8" stroke-linecap="round" />
+  </symbol>
+
+  <%# Árvore %>
+  <symbol id="map-tree" viewBox="0 0 26 28">
+    <ellipse cx="15" cy="22" rx="10" ry="5" fill="#000" opacity="0.3" />
+    <circle cx="12" cy="12" r="10.5" fill="#3e9a4b" stroke="#16171b" stroke-width="1.2" />
+    <circle cx="9" cy="9" r="5" fill="#5fc46b" />
+    <circle cx="16" cy="15.5" r="3.2" fill="#2f7d3b" />
+  </symbol>
+
+  <%# Lixeira %>
+  <symbol id="map-bin" viewBox="0 0 12 16">
+    <ellipse cx="7" cy="13.5" rx="5" ry="2.4" fill="#000" opacity="0.3" />
+    <g stroke="#16171b" stroke-width="0.9">
+      <rect x="1" y="4" width="9" height="9.5" rx="1.5" fill="#d9822b" />
+      <ellipse cx="5.5" cy="4" rx="4.5" ry="2.4" fill="#8c4f15" />
+    </g>
+    <path d="M3.5 3.6 l2 -1.6 l1.6 1.2" fill="none" stroke="#f2efe8" stroke-width="1.1" />
+  </symbol>
+
+  <%# Cone %>
+  <symbol id="map-cone" viewBox="0 0 10 12">
+    <ellipse cx="6" cy="10.5" rx="4" ry="1.6" fill="#000" opacity="0.3" />
+    <rect x="1" y="8.4" width="8" height="2.4" rx="0.6" fill="#c94a12" stroke="#16171b" stroke-width="0.7" />
+    <path d="M5 1 L8.2 8.8 H1.8 Z" fill="#ff7a1a" stroke="#16171b" stroke-width="0.8" stroke-linejoin="round" />
+    <path d="M3.4 5 H6.6 L7.2 6.5 H2.8 Z" fill="#f2efe8" />
+  </symbol>
+
+  <%# Carro estacionado %>
+  <symbol id="map-car" viewBox="0 0 30 14">
+    <rect x="3" y="3" width="27" height="11" rx="4" fill="#000" opacity="0.3" />
+    <g fill="#16171b">
+      <rect x="5" y="0" width="5" height="2.2" rx="1" />
+      <rect x="18" y="0" width="5" height="2.2" rx="1" />
+      <rect x="5" y="10.8" width="5" height="2.2" rx="1" />
+      <rect x="18" y="10.8" width="5" height="2.2" rx="1" />
+    </g>
+    <rect x="1" y="1.2" width="27" height="10.6" rx="4" style="fill: var(--paint)" stroke="#16171b" stroke-width="1.1" />
+    <rect x="9" y="3" width="9" height="7" rx="1.5" fill="#fff" opacity="0.28" />
+    <path d="M18.5 3 h3 v7 h-3 z M6 3.4 h2.4 v6.2 h-2.4 z" fill="#1d2a38" />
+  </symbol>
+
+  <%# Barco no canal %>
+  <symbol id="map-boat" viewBox="0 0 42 18">
+    <path d="M1 7 H7 M2 11 H7" stroke="#e9f6fa" stroke-opacity="0.7" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M9 3 H31 L41 9 L31 15 H9 Z" fill="#000" opacity="0.25" transform="translate(1 2)" />
+    <path d="M9 2.5 H31 L40.5 9 L31 15.5 H9 Z" fill="#ece9e1" stroke="#16171b" stroke-width="1.1" stroke-linejoin="round" />
+    <path d="M9.6 12.6 H33.6" stroke="#d64541" stroke-width="1.6" />
+    <rect x="14" y="5.5" width="11" height="7" rx="1" fill="#3b8cff" stroke="#16171b" stroke-width="0.9" />
+  </symbol>
+
+  <%# Sujeira no chão: mancha, rachadura, lixo e poça %>
+  <symbol id="map-stain" viewBox="0 0 30 14">
+    <ellipse cx="12" cy="7" rx="11" ry="5.5" fill="#1d1712" opacity="0.28" />
+    <ellipse cx="21" cy="8.5" rx="7" ry="4" fill="#1d1712" opacity="0.22" />
+    <circle cx="26" cy="3" r="1.4" fill="#1d1712" opacity="0.3" />
+  </symbol>
+  <symbol id="map-crack" viewBox="0 0 28 18">
+    <path d="M1 9 L6 7.5 L10 10 L15 6 L19 9 L24 5 L27 6.5 M10 10 L12 15.5 M19 9 L21 3.5" fill="none" stroke="#1b1b1e" stroke-opacity="0.65" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
+  </symbol>
+  <symbol id="map-litter" viewBox="0 0 18 10">
+    <rect x="1" y="4" width="6.5" height="3.6" rx="1.2" fill="#e8463c" stroke="#16171b" stroke-width="0.6" />
+    <rect x="1.4" y="4.4" width="1.6" height="2.8" fill="#c8ccd2" />
+    <rect x="10" y="1.5" width="6" height="4.6" fill="#f2efe8" stroke="#16171b" stroke-width="0.6" transform="rotate(16 13 4)" />
+    <circle cx="11" cy="8.4" r="1.1" fill="#3b8cff" />
+  </symbol>
+  <symbol id="map-puddle" viewBox="0 0 26 12">
+    <path d="M3 6 C2 2 9 1 13 2.2 C18 0.8 25 2.5 24 6.5 C23 10.5 15 11 11 10 C6 11 3.5 9 3 6 Z" fill="#3a6f86" opacity="0.85" />
+    <path d="M8 4.5 Q12 3 15 4.2" fill="none" stroke="#a6d8ea" stroke-width="0.9" stroke-linecap="round" />
+  </symbol>
+
+  <%# Na rua da trilha: buraco e remendo no asfalto %>
+  <symbol id="map-pothole" viewBox="0 0 14 9">
+    <path d="M2 4.5 C1.5 1.5 6 0.8 8 1.4 C11.5 0.8 13.2 3 12.6 5.2 C12 8 7.5 8.4 5.6 7.8 C3.5 8.2 2.2 6.6 2 4.5 Z" fill="#141518" stroke="#4a4b52" stroke-width="1" />
+  </symbol>
+  <symbol id="map-road-patch" viewBox="0 0 20 13">
+    <path d="M1.5 2 L17 1 L18.5 11 L3 12 Z" fill="#3c3d44" stroke="#4d4e55" stroke-width="0.8" stroke-linejoin="round" />
+    <path d="M5 5 L9 7 L13 5.5" fill="none" stroke="#1b1b1e" stroke-width="0.8" />
+  </symbol>
+</defs>

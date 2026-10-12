@@ -42,9 +42,11 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 ## Trilha e guias
 | Classe | Para quê |
 | --- | --- |
-| `track-map-frame` / `track-map` / `track-map-canvas` | Mapa da trilha, desenhado no app (sem imagem): desce de cima para baixo e rola na vertical, barra à direita. Layout calculado em `TracksHelper#track_map_layout`; nome colorido em `TracksHelper::MAP_TITLE` |
+| `track-map-frame` / `track-map` / `track-map-canvas` | Mapa da trilha, desenhado no app (sem imagem), visto de cima como mapa de mundo de videogame: uma ilha da cidade por módulo, de cima para baixo, rolando na vertical com a barra à direita. Layout em `TracksHelper#track_map_layout` (sem nome no topo) |
+| `map-scene` (partial `tracks/_map_scene`) | Fundo em SVG: água, ilhas com cais, rua da trilha com faixa tracejada, rua de cada módulo com faixa de pedestre e ponte de tábuas nos canais |
+| Peças do cenário (`tracks/_map_symbols`, um `<symbol>` por peça) | Prédios e galpão grafitados, loja de skate, pista com bowl, mini rampa, funbox, kicker, ledge, corrimão, escada, praça, gramado, quadra, estacionamento, carros, barcos e sujeira (manchas, rachaduras, buracos, lixo). Quem escolhe onde cada uma vai é `TracksHelper::Scenery`: semente fixa (sai sempre igual) e nada em cima da rua, das bolinhas, dos nomes ou das placas. Cores variáveis por `<use style="--roof/--wall/--tag-a/--tag-b/--paint">`. Para uma peça nova: desenhe o `<symbol id="map-nome">`, ponha o tamanho em `Scenery::SIZES` e use-a em `THEMES`/`FILL` |
 | `map-node` (`.is-completed` check, `.is-current` seta, `.is-open` cadeado aberto; sem classe = bloqueado) + `map-node-label` | Bolinha de cada tarefa e o adesivo com o nome ao lado |
-| `map-road` / `map-street` / `map-sign` / `map-flag` / `map-decoration` | Rua em curvas (SVG), rua transversal e placa azul de cada módulo, Largada/Chegada e enfeites da cidade |
+| `map-sign` / `map-flag` | Placa azul de cada módulo (na rua do módulo) e Largada/Chegada, em HTML por cima do cenário |
 | `floating-lesson-card` | Cartão "Módulo atual" abaixo do mapa |
 
 ## Perfil, avatar e skate (/conta)

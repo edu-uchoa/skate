@@ -22,27 +22,13 @@
   </div>
 </div>
 
-<%# Mapa desenhado no app (TracksHelper#track_map_layout): desce de cima para baixo e
-    rola na vertical, com a barra de rolagem à direita. %>
+<%# Mapa desenhado no app (TracksHelper#track_map_layout): uma ilha da cidade por
+    módulo, de cima para baixo, rolando na vertical com a barra à direita. %>
 <% layout = track_map_layout(@learning_modules) %>
 <div class="track-map-frame">
   <div class="track-map" data-controller="track-map">
     <div class="track-map-canvas" style="aspect-ratio: <%= TracksHelper::MAP_WIDTH %> / <%= layout.height %>;">
-      <h3 class="map-title" aria-label="<%= TracksHelper::MAP_TITLE %>">
-        <% map_title_lines.each do |line| %>
-          <span class="map-title-line"><%= line %></span>
-        <% end %>
-      </h3>
-
-      <% layout.districts.each do |district| %>
-        <div class="map-street" style="<%= map_top(district.y, layout) %>" aria-hidden="true"></div>
-      <% end %>
-
-      <svg class="map-road" viewBox="0 0 <%= TracksHelper::MAP_WIDTH %> <%= layout.height %>" aria-hidden="true">
-        <path class="map-road-edge" d="<%= layout.road_path %>" />
-        <path class="map-road-asphalt" d="<%= layout.road_path %>" />
-        <path class="map-road-line" d="<%= layout.road_path %>" />
-      </svg>
+      <%= render "tracks/map_scene", layout: layout %>
 
       <% layout.districts.each do |district| %>
         <span class="map-sign is-<%= district.sign_side %>" style="<%= map_top(district.y, layout) %>">
@@ -59,9 +45,6 @@
 
       <% layout.nodes.each do |node| %>
         <% maneuver = node.maneuver %>
-        <span class="map-decoration material-symbols-outlined <%= "is-tree" if node.decoration[:tree] %>"
-              style="<%= map_position(node.decoration[:x], node.point.y, layout) %>" aria-hidden="true"><%= node.decoration[:icon] %></span>
-
         <% status = progression.status_for(maneuver) %>
         <% current = (maneuver == @current_maneuver) %>
         <%# Check só para o que foi concluído; liberado ou pulado = cadeado aberto. %>
