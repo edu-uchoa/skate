@@ -18,8 +18,20 @@ class AvatarTest < ActiveSupport::TestCase
     assert_equal "black-power", look[:hair]
     assert look[:vitiligo]
     assert_equal "capacete-amarelo", look[:head]
-    assert_equal "amarelo", look[:top_color]
+    assert_equal Avatar::DEFAULTS[:top_color], look[:top_color]
     assert_match "--av-skin: #4f2f1c; --av-skin-shade: #3d2415;", look.css_variables
+  end
+
+  test "opções do avatar antigo que saíram voltam para o padrão" do
+    look = Avatar.new("hair" => "moicano", "top" => "jaqueta", "shoes" => "slip-on-xadrez", "head" => "aba-reta")
+
+    %i[hair top shoes head].each { |part| assert_equal Avatar::DEFAULTS[part], look[part], part }
+  end
+
+  test "as roupas são as dos jogos de skate de hoje, largas e sem marca" do
+    assert_equal %w[moletom-capuz moletom-caveira camiseta-larga camiseta-estampa xadrez], Avatar::OPTIONS[:top].map(&:key)
+    assert_includes Avatar::OPTIONS[:bottom].map(&:key), "bermuda-preta"
+    assert_includes Avatar::OPTIONS[:head].map(&:key), "bone-para-tras"
   end
 
   test "todas as partes têm opções e um padrão que existe na lista" do

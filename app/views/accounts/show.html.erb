@@ -4,7 +4,7 @@
 
 <section class="profile-screen">
   <header class="profile-hero">
-    <div class="profile-hero-avatar"><%= render "avatars/avatar", look: @look, uid: "hero" %></div>
+    <div class="profile-hero-avatar"><%= render "avatars/avatar", look: @look, deck: @deck, uid: "hero", crop: true %></div>
     <div class="profile-hero-info">
       <span class="step-indicator">Seu perfil</span>
       <h2 class="screen-title">Nível <%= level.number %></h2>
@@ -57,7 +57,7 @@
     <input type="radio" name="profile-tab" id="profile-tab-skate" value="skate" <%= "checked" if @tab == "skate" %>>
     <label for="profile-tab-skate"><span class="material-symbols-outlined">skateboarding</span> Skate</label>
   </div>
-  <div class="profile-panel is-avatar"><%= render "avatars/editor", look: @look %></div>
+  <div class="profile-panel is-avatar"><%= render "avatars/editor", look: @look, deck: @deck %></div>
   <div class="profile-panel is-skate"><%= render "decks/editor", deck: @deck %></div>
 
   <section class="profile-account">

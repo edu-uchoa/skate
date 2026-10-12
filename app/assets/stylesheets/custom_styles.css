@@ -2583,7 +2583,8 @@ a.guide-tab {
   border-radius: var(--radius-md);
 }
 
-.profile-preview.is-avatar .avatar { width: auto; height: 220px; }
+.profile-preview.is-avatar .avatar { width: auto; height: 300px; }
+@media (max-height: 700px) { .profile-preview.is-avatar .avatar { height: 230px; } }
 .profile-preview.is-deck .deck { width: auto; height: 240px; }
 
 .customizer-group {
@@ -2641,48 +2642,70 @@ a.guide-tab {
   border-top: 1px solid var(--surface-high);
 }
 
-/* Desenho do avatar (avatars/_avatar). As cores vêm das variáveis --av-*. */
+/* Desenho do avatar (avatars/_avatar), no estilo dos jogos de skate de hoje. As cores
+   vêm das variáveis --av-* (e --deck-* para o skate na mão); o volume vem dos
+   degradês de sombra desenhados por cima de cada parte. */
 .avatar { display: block; width: 100%; height: auto; }
 .avatar .av-skin { fill: var(--av-skin); }
-.avatar .av-skin-shade { fill: var(--av-skin-shade); }
 .avatar .av-hair { fill: var(--av-hair); }
 .avatar .av-eyes { fill: var(--av-eyes); }
 .avatar .av-top { fill: var(--av-top); }
-.avatar .av-shadow { fill: #000; opacity: 0.18; }
 .avatar .av-vitiligo { fill: #f6e8de; }
-.avatar .av-stubble { opacity: 0.3; }
-.avatar .av-buzz { opacity: 0.85; }
-.avatar .av-brow { fill: none; stroke: var(--av-hair); stroke-width: 2.6; stroke-linecap: round; }
-.avatar .av-lashes { fill: none; stroke: #141414; stroke-width: 1.5; stroke-linecap: round; }
-.avatar:not([data-base="feminino"]) .av-lashes { display: none; }
-.avatar .av-nose { fill: none; stroke: var(--av-skin-shade); stroke-width: 2; stroke-linecap: round; }
-.avatar .av-mouth { fill: none; stroke: #6b2a2a; stroke-width: 2.2; stroke-linecap: round; }
-.avatar .av-braid { fill: none; stroke: #000; stroke-opacity: 0.28; stroke-width: 2; stroke-dasharray: 3 2; }
+.avatar .av-stubble { opacity: 0.32; }
+.avatar .av-buzz { opacity: 0.8; }
+.avatar .av-line { fill: none; stroke: var(--av-skin-shade); stroke-width: 0.9; stroke-linecap: round; stroke-opacity: 0.9; }
+.avatar .av-line.is-soft { stroke-opacity: 0.5; stroke-width: 0.7; }
+.avatar .av-line.is-nose { stroke-width: 1.1; }
+.avatar .av-lid { fill: none; stroke: #2a1a14; stroke-width: 1.1; stroke-linecap: round; }
+.avatar .av-lashes { fill: none; stroke: #1a1210; stroke-width: 1.5; stroke-linecap: round; }
+.avatar .av-brow { fill: none; stroke: var(--av-hair); stroke-width: 2.3; stroke-linecap: round; }
+.avatar .av-brow.is-thin { stroke-width: 1.6; }
+.avatar .av-lip { fill: #8f3f3a; opacity: 0.5; }
+.avatar .av-lip.is-lower { opacity: 0.36; }
+.avatar .av-shine { fill: none; stroke: #fff; stroke-opacity: 0.18; stroke-width: 2.4; stroke-linecap: round; }
+.avatar .av-curls circle { stroke: #000; stroke-opacity: 0.25; stroke-width: 0.9; }
+.avatar .av-plait { stroke: #000; stroke-opacity: 0.35; stroke-width: 0.8; }
 .avatar .av-bead { fill: var(--primary-color); }
-.avatar .av-sock { fill: #f2efe6; }
-.avatar .av-sock-yellow { fill: #ffd23f; }
+.avatar .av-loc-outline { fill: none; stroke: #000; stroke-opacity: 0.45; stroke-width: 5.4; stroke-linecap: round; }
+.avatar .av-loc { fill: none; stroke: var(--av-hair); stroke-width: 3.8; stroke-linecap: round; }
+.avatar .av-sock { fill: #efece4; }
+.avatar .av-sock.is-black { fill: #26272b; }
 .avatar .av-stripe-a { fill: var(--primary-color); }
 .avatar .av-stripe-b { fill: var(--secondary-color); }
-.avatar .av-jeans { fill: #35507a; }
-.avatar .av-cargo { fill: #7d6e4f; }
-.avatar .av-bermuda { fill: #2a2b30; }
-.avatar .av-seam { fill: none; stroke: #000; stroke-opacity: 0.22; stroke-width: 1.2; }
-.avatar .av-laces { fill: none; stroke: #fff; stroke-opacity: 0.7; stroke-width: 1.4; stroke-linecap: round; }
-.avatar .av-print { fill: #fff; opacity: 0.85; }
-.avatar .av-print-mark { fill: none; stroke: var(--av-top); stroke-width: 2.2; stroke-linecap: round; }
-.avatar .av-string { fill: none; stroke: #fff; stroke-opacity: 0.8; stroke-width: 1.6; stroke-linecap: round; }
-.avatar .av-collar { fill: #000; opacity: 0.25; }
-.avatar .av-button { fill: #fff; opacity: 0.8; }
-.avatar .av-tee { fill: #e9e6df; }
-.avatar .av-vent { fill: #000; opacity: 0.3; }
-.avatar .av-shine { fill: none; stroke: #fff; stroke-opacity: 0.5; stroke-width: 3; stroke-linecap: round; }
-.avatar .av-strap { fill: none; stroke: #141414; stroke-width: 2.2; stroke-linecap: round; }
-.avatar .av-sticker { fill: #e9e6df; }
-/* De boné ou capacete, o cabelo que passaria por cima (coque, moicano...) some. */
+.avatar .av-jeans { fill: #a9bccd; }
+.avatar .av-khaki { fill: #b98953; }
+.avatar .av-cargo { fill: #2b2c31; }
+.avatar .av-jorts { fill: #2a2b2f; }
+.avatar .av-print { fill: #ecebe6; }
+.avatar .av-print-line { fill: none; stroke: var(--av-top); stroke-width: 0.9; }
+.avatar .av-print-stroke { stroke: #ecebe6; stroke-width: 1.6; stroke-linecap: round; }
+.avatar .av-print-big {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  text-anchor: middle;
+  fill: #ecebe6;
+}
+.avatar .av-board-word {
+  font-family: var(--font-display);
+  font-size: 5.6px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: var(--primary-color);
+}
+.avatar .av-trucks { fill: var(--deck-trucks, #b8bcc4); stroke: #0d0e11; stroke-width: 0.6; }
+.avatar .av-wheels { fill: var(--deck-wheels, #f2efe6); }
+/* Rosto e sobrancelha de cada base. */
+.avatar[data-base="feminino"] .av-only-m,
+.avatar:not([data-base="feminino"]) .av-only-f { display: none; }
+/* De boné ou capacete, o volume do cabelo que passaria por cima some. */
 .avatar:not([data-head="nenhum"]) .hair-top { display: none; }
-/* A base feminina tem ombros e quadril um pouco mais estreitos. */
-.avatar .avatar-body { transform-origin: 100px 150px; }
-.avatar[data-base="feminino"] .avatar-body { transform: scale(0.9, 1); }
+/* A base feminina tem os ombros um pouco mais estreitos. */
+.avatar .av-upper { transform-origin: 100px 150px; }
+.avatar[data-base="feminino"] .av-upper { transform: scale(0.92, 1); }
 
 /* Desenho do skate (decks/_deck). Rodas e trucks vêm de --deck-wheels / --deck-trucks. */
 .deck { display: block; width: 100%; height: auto; }

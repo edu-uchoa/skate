@@ -1,7 +1,8 @@
 # Avatar de skatista do perfil (users.avatar_options).
 #
 # Cada parte tem uma lista fechada de opções; o que vier do formulário fora da
-# lista volta para o padrão. O desenho fica em app/views/avatars/_avatar.html.erb.
+# lista volta para o padrão (inclusive opções antigas que saíram, como "moicano").
+# O desenho fica em app/views/avatars/_avatar.html.erb.
 class Avatar
   Option = Data.define(:key, :label, :color, :shade) do
     def initialize(key:, label:, color: nil, shade: nil) = super
@@ -20,9 +21,9 @@ class Avatar
       Option.new("azul", "Azul", "#3c78b5"), Option.new("cinza", "Cinza", "#7b8794")
     ],
     hair: [
-      Option.new("raspado", "Raspado"), Option.new("curto", "Curto"), Option.new("cacheado", "Cacheado"),
-      Option.new("black-power", "Black power"), Option.new("moicano", "Moicano"), Option.new("coque", "Coque"),
-      Option.new("rabo", "Rabo de cavalo"), Option.new("longo", "Longo"), Option.new("trancas", "Tranças")
+      Option.new("raspado", "Raspado"), Option.new("curto", "Curto"), Option.new("ondulado", "Ondulado no ombro"),
+      Option.new("cacheado", "Cacheado"), Option.new("black-power", "Black power"), Option.new("dreads", "Dreads"),
+      Option.new("trancas", "Tranças"), Option.new("longo", "Longo liso")
     ],
     hair_color: [
       Option.new("preto", "Preto", "#1d1b1b"), Option.new("castanho", "Castanho", "#5a3825"),
@@ -33,46 +34,55 @@ class Avatar
       Option.new("nenhuma", "Sem barba"), Option.new("rala", "Rala"), Option.new("bigode", "Bigode"),
       Option.new("cavanhaque", "Cavanhaque"), Option.new("cheia", "Cheia")
     ],
+    # Roupas no estilo dos jogos de skate de hoje: tudo largo, sem marca nenhuma.
     top: [
-      Option.new("camiseta", "Camiseta"), Option.new("moletom", "Moletom"), Option.new("xadrez", "Camisa xadrez"),
-      Option.new("regata", "Regata"), Option.new("jaqueta", "Jaqueta")
+      Option.new("moletom-capuz", "Moletom com capuz"), Option.new("moletom-caveira", "Moletom de caveira"),
+      Option.new("camiseta-larga", "Camiseta larga"), Option.new("camiseta-estampa", "Camiseta estampada"),
+      Option.new("xadrez", "Camisa xadrez")
     ],
     top_color: [
-      Option.new("preto", "Preto", "#26272c"), Option.new("branco", "Branco", "#e9e6df"),
-      Option.new("amarelo", "Amarelo", "#ffb800"), Option.new("laranja", "Laranja", "#fd591e"),
-      Option.new("azul", "Azul", "#2f6fd6"), Option.new("verde", "Verde", "#2e9e5b"),
-      Option.new("vermelho", "Vermelho", "#d64545")
+      Option.new("grafite", "Grafite", "#3a3b41"), Option.new("preto", "Preto", "#232428"),
+      Option.new("verde-musgo", "Verde musgo", "#39463a"), Option.new("verde-limao", "Verde-limão", "#a9b84c"),
+      Option.new("branco", "Branco", "#e9e6df"), Option.new("amarelo", "Amarelo", "#ffb800"),
+      Option.new("laranja", "Laranja", "#fd591e"), Option.new("azul", "Azul", "#2f6fd6"),
+      Option.new("vermelho", "Vermelho", "#c94040")
     ],
-    bottom: [ Option.new("jeans", "Calça jeans"), Option.new("cargo", "Calça cargo"), Option.new("bermuda", "Bermuda") ],
+    bottom: [
+      Option.new("jeans-claro", "Jeans claro largo"), Option.new("caqui", "Calça cáqui larga"),
+      Option.new("camuflada", "Calça camuflada"), Option.new("cargo-preta", "Calça cargo preta"),
+      Option.new("bermuda-preta", "Bermuda jeans preta")
+    ],
     socks: [
       Option.new("curta", "Curta"), Option.new("branca", "Branca cano alto"),
-      Option.new("listrada", "Listrada"), Option.new("amarela", "Amarela")
+      Option.new("listrada", "Listrada"), Option.new("preta", "Preta cano alto")
     ],
+    # color: o cabedal (a parte de cima do tênis); shade: a sola.
     shoes: [
-      Option.new("cano-baixo-preto", "Cano baixo preto", "#1f1f23", "#e9e6df"),
-      Option.new("cano-alto-branco", "Cano alto branco", "#e9e6df", "#c9c3b8"),
-      Option.new("slip-on-xadrez", "Slip-on xadrez", "#1f1f23", "#e9e6df"),
-      Option.new("cano-baixo-amarelo", "Cano baixo amarelo", "#ffb800", "#e9e6df")
+      Option.new("corrida", "Corrida grafite", "#46423f", "#ecebe6"),
+      Option.new("classico", "Clássico preto e branco", "#1d1d21", "#ecebe6"),
+      Option.new("camurca", "Camurça marrom", "#4b3427", "#e6dfcf"),
+      Option.new("preto-caramelo", "Preto sola caramelo", "#222226", "#c47a3a"),
+      Option.new("branco", "Branco", "#ecebe6", "#d9d4c8")
     ],
     head: [
       Option.new("capacete-amarelo", "Capacete amarelo", "#ffb800"), Option.new("capacete-preto", "Capacete preto", "#2a2b30"),
-      Option.new("bone", "Boné"), Option.new("aba-reta", "Aba reta"), Option.new("gorro", "Gorro"),
+      Option.new("bone-para-tras", "Boné para trás"), Option.new("bone", "Boné"), Option.new("gorro", "Gorro"),
       Option.new("nenhum", "Nada")
     ]
   }.freeze
 
   # Começa de capacete: no Stance, segurança vem primeiro.
   DEFAULTS = {
-    base: "feminino", skin: "3", vitiligo: false, eyes: "castanho", hair: "longo", hair_color: "preto",
-    beard: "nenhuma", top: "moletom", top_color: "amarelo", bottom: "jeans", socks: "branca",
-    shoes: "cano-baixo-preto", head: "capacete-amarelo"
+    base: "feminino", skin: "3", vitiligo: false, eyes: "castanho", hair: "trancas", hair_color: "preto",
+    beard: "nenhuma", top: "moletom-capuz", top_color: "verde-musgo", bottom: "caqui", socks: "branca",
+    shoes: "camurca", head: "capacete-amarelo"
   }.freeze
 
   # Grupos do editor, na ordem da tela.
   GROUPS = {
     base: "Avatar", skin: "Cor da pele", eyes: "Cor dos olhos", hair: "Cabelo", hair_color: "Cor do cabelo",
-    beard: "Barba", top: "Roupa", top_color: "Cor da roupa", bottom: "Calça", socks: "Meias", shoes: "Tênis",
-    head: "Boné ou capacete"
+    beard: "Barba", top: "Roupa", top_color: "Cor da roupa", bottom: "Calça ou bermuda", socks: "Meias",
+    shoes: "Tênis", head: "Boné ou capacete"
   }.freeze
 
   # Cores que o desenho lê de variáveis CSS (a prévia troca na hora, sem recarregar).

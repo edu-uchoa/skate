@@ -1,7 +1,7 @@
 <%# Editor do avatar: a prévia troca na hora (customizer_controller.js) e "Salvar" guarda. %>
 <%= form_with url: avatar_path, method: :patch, scope: :avatar, class: "profile-editor",
               data: { controller: "customizer", action: "change->customizer#update" } do |f| %>
-  <div class="profile-preview is-avatar"><%= render "avatars/avatar", look: look, uid: "editor", editable: true %></div>
+  <div class="profile-preview is-avatar"><%= render "avatars/avatar", look: look, deck: local_assigns[:deck], uid: "editor", editable: true %></div>
 
   <% Avatar::GROUPS.each do |part, title| %>
     <fieldset class="customizer-group">

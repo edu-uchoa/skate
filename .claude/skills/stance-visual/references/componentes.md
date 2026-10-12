@@ -57,6 +57,7 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 | `profile-tabs` / `profile-panel` (`.is-avatar`, `.is-skate`) | Abas só com CSS (radios `#profile-tab-avatar` / `#profile-tab-skate`) |
 | `profile-editor` / `profile-preview` / `customizer-group` / `customizer-chip` / `customizer-swatch` | Editor com prévia grudada no topo e opções em "chips". A prévia troca na hora com `data-controller="customizer"` |
 | `avatar` (SVG, `avatars/_avatar`) / `deck` (SVG, `decks/_deck`) | Desenhos em camadas: `customizer_layer` (data-part/data-option); cores por variáveis `--av-*` e `--deck-*`. Opções em `Avatar::OPTIONS` e `Deck::TYPES` |
+| Estilo do avatar | Personagem de jogo de skate de hoje (referência: prints de Session do dono): proporção de gente, roupa larga e sem marca, luz da esquerda. O volume vem de degradês por cima da cor (`url(#cyl-uid)` nas laterais, `#fall-uid` de cima para baixo, `#ao-uid` onde uma parte encosta na outra). Desenhe só o lado esquerdo e espelhe com `avatar_mirror`/`avatar_both` (AvatarsHelper). A cabeça é encolhida em volta do queixo (`head`). Segura o skate do Perfil (`deck:`), e `crop: true` mostra só do peito para cima (topo do Perfil). Roupa nova: uma camada `layer.(:top, "chave")` + a opção em `Avatar::OPTIONS` |
 | `video-container` / `play-circle` / `video-badge` | Vídeo (ou placeholder) no topo do passo |
 | `guide`, `guide-head`, `guide-title`, `guide-lead` | Estrutura do guia de um passo |
 | `guide-card` + `guide-card-label` | Cartão numerado ("1. Escolha o seu estilo") |

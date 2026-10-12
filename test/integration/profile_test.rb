@@ -35,7 +35,7 @@ class ProfileTest < ActionDispatch::IntegrationTest
   end
 
   test "salvar o avatar guarda só opções válidas e o desenho mostra o que foi escolhido" do
-    patch avatar_path, params: { avatar: { base: "masculino", hair: "moicano", head: "nenhum", beard: "cheia",
+    patch avatar_path, params: { avatar: { base: "masculino", hair: "dreads", head: "nenhum", beard: "cheia",
                                            vitiligo: "true", skin: "invalida", admin: "true" } }
     assert_redirected_to my_account_path(anchor: "personalizar")
 
@@ -47,8 +47,11 @@ class ProfileTest < ActionDispatch::IntegrationTest
 
     get my_account_path
     assert_select ".profile-hero svg.avatar[data-base=masculino][data-head=nenhum]"
-    assert_select ".profile-hero [data-part=hair]", 1, "fora do editor, só a camada escolhida vai para a página"
-    assert_select ".profile-hero [data-part=hair][data-option=moicano]"
+    hero_hair = css_select(".profile-hero [data-part=hair]").map { |layer| layer["data-option"] }.uniq
+    assert_equal %w[dreads], hero_hair, "fora do editor, só a opção escolhida vai para a página"
+    # O personagem segura o skate do Perfil, com as rodas e os trucks escolhidos na aba Skate.
+    assert_select ".profile-preview svg.avatar .av-board"
+    assert_select ".profile-preview svg.avatar[style*=?]", "--deck-wheels: #{Deck.new(@user.board_options).choice(:wheels).color}"
     # No editor vão todas as opções (alguns cabelos têm camada de trás e da frente), para a prévia trocar na hora.
     editor_hair = css_select(".profile-preview [data-part=hair]").map { |layer| layer["data-option"] }.uniq
     assert_equal Avatar::OPTIONS[:hair].map(&:key).sort, editor_hair.sort
