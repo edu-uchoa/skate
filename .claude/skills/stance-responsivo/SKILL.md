@@ -37,7 +37,12 @@ pegam (já aconteceu com Ajuda e Retorno).
 - Vídeos WebM (gravados no Android): o Safari toca desde o iOS 15/16, mas ainda não foi
   conferido num iPhone de verdade com um vídeo gravado no Android.
 - Para testar num iPhone real na mesma rede: `bin/rails server -b 0.0.0.0` e abrir
-  `http://<IPv4 do PC>:3000` (liberar no firewall do Windows).
+  `http://<IPv4 do PC>:3000` (liberar no firewall do Windows). O celular precisa estar no
+  mesmo Wi-Fi (no 4G/5G não acha o PC) e `127.0.0.1` no celular é o próprio celular.
+  **No PowerShell** (terminal do VS Code do usuário) o comando é `ruby bin/rails server -b 0.0.0.0`:
+  sem o `ruby` na frente, o Windows abre "Selecionar um aplicativo para abrir 'rails'" e
+  o servidor não liga. Servidor que você liga em segundo plano desliga quando a sessão
+  acaba: diga ao usuário como ligar o dele.
 
 ## App instalado na tela do celular (PWA)
 

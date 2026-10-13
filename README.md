@@ -66,6 +66,29 @@ Para iniciar somente o servidor Rails:
 bin/rails server
 ```
 
+No Windows, pelo PowerShell (o terminal padrao do VS Code), ponha `ruby` na frente:
+sem isso o Windows pergunta "com qual aplicativo abrir 'rails'" e nada acontece.
+
+```powershell
+ruby bin/rails server
+```
+
+### Abrindo no celular (mesma rede Wi-Fi)
+
+Ligue o servidor aberto para a rede de casa:
+
+```powershell
+ruby bin/rails server -b 0.0.0.0
+```
+
+No computador continua `http://localhost:3000`. No celular, conectado no mesmo Wi-Fi
+(no 4G/5G nao funciona), abra `http://<IPv4 do computador>:3000`. O IPv4 aparece no
+PowerShell com `ipconfig` (linha "Endereco IPv4" do Wi-Fi, algo como `192.168.0.8`).
+Na primeira vez, o Windows pode pedir para liberar o Ruby no firewall: aceite.
+
+Pelo `http://` a camera dentro do app, a localizacao (Picos) e a pagina "Sem sinal" nao
+funcionam: o celular so libera esses recursos em sites `https://`.
+
 ## Testes
 
 Execute a suite de testes com:
