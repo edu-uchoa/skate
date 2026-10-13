@@ -4,7 +4,7 @@ module ZinesHelper
   # Rótulo, ícone, tom e quantos passos já foram vencidos em cada etapa
   # (o passo seguinte é o atual — ou o que falhou).
   ANALYSIS_STAGES = {
-    awaiting_result: { label: "Registre o resultado para enviar ao mentor",    icon: "edit_note",    tone: "warn",  step: 1 },
+    awaiting_result: { label: "Já está na fila do mentor · conte como foi o treino", icon: "edit_note", tone: "warn", step: 1 },
     queued_offline:  { label: "Aguardando conexão para enviar",                icon: "cloud_off",    tone: "warn",  step: 1 },
     pending:         { label: "Na fila do mentor · resposta em até 48h",       icon: "schedule",     tone: "info",  step: 2 },
     processing:      { label: "O mentor está vendo seu vídeo",                 icon: "visibility",   tone: "info",  step: 2 },

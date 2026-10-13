@@ -59,9 +59,9 @@ class StreakFlowTest < ActionDispatch::IntegrationTest
 
     delete sign_out_path
     sign_in(@mentor)
-    get edit_mentor_review_path(session.ai_review)
+    get mentor_zine_path
     assert_match "a sessão fica validada na ofensiva", response.body
-    patch mentor_review_path(session.ai_review), params: { review: ANSWER }
+    post mentor_video_review_path(session), params: { review: ANSWER }
     assert skate_session.reload.validated?
   end
 

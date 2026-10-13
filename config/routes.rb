@@ -41,7 +41,10 @@ Rails.application.routes.draw do
     resource  :zine,     only: :show, path: "zine"
     resources :requests, only: %i[index update destroy], path: "pedidos"   # só administrador
     resources :mentors,  only: :destroy, path: "mentores"                   # só administrador
-    resources :reviews,  only: %i[edit update], path: "devolutivas", path_names: { edit: "responder" }
+    # Devolutiva escrita no cartão do vídeo: enviar (fila) e revisar (todos).
+    resources :videos,   only: [], path: "videos" do
+      resource :review,  only: %i[create update], path: "devolutiva"
+    end
     resources :streak_justifications, only: %i[index update], path: "ofensivas" # paradas para avaliar
   end
 

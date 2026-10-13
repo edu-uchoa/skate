@@ -27,7 +27,7 @@ module Mentor
     def load_tab_counts
       @justification_count = StreakJustification.for_review(current_user).count
       @video_count   = learner_clips.count
-      @queue_count   = learner_clips.joins(:ai_review).where(ai_reviews: { status: AiReview.statuses.values_at("pending", "processing") }).count
+      @queue_count   = learner_clips.awaiting_review.count
       @request_count = User.mentor_requests.count if current_user.role_admin?
     end
   end

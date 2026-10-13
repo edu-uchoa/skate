@@ -13,16 +13,8 @@ class AiReview < ApplicationRecord
 
   # Devolutiva escrita pelo mentor: o aprendiz vê na tela que já existe
   # (ai_reviews/_review). Devolve false com os erros em português.
-  def answer(mentor, headline:, strengths:, mistake:, next_focus:)
-    self.headline   = headline.to_s.strip.first(TEXT_LENGTH).presence || "Devolutiva do seu #{training_session.maneuver.name.downcase}"
-    self.strengths  = strengths.to_s.strip.first(TEXT_LENGTH)
-    self.mistake    = mistake.to_s.strip.first(TEXT_LENGTH)
-    self.next_focus = next_focus.to_s.strip.first(TEXT_LENGTH)
-
-    { strengths: "o que o aprendiz fez bem", mistake: "onde foi o erro", next_focus: "o foco da próxima sessão" }.each do |field, label|
-      errors.add(:base, "Escreva #{label}.") if public_send(field).blank?
-    end
-    return false if errors.any?
+  def answer(mentor, **texts)
+    return false unless assign_texts(**texts)
 
     transaction do
       update!(status: :completed, reviewer: mentor, completed_at: Time.current, raw_response: "mentor")
@@ -33,6 +25,14 @@ class AiReview < ApplicationRecord
       training_session.skate_session&.update!(validated_at: Time.current)
     end
     true
+  end
+
+  # O mentor revisa uma devolutiva já enviada (aba "Todos"): o aprendiz passa a ver
+  # o texto novo. A tarefa continua concluída.
+  def revise(**texts)
+    return false unless status_completed? && assign_texts(**texts)
+
+    update!(revised_at: Time.current)
   end
 
   def apply!(result)
@@ -50,5 +50,20 @@ class AiReview < ApplicationRecord
 
   def fail!(message)
     update!(status: :failed, error_message: message.to_s.truncate(255))
+  end
+
+  private
+
+  # As três partes são obrigatórias; a frase de destaque, não.
+  def assign_texts(headline:, strengths:, mistake:, next_focus:)
+    self.headline   = headline.to_s.strip.first(TEXT_LENGTH).presence || "Devolutiva do seu #{training_session.maneuver.name.downcase}"
+    self.strengths  = strengths.to_s.strip.first(TEXT_LENGTH)
+    self.mistake    = mistake.to_s.strip.first(TEXT_LENGTH)
+    self.next_focus = next_focus.to_s.strip.first(TEXT_LENGTH)
+
+    { strengths: "o que o aprendiz fez bem", mistake: "onde foi o erro", next_focus: "o foco da próxima sessão" }.each do |field, label|
+      errors.add(:base, "Escreva #{label}.") if public_send(field).blank?
+    end
+    errors.none?
   end
 end

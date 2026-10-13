@@ -1,0 +1,45 @@
+<%# Devolutiva no cartão do vídeo da Zine do mentor (Mentor::ReviewsController).
+    locals: training_session, review (AiReview ou nil), values (o que foi digitado,
+    quando o envio volta com erro). Já enviada: o mesmo formulário revisa o texto. %>
+<% values = local_assigns[:values] || {} %>
+<% sent = review&.status_completed? %>
+<%= form_with scope: :review, url: mentor_video_review_path(training_session), method: (sent ? :patch : :post),
+              id: dom_id(training_session, :review_form), class: "review-form" do |f| %>
+  <%= render "shared/errors", record: review if review&.errors&.any? %>
+
+  <% [
+       [ :strengths,  "O que fez bem",          "is-good",  "check_circle",     "Comece pelo que deu certo." ],
+       [ :mistake,    "Onde foi o erro",        "is-fix",   "warning",          "Um erro só, o mais importante." ],
+       [ :next_focus, "Foco da próxima sessão", "is-focus", "tips_and_updates", "Um ajuste único e fácil de lembrar." ]
+     ].each do |field, label, tone, icon, placeholder| %>
+    <div class="auth-field">
+      <%= f.label field, class: "auth-label review-label #{tone}", for: "#{dom_id(training_session, :review)}_#{field}" do %>
+        <span class="material-symbols-outlined"><%= icon %></span> <%= label %>
+      <% end %>
+      <%= f.text_area field, value: values[field] || review&.public_send(field), rows: 2, required: true,
+            maxlength: AiReview::TEXT_LENGTH, id: "#{dom_id(training_session, :review)}_#{field}",
+            class: "auth-input review-input #{tone}", placeholder: placeholder %>
+    </div>
+  <% end %>
+
+  <details class="review-extra" <%= "open" if values[:headline].present? %>>
+    <summary>Frase de destaque (opcional)</summary>
+    <%= f.text_field :headline, value: values[:headline] || (review&.headline if sent), class: "auth-input",
+          maxlength: AiReview::TEXT_LENGTH, aria: { label: "Frase de destaque" }, placeholder: "Ex.: Seu rolamento já está quase lá!" %>
+  </details>
+
+  <p class="auth-hint">
+    <% if sent %>
+      O aprendiz passa a ver o texto novo na tela de devolutiva dele.
+    <% else %>
+      O aprendiz vê estes três blocos na tela de devolutiva dele. Ao enviar, a tarefa
+      <%= training_session.maneuver.code %> fica concluída e a seta da trilha dele vai para a próxima.
+    <% end %>
+    Fale como o amigo mais velho que já caiu, não como quem avalia.
+  </p>
+
+  <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+    <span><%= sent ? "Salvar revisão" : "Enviar devolutiva" %></span>
+    <span class="material-symbols-outlined btn-arrow"><%= sent ? "edit" : "send" %></span>
+  <% end %>
+<% end %>

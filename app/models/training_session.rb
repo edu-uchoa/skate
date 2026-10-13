@@ -39,6 +39,9 @@ class TrainingSession < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   # Treinos com vídeo: a coleção da aba Zine.
   scope :with_clip, -> { joins(:clip_attachment).with_attached_clip.includes(:maneuver, :ai_review) }
+  # Vídeos que ainda esperam a devolutiva de um mentor ("Na fila" da Zine do mentor).
+  # Entram assim que o vídeo chega: o resultado que o aprendiz registra é só um dado a mais.
+  scope :awaiting_review, -> { where.not(id: AiReview.status_completed.select(:training_session_id)) }
 
   CHECKLIST = %i[gear_checked ground_clear space_safe].freeze
 
@@ -59,7 +62,8 @@ class TrainingSession < ApplicationRecord
     end
 
     transaction do
-      update!(status: :submitted, queued_offline: false, submitted_at: Time.current)
+      # Se o mentor já respondeu ao vídeo, o treino continua com a devolutiva pronta.
+      update!(status: (status_analyzed? ? :analyzed : :submitted), queued_offline: false, submitted_at: Time.current)
       TrackProgression.new(user).record_attempt!(self)
       create_ai_review!(status: :pending) if clip.attached? && ai_review.blank?
       register_skate_session
@@ -104,6 +108,12 @@ class TrainingSession < ApplicationRecord
 
   def analysis_running? = %i[pending processing].include?(analysis_stage)
 
+  # Ainda sem a devolutiva do mentor (tem vídeo e nenhuma resposta pronta).
+  def awaiting_review? = clip.attached? && !ai_review&.status_completed?
+
+  # Desde quando o vídeo espera o mentor (o prazo de 48h conta a partir daqui).
+  def waiting_since = clip.blob.created_at
+
   def self.max_clip_seconds = Rails.configuration.x.stance.max_clip_seconds
   def self.max_clip_bytes   = Rails.configuration.x.stance.max_clip_bytes
   def self.automatic_review? = Rails.configuration.x.stance.automatic_review
@@ -120,7 +130,9 @@ class TrainingSession < ApplicationRecord
   def register_skate_session
     return unless clip.attached? && recorded_at_meetup? && skate_session.nil?
 
-    create_skate_session!(user: user, skated_on: clip.blob.created_at.in_time_zone(user.time_zone).to_date)
+    # Se o mentor já respondeu, a sessão já nasce validada.
+    create_skate_session!(user: user, skated_on: clip.blob.created_at.in_time_zone(user.time_zone).to_date,
+                          validated_at: (Time.current if ai_review&.status_completed?))
   end
 
   # Tela "Gravar": o vídeo é obrigatório e o checklist de segurança também.

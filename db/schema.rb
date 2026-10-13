@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_12_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -62,6 +62,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_12_200000) do
     t.text "next_focus"
     t.text "raw_response"
     t.integer "reviewer_id"
+    t.datetime "revised_at"
     t.integer "status", default: 0, null: false
     t.text "strengths"
     t.integer "training_session_id", null: false

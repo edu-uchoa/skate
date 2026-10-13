@@ -85,13 +85,13 @@ class MentorZineTest < ActionDispatch::IntegrationTest
 
     assert_select ".mentor-learner", 2
     assert_select "#" + ActionView::RecordIdentifier.dom_id(@adult, :mentor) do
-      assert_select ".zine-status", /Devolutiva pronta/
+      assert_select ".zine-status", /Devolutiva enviada em/
     end
     assert_select ".guide-tab.is-active", /Todos \(2\)/
   end
 
   test "avisa quando o vídeo passou do prazo de 48h" do
-    @teen_clip.ai_review.update_columns(created_at: 3.days.ago)
+    @teen_clip.clip.blob.update_columns(created_at: 3.days.ago) # o prazo conta desde que o vídeo chegou
     sign_in("mentor@example.com")
     get mentor_zine_path
 

@@ -32,13 +32,22 @@ module MentorHelper
 
   def outcome_label(training_session) = OUTCOME_LABELS[training_session.outcome]
 
-  def overdue?(ai_review) = ai_review.created_at < RESPONSE_HOURS.hours.ago
+  # O prazo conta desde que o vídeo chegou (TrainingSession#waiting_since).
+  def overdue?(training_session) = training_session.waiting_since < RESPONSE_HOURS.hours.ago
 
-  def waiting_label(ai_review)
-    hours = ((Time.current - ai_review.created_at) / 1.hour).floor
+  def waiting_label(training_session)
+    hours = ((Time.current - training_session.waiting_since) / 1.hour).floor
     if hours < 1 then "Chegou agora"
     elsif hours < RESPONSE_HOURS then "Esperando há #{hours}h"
     else "Esperando há #{hours / 24} dias · passou do prazo de #{RESPONSE_HOURS}h"
     end
+  end
+
+  # "Devolutiva enviada em 12/10 às 14:30 · revisada em 13/10"
+  def review_sent_label(ai_review)
+    zone = current_user.time_zone
+    sent_at = ai_review.completed_at || ai_review.updated_at # devolutivas antigas não guardavam a hora do envio
+    [ "Devolutiva enviada em #{sent_at.in_time_zone(zone).strftime("%d/%m às %H:%M")}",
+      ("revisada em #{ai_review.revised_at.in_time_zone(zone).strftime("%d/%m")}" if ai_review.revised_at) ].compact.join(" · ")
   end
 end

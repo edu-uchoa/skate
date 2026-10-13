@@ -2275,7 +2275,16 @@ a.guide-tab {
   width: 100%;
 }
 
-/* Tela de resposta do mentor: rótulos coloridos iguais aos blocos que o aprendiz vê. */
+/* Devolutiva no cartão do vídeo (mentor/reviews/_form): rótulos coloridos iguais
+   aos blocos que o aprendiz vê. */
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--surface-highest);
+}
+
 .review-label {
   display: flex;
   align-items: center;
@@ -2285,6 +2294,62 @@ a.guide-tab {
 .review-label .material-symbols-outlined {
   font-size: 16px;
 }
+
+.review-label.is-good,
+.review-summary .is-good  { color: var(--tertiary-color); }
+.review-label.is-fix,
+.review-summary .is-fix   { color: var(--secondary-color); }
+.review-label.is-focus,
+.review-summary .is-focus { color: var(--primary-color); }
+
+.review-input { resize: vertical; }
+.review-input.is-good  { border-color: rgba(48, 209, 88, 0.55); }
+.review-input.is-fix   { border-color: rgba(253, 89, 30, 0.55); }
+.review-input.is-focus { border-color: rgba(255, 184, 0, 0.55); }
+
+.review-extra summary,
+.review-revise summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.review-extra summary::-webkit-details-marker,
+.review-revise summary::-webkit-details-marker { display: none; }
+.review-extra[open] summary { margin-bottom: 6px; }
+.review-revise summary .material-symbols-outlined { font-size: 17px; }
+
+/* Devolutiva já enviada, em poucas linhas (aba Todos). */
+.review-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--surface-low);
+  border-left: 3px solid var(--tertiary-color);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+.review-summary strong { font-family: var(--font-display); font-size: 13px; }
+.review-summary span { font-weight: 800; }
+
+.review-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+}
+
+.review-go .material-symbols-outlined { font-size: 17px; text-decoration: none; }
 
 /* Zine: botão discreto para o aprendiz apagar o próprio vídeo. */
 .zine-delete {

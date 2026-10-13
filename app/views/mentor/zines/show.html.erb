@@ -41,7 +41,6 @@
 
           <ol class="zine-list">
             <% training_sessions.each do |training_session| %>
-              <% stage = analysis_stage_for(training_session) %>
               <% review = training_session.ai_review %>
               <li class="zine-card" id="<%= dom_id(training_session, :mentor) %>">
                 <div class="zine-video">
@@ -59,20 +58,41 @@
                     <p class="mentor-outcome">Resultado declarado: <strong><%= outcome_label(training_session) %></strong></p>
                   <% end %>
 
-                  <% if training_session.analysis_running? %>
-                    <p class="zine-status <%= overdue?(review) ? "error" : "info" %>">
-                      <span class="material-symbols-outlined"><%= overdue?(review) ? "alarm" : "schedule" %></span>
-                      <%= waiting_label(review) %>
+                  <% if training_session.awaiting_review? %>
+                    <p class="zine-status <%= overdue?(training_session) ? "error" : "info" %>">
+                      <span class="material-symbols-outlined"><%= overdue?(training_session) ? "alarm" : "schedule" %></span>
+                      <%= waiting_label(training_session) %>
                     </p>
-                    <%= link_to edit_mentor_review_path(review), class: "tactile-btn-primary" do %>
-                      <span>Responder</span>
-                      <span class="material-symbols-outlined btn-arrow">rate_review</span>
+                    <% if training_session.recorded_at_meetup? %>
+                      <p class="zine-status info">
+                        <span class="material-symbols-outlined">local_fire_department</span>
+                        Vídeo de um rolê: ao responder, a sessão fica validada na ofensiva do aprendiz.
+                      </p>
+                    <% end %>
+
+                    <%# Na fila, a devolutiva é escrita aqui mesmo; em Todos, leva até a fila. %>
+                    <% if @tab == "fila" %>
+                      <%= render "mentor/reviews/form", training_session: training_session, review: review %>
+                    <% else %>
+                      <%= link_to mentor_zine_path(aba: "fila", anchor: dom_id(training_session, :mentor)), class: "auth-link review-go" do %>
+                        <span class="material-symbols-outlined">rate_review</span> Responder na fila
+                      <% end %>
                     <% end %>
                   <% else %>
-                    <p class="zine-status <%= stage[:tone] %>">
-                      <span class="material-symbols-outlined"><%= stage[:icon] %></span>
-                      <%= stage[:label] %>
+                    <p class="zine-status ok">
+                      <span class="material-symbols-outlined">check_circle</span>
+                      <%= review_sent_label(review) %>
                     </p>
+                    <div class="review-summary">
+                      <strong><%= review.headline %></strong>
+                      <p><span class="is-good">Fez bem:</span> <%= review.strengths %></p>
+                      <p><span class="is-fix">Erro:</span> <%= review.mistake %></p>
+                      <p><span class="is-focus">Foco:</span> <%= review.next_focus %></p>
+                    </div>
+                    <details class="review-revise">
+                      <summary><span class="material-symbols-outlined">edit</span> Revisar devolutiva</summary>
+                      <%= render "mentor/reviews/form", training_session: training_session, review: review %>
+                    </details>
                   <% end %>
 
                   <% if current_user.role_admin? %>

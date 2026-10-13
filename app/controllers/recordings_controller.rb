@@ -19,7 +19,7 @@ class RecordingsController < ApplicationController
     @training_session = build_training_session
 
     if @training_session.save(context: :recording)
-      flash[:notice] = "Vídeo salvo na sua Zine. Registre o resultado para ele ir ao mentor."
+      flash[:notice] = "Vídeo salvo e já na fila do mentor. Conte como foi o treino."
       respond_to do |format|
         format.json { render json: { redirect_url: result_training_session_path(@training_session) }, status: :created }
         format.html { redirect_to result_training_session_path(@training_session) }

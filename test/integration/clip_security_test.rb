@@ -141,14 +141,14 @@ class ClipSecurityTest < ActionDispatch::IntegrationTest
     sign_in(@admin)
     get mentor_zine_path
     assert_select "form[action=?] button.zine-delete", clip_path(@clip)
-    get edit_mentor_review_path(@clip.ai_review)
+    get mentor_zine_path(aba: "todos")
     assert_select "form[action=?] button.zine-delete", clip_path(@clip)
     delete sign_out_path
 
     sign_in(@mentor)
     get mentor_zine_path
     assert_select "button.zine-delete", 0
-    get edit_mentor_review_path(@clip.ai_review)
+    get mentor_zine_path(aba: "todos")
     assert_select "button.zine-delete", 0
   end
 
