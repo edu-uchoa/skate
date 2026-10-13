@@ -12,6 +12,14 @@
     </p>
   </header>
 
+  <%# Chat com a equipe de mentores (o visual desta tela será refeito). %>
+  <%= link_to chat_path, class: [ "zine-chat-link", ("is-unread" if current_user.conversation&.unread_by_learner?) ] do %>
+    <span class="material-symbols-outlined">forum</span>
+    <span>Falar com os mentores</span>
+    <% if current_user.conversation&.unread_by_learner? %><span class="chat-dot" aria-label="Mensagem nova"></span><% end %>
+    <span class="material-symbols-outlined">chevron_right</span>
+  <% end %>
+
   <% if @training_sessions.empty? %>
     <div class="zine-empty">
       <span class="material-symbols-outlined auth-icon">video_library</span>

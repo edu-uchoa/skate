@@ -17,6 +17,8 @@ class User < ApplicationRecord
   has_many :meetups, dependent: :delete_all # rolês marcados no mapa de Picos
   has_many :skate_sessions, dependent: :delete_all # sessões da ofensiva (Streak)
   has_many :streak_justifications, dependent: :delete_all # paradas justificadas, avaliadas por mentor
+  has_one  :conversation, foreign_key: :learner_id, inverse_of: :learner, dependent: :destroy # chat com os mentores
+  has_many :messages, foreign_key: :author_id, inverse_of: :author, dependent: :nullify      # o que escreveu no chat
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um

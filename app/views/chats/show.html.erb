@@ -1,0 +1,21 @@
+<% content_for :section, "Chat" %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+
+<section class="chat-screen">
+  <header class="auth-head">
+    <%= link_to zine_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar para a Zine
+    <% end %>
+    <span class="step-indicator">Chat</span>
+    <h2 class="screen-title">Fale com os mentores</h2>
+    <p class="screen-desc">Dúvida sobre uma tarefa ou sobre a devolutiva? Pergunte aqui: um mentor do Stance responde.</p>
+  </header>
+
+  <p class="chat-note">
+    <span class="material-symbols-outlined">lock</span>
+    <span>A conversa fica registrada e qualquer mentor do Stance pode ler e responder. Nunca mande telefone, endereço, e-mail ou redes sociais.</span>
+  </p>
+
+  <%= render "chats/thread", messages: @messages, viewer: current_user, form_url: chat_messages_path, poll_url: chat_path,
+             empty: "Nenhuma mensagem ainda. Mande sua dúvida: um mentor responde por aqui." %>
+</section>

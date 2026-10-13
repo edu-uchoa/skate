@@ -80,3 +80,12 @@ checklist e progresso), `feedback-block` / `ia-loader-card` (devolutiva da IA).
 | `install-platform` (`details`, `.is-mine`) + `install-steps` | Passo a passo de cada aparelho, com o número do passo e um ícone; o do aparelho da pessoa abre sozinho |
 | `install-perks` | Lista de motivos para instalar, com ícone |
 | `install-pill` / `install-link` | Atalho para a página (topo da Trilha e Perfil); somem quando o app já está instalado |
+
+## Chat (aprendiz e mentores)
+| Classe | Para quê |
+| --- | --- |
+| `chat-screen` + `chat-note` | Tela de conversa e o aviso de privacidade (conversa da equipe, sem contato de fora) |
+| `chat-thread` / `chat-messages` / `chat-bubble` (`.is-mine` à direita, `.is-theirs` à esquerda) | A conversa (`chats/_thread`); as novas chegam sozinhas (`chat_controller.js`) |
+| `chat-form` / `chat-compose` / `chat-send` | Campo de escrever (16px: o iPhone não dá zoom) e o botão redondo de enviar |
+| `chat-list` / `chat-list-item` (`.is-unread`) + `chat-dot` | Lista de conversas do mentor e o aviso de mensagem nova |
+| `review-form` / `review-summary` / `review-revise` | Devolutiva no cartão do vídeo (fila) e a já enviada, com "Revisar", em Todos |

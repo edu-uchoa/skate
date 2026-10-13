@@ -36,6 +36,11 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
   ofensiva (`SkateSession`) guarda só o dia, nunca o lugar do rolê.
 - O mentor vê o contato do aprendiz mascarado (`masked_contact`) e não vê as anotações
   pessoais do treino. Mantenha esse mínimo ao criar telas novas de mentor.
+- **Chat** (`Conversation`/`Message`): uma conversa por aprendiz, da **equipe** de
+  mentores (todos leem e respondem; nada de conversa privada entre um adulto e um
+  aprendiz). `Message::CONTACT_PATTERNS` barra telefone, e-mail, link e @ de rede
+  social; não afrouxe. O texto das mensagens não vai para o log (`:body` em
+  `filter_parameter_logging.rb`). Mentor não abre chat com mentor (`User.role_learner.find`).
 
 **Formulários e redirecionamentos**
 - `form_with` já inclui o token CSRF; não desligue `protect_from_forgery`.

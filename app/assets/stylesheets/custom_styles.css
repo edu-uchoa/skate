@@ -3126,3 +3126,204 @@ a.guide-tab {
   .install-pill,
   .install-link { display: none; }
 }
+
+/* Abas da área do mentor (4, ou 5 para o administrador): ícone em cima do nome. */
+.mentor-tabs .guide-tab {
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 2px;
+  font-size: 10px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Chat entre aprendiz e mentores (chats/_thread, chat_controller.js). */
+.chat-screen {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-sm);
+  background: var(--surface-low);
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--text-variant);
+}
+
+.chat-note .material-symbols-outlined { font-size: 18px; color: var(--primary-color); }
+
+.chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+  max-height: calc(100dvh - 380px);
+  padding: 12px;
+  overflow-y: auto;
+  list-style: none;
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  overscroll-behavior: contain;
+}
+
+.chat-empty {
+  margin: auto;
+  max-width: 260px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-variant);
+}
+
+.chat-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 82%;
+  padding: 8px 11px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.chat-bubble.is-theirs {
+  align-self: flex-start;
+  background: var(--surface-high);
+  color: var(--text-on-surface);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble.is-mine {
+  align-self: flex-end;
+  background: var(--primary-color);
+  color: #121316;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-author { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; opacity: 0.75; }
+.chat-body { white-space: pre-wrap; overflow-wrap: anywhere; }
+.chat-bubble time { align-self: flex-end; font-size: 10px; opacity: 0.65; }
+
+.chat-form { display: flex; flex-direction: column; gap: 8px; }
+
+.chat-compose {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.chat-input { flex: 1; resize: none; font-size: 16px; } /* 16px: o iPhone não dá zoom ao tocar */
+
+.chat-send {
+  flex: 0 0 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 3px 0 var(--primary-shadow);
+  color: #121316;
+  cursor: pointer;
+}
+
+.chat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(253, 89, 30, 0.25);
+}
+
+/* Lista de conversas do mentor. */
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.chat-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  min-height: 56px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  color: var(--text-on-surface);
+  text-decoration: none;
+}
+
+.chat-list-item.is-unread { border-color: var(--secondary-color); }
+.chat-list-icon { color: var(--primary-color); }
+
+.chat-list-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chat-list-text strong { display: flex; align-items: center; gap: 6px; font-size: 13px; overflow-wrap: anywhere; }
+.chat-list-text small { font-size: 11.5px; color: var(--text-variant); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chat-list-item.is-unread .chat-list-text small { color: var(--text-on-surface); font-weight: 700; }
+
+.chat-list-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  font-size: 10.5px;
+  color: var(--text-variant);
+}
+
+/* Atalhos para o chat: no cabeçalho de cada aprendiz (mentor) e na Zine do aprendiz. */
+.mentor-chat-link {
+  margin-left: auto;
+  flex: 0 0 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--surface-highest);
+  border-radius: 50%;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.zine-chat-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  color: var(--text-on-surface);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.zine-chat-link > .material-symbols-outlined:first-child { color: var(--primary-color); }
+.zine-chat-link > span:nth-child(2) { flex: 1; }
+.zine-chat-link.is-unread { border-color: var(--secondary-color); }

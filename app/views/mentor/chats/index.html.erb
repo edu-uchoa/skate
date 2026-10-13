@@ -1,0 +1,40 @@
+<% content_for :section, "Mentor" %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Área do mentor</span>
+    <h2 class="screen-title">Chat com os aprendizes</h2>
+    <p class="screen-desc">Uma conversa com cada aprendiz. Todos os mentores veem e respondem as mesmas conversas.</p>
+  </header>
+
+  <%= render "mentor/tabs", current: "chat" %>
+
+  <% if @learners.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">forum</span>
+      <p>Nenhum aprendiz cadastrado ainda.</p>
+    </div>
+  <% else %>
+    <ul class="chat-list">
+      <% @learners.each do |learner| %>
+        <% conversation = learner.conversation %>
+        <% last = conversation && @last_messages[conversation.id] %>
+        <% unread = conversation&.unread_by_mentors? %>
+        <li>
+          <%= link_to mentor_chat_path(learner), class: [ "chat-list-item", ("is-unread" if unread) ] do %>
+            <span class="material-symbols-outlined chat-list-icon">person</span>
+            <span class="chat-list-text">
+              <strong><%= masked_contact(learner) %><%= tag.span("Menor", class: "guide-tag is-must") if learner.needs_supervision? %></strong>
+              <small><%= last ? "#{"Você: " if last.author_id == current_user.id}#{last.body.truncate(60)}" : "Nenhuma mensagem ainda" %></small>
+            </span>
+            <span class="chat-list-meta">
+              <% if last %><time><%= last.created_at.in_time_zone(current_user.time_zone).strftime("%d/%m") %></time><% end %>
+              <% if unread %><span class="chat-dot" aria-label="Mensagem nova"></span><% end %>
+            </span>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>

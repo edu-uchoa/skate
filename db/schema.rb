@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_13_001200) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -89,6 +89,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_comebacks_on_user_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "learner_id", null: false
+    t.datetime "learner_message_at"
+    t.datetime "learner_read_at"
+    t.datetime "mentor_message_at"
+    t.datetime "mentors_read_at"
+    t.datetime "updated_at", null: false
+    t.index ["learner_id"], name: "index_conversations_on_learner_id", unique: true
   end
 
   create_table "diagnoses", force: :cascade do |t|
@@ -181,6 +192,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
     t.index ["ends_at"], name: "index_meetups_on_ends_at"
     t.index ["share_token"], name: "index_meetups_on_share_token", unique: true
     t.index ["user_id"], name: "index_meetups_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "author_id"
+    t.text "body", null: false
+    t.integer "conversation_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_messages_on_author_id"
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
   end
 
   create_table "skate_sessions", force: :cascade do |t|
@@ -278,6 +299,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
   add_foreign_key "clip_accesses", "training_sessions", on_delete: :cascade
   add_foreign_key "clip_accesses", "users", column: "viewer_id", on_delete: :nullify
   add_foreign_key "comebacks", "users"
+  add_foreign_key "conversations", "users", column: "learner_id"
   add_foreign_key "diagnoses", "users"
   add_foreign_key "diagnosis_blockers", "diagnoses"
   add_foreign_key "instruction_steps", "maneuvers"
@@ -286,6 +308,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_000500) do
   add_foreign_key "maneuvers", "learning_modules"
   add_foreign_key "maneuvers", "maneuvers", column: "prerequisite_id"
   add_foreign_key "meetups", "users", on_delete: :cascade
+  add_foreign_key "messages", "conversations"
+  add_foreign_key "messages", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "skate_sessions", "training_sessions", on_delete: :nullify
   add_foreign_key "skate_sessions", "users", on_delete: :cascade
   add_foreign_key "streak_justifications", "users", column: "reviewer_id", on_delete: :nullify

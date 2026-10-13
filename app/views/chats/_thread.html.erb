@@ -1,0 +1,12 @@
+<%# A conversa (igual para o aprendiz e para o mentor). As mensagens novas chegam
+    sozinhas: chat_controller.js pergunta ao poll_url a cada poucos segundos.
+    locals: messages, viewer, form_url, poll_url, empty (texto sem mensagens). %>
+<div class="chat-thread" data-controller="chat" data-chat-url-value="<%= poll_url %>">
+  <ol class="chat-messages" id="chat-messages" data-chat-target="list" aria-live="polite">
+    <% if messages.empty? %>
+      <li class="chat-empty" id="chat-empty"><%= empty %></li>
+    <% end %>
+    <%= render partial: "chats/message", collection: messages, locals: { viewer: viewer } %>
+  </ol>
+  <%= render "chats/form", url: form_url, message: Message.new %>
+</div>

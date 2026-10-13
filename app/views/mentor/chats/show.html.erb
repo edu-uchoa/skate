@@ -1,0 +1,32 @@
+<% content_for :section, "Mentor" %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+
+<section class="chat-screen">
+  <header class="auth-head">
+    <%= link_to mentor_chats_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Todas as conversas
+    <% end %>
+    <span class="step-indicator">Chat com o aprendiz</span>
+    <div class="mentor-learner-head">
+      <span class="material-symbols-outlined">person</span>
+      <div class="mentor-learner-name">
+        <strong><%= masked_contact(@learner) %></strong>
+        <span class="auth-hint"><%= learner_summary(@learner) %></span>
+      </div>
+      <% if @learner.needs_supervision? %>
+        <span class="guide-tag is-must">Menor de idade</span>
+      <% end %>
+    </div>
+    <%= link_to mentor_zine_path(aba: "todos", anchor: dom_id(@learner, :mentor)), class: "auth-link review-go" do %>
+      <span class="material-symbols-outlined">video_library</span> Ver os vídeos
+    <% end %>
+  </header>
+
+  <p class="chat-note">
+    <span class="material-symbols-outlined">groups</span>
+    <span>Conversa da equipe: todos os mentores leem e respondem. Não peça nem passe telefone, endereço, e-mail ou redes sociais.</span>
+  </p>
+
+  <%= render "chats/thread", messages: @messages, viewer: current_user, form_url: mentor_chat_messages_path(@learner),
+             poll_url: mentor_chat_path(@learner), empty: "Nenhuma mensagem ainda. Comece com um oi e pergunte como foi o rolê." %>
+</section>

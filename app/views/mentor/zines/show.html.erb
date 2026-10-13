@@ -37,6 +37,9 @@
             <% if learner.needs_supervision? %>
               <span class="guide-tag is-must">Menor de idade</span>
             <% end %>
+            <%= link_to mentor_chat_path(learner), class: "mentor-chat-link", title: "Conversar com o aprendiz", aria: { label: "Conversar com o aprendiz" } do %>
+              <span class="material-symbols-outlined">forum</span>
+            <% end %>
           </header>
 
           <ol class="zine-list">

@@ -46,6 +46,15 @@ Rails.application.routes.draw do
       resource :review,  only: %i[create update], path: "devolutiva"
     end
     resources :streak_justifications, only: %i[index update], path: "ofensivas" # paradas para avaliar
+    # Chat com cada aprendiz (a conversa é da equipe de mentores).
+    resources :chats,    only: %i[index show], path: "chat" do
+      resources :messages, only: :create, path: "mensagens"
+    end
+  end
+
+  # Chat do aprendiz com a equipe de mentores.
+  resource :chat, only: :show, path: "chat" do
+    resources :messages, only: :create, path: "mensagens"
   end
 
   # Todas as tarefas da trilha: as concluídas e as que faltam (botão do Perfil).

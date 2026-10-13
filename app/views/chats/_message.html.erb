@@ -1,0 +1,13 @@
+<%# Uma mensagem do chat. locals: message, viewer. Do lado direito fica o que é
+    "seu": as do aprendiz para ele, as da equipe para os mentores. %>
+<% learner_side = message.from_learner? %>
+<% mine = viewer.mentor_access? ? !learner_side : learner_side %>
+<% author = if message.author_id == viewer.id then "Você"
+            elsif learner_side then "Aprendiz"
+            else "Mentor"
+            end %>
+<li class="chat-bubble <%= mine ? "is-mine" : "is-theirs" %>" id="<%= dom_id(message) %>" data-message-id="<%= message.id %>">
+  <span class="chat-author"><%= author %></span>
+  <p class="chat-body"><%= message.body %></p>
+  <time datetime="<%= message.created_at.iso8601 %>"><%= message.created_at.in_time_zone(viewer.time_zone).strftime("%d/%m %H:%M") %></time>
+</li>

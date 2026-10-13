@@ -1,0 +1,12 @@
+<%# Campo de escrever do chat. locals: url, message (com o erro e o texto, quando
+    o envio volta). Depois de enviar, o servidor troca este formulário por um limpo. %>
+<%= form_with model: message, url: url, scope: :message, id: "chat-form", class: "chat-form" do |f| %>
+  <%= render "shared/errors", record: message %>
+  <div class="chat-compose">
+    <%= f.text_area :body, rows: 2, required: true, maxlength: Message::BODY_LENGTH, class: "auth-input chat-input",
+          placeholder: "Escreva sua mensagem", aria: { label: "Mensagem" } %>
+    <%= f.button type: :submit, class: "chat-send", aria: { label: "Enviar mensagem" } do %>
+      <span class="material-symbols-outlined">send</span>
+    <% end %>
+  </div>
+<% end %>

@@ -1,8 +1,9 @@
-<%# Abas da área do mentor. current: "fila", "todos", "ofensivas" ou "pedidos" (este só para administrador). %>
+<%# Abas da área do mentor. current: "fila", "todos", "ofensivas", "chat" ou "pedidos" (este só para administrador). %>
 <% tabs = [
      [ "fila",      "schedule",              "Na fila (#{@queue_count})",           mentor_zine_path(aba: "fila") ],
      [ "todos",     "video_library",         "Todos (#{@video_count})",             mentor_zine_path(aba: "todos") ],
-     [ "ofensivas", "local_fire_department", "Ofensivas (#{@justification_count})", mentor_streak_justifications_path ]
+     [ "ofensivas", "local_fire_department", "Ofensivas (#{@justification_count})", mentor_streak_justifications_path ],
+     [ "chat",      "forum",                 "Chat (#{@chat_count})",               mentor_chats_path ]
    ] %>
 <% tabs << [ "pedidos", "admin_panel_settings", "Mentores (#{@request_count})", mentor_requests_path ] if current_user.role_admin? %>
 <nav class="guide-tabs mentor-tabs" style="grid-template-columns: repeat(<%= tabs.size %>, 1fr);" aria-label="Abas da área do mentor">
