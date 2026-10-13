@@ -1,0 +1,50 @@
+<%# Estampa "Caveira e punhal" (old school): caveira com ossos cruzados e um punhal
+    vermelho, sobre prata, no estilo dos anos 80. Desenhada no shape de 140 x 380 (centro x = 70). %>
+<% ink = "#2b2b2f" %>
+<% red = "#d42b2b" %>
+<linearGradient id="silver-<%= uid %>" x1="0" x2="1">
+  <stop offset="0" stop-color="#a7abb2" />
+  <stop offset="0.35" stop-color="#e4e6e9" />
+  <stop offset="0.65" stop-color="#c3c6cc" />
+  <stop offset="1" stop-color="#9da1a8" />
+</linearGradient>
+<rect width="140" height="380" fill="url(#silver-<%= uid %>)" />
+<% (0..18).each do |i| %>
+  <path d="M0 <%= 20 + i * 19 %> L140 <%= 20 + i * 19 %>" stroke="#fff" stroke-opacity="0.12" stroke-width="0.8" />
+<% end %>
+
+<%# Ossos cruzados atrás da caveira %>
+<% [ [ 34, 250, 106, 150 ], [ 106, 250, 34, 150 ] ].each do |x1, y1, x2, y2| %>
+  <path d="M<%= x1 %> <%= y1 %> L<%= x2 %> <%= y2 %>" stroke="<%= ink %>" stroke-width="11" stroke-linecap="round" />
+  <path d="M<%= x1 %> <%= y1 %> L<%= x2 %> <%= y2 %>" stroke="#efece4" stroke-width="7.6" stroke-linecap="round" />
+  <% [ [ x1, y1 ], [ x2, y2 ] ].each do |x, y| %>
+    <circle cx="<%= x - 4 %>" cy="<%= y %>" r="5.4" fill="#efece4" stroke="<%= ink %>" stroke-width="1.6" />
+    <circle cx="<%= x + 4 %>" cy="<%= y %>" r="5.4" fill="#efece4" stroke="<%= ink %>" stroke-width="1.6" />
+  <% end %>
+<% end %>
+
+<%# Lâmina do punhal (passa por trás da caveira) e o brilho na ponta %>
+<path d="M70 50 L77 66 L77 236 L63 236 L63 66 Z" fill="<%= red %>" stroke="#5a0d0d" stroke-width="1.5" stroke-linejoin="round" />
+<path d="M70 62 L70 234" stroke="#ff7a7a" stroke-width="1.6" />
+<g stroke="#fff" stroke-width="1.4" stroke-linecap="round">
+  <path d="M70 34 L70 46 M58 44 L66 48 M82 44 L74 48 M62 34 L67 43 M78 34 L73 43" />
+</g>
+
+<%# Caveira %>
+<path d="M44 168 C42 138 54 122 70 122 C86 122 98 138 96 168 C96 182 90 190 86 194 L86 206 L54 206 L54 194 C50 190 44 182 44 168 Z"
+      fill="#f2f0ea" stroke="<%= ink %>" stroke-width="2" />
+<path d="M84 132 C94 142 96 160 92 178 C90 186 86 190 84 194 C88 176 90 156 84 132 Z" fill="#c9c6bd" />
+<path d="M50 164 C50 154 62 152 66 162 C68 170 62 176 56 175 C51 174 50 170 50 164 Z" fill="#1d1d21" />
+<path d="M90 164 C90 154 78 152 74 162 C72 170 78 176 84 175 C89 174 90 170 90 164 Z" fill="#1d1d21" />
+<path d="M70 178 L66 189 L74 189 Z" fill="#1d1d21" />
+<path d="M56 206 L84 206 L82 222 C76 228 64 228 58 222 Z" fill="#f2f0ea" stroke="<%= ink %>" stroke-width="2" />
+<path d="M60 196 L60 222 M65 196 L65 226 M70 196 L70 227 M75 196 L75 226 M80 196 L80 222 M56 206 L84 206" stroke="<%= ink %>" stroke-width="1.1" />
+<path d="M60 130 L64 140 L60 146" fill="none" stroke="<%= ink %>" stroke-width="1" stroke-opacity="0.6" />
+
+<%# Guarda, cabo enrolado e pomo, por cima %>
+<path d="M48 238 L92 238 L94 245 L46 245 Z" fill="<%= red %>" stroke="#5a0d0d" stroke-width="1.5" stroke-linejoin="round" />
+<rect x="64" y="245" width="12" height="30" rx="2" fill="#7a1010" stroke="#3c0606" stroke-width="1.2" />
+<path d="M64 251 L76 248 M64 257 L76 254 M64 263 L76 260 M64 269 L76 266" stroke="#c94a4a" stroke-width="1.2" />
+<circle cx="70" cy="281" r="6.2" fill="<%= red %>" stroke="#5a0d0d" stroke-width="1.5" />
+
+<text x="70" y="326" text-anchor="middle" class="deck-print-word is-script" fill="<%= red %>">Stance</text>

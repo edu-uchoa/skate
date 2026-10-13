@@ -1,56 +1,110 @@
-<%# Skate visto de baixo, com a estampa padrão do tipo (Deck). locals: deck, uid,
-    editable (true no editor: vão os 4 tipos e a prévia troca na hora). %>
+<%# Skate do Perfil (Deck), como nas fotos de loja: a lixa (em cima), a estampa com
+    os trucks e as rodas (embaixo) e o perfil, com bico e rabo (de lado). As rodas e
+    os trucks pintam com --deck-wheels e --deck-trucks; cada estampa fica em
+    decks/prints/. locals: deck, uid, editable (true no editor: vão os 4 tipos e a
+    prévia troca na hora). %>
 <% editable = local_assigns.fetch(:editable, false) %>
-<svg class="deck" viewBox="0 0 140 380" role="img" aria-label="Seu skate" style="<%= deck.css_variables %>"
+<% u = uid %>
+<svg class="deck" viewBox="0 0 324 380" role="img" aria-label="Seu skate: em cima, embaixo e de lado" style="<%= deck.css_variables %>"
      <%= tag.attributes(data: { customizer_target: "preview" }) if editable %>>
+  <defs>
+    <%# Lixa: grãos claros e escuros espalhados %>
+    <pattern id="grip-<%= u %>" width="7" height="7" patternUnits="userSpaceOnUse">
+      <rect width="7" height="7" fill="#1c1c1f" />
+      <circle cx="1.2" cy="1.6" r="0.6" fill="#36363b" /><circle cx="4.6" cy="0.8" r="0.5" fill="#0c0c0e" />
+      <circle cx="3.2" cy="4" r="0.7" fill="#2c2c31" /><circle cx="6" cy="5.4" r="0.55" fill="#3d3d43" />
+      <circle cx="0.8" cy="5.8" r="0.5" fill="#0c0c0e" /><circle cx="5.4" cy="2.9" r="0.4" fill="#45454b" />
+    </pattern>
+    <%# Côncavo: a borda do shape escurece, como no skate de verdade %>
+    <linearGradient id="concave-<%= u %>" x1="0" x2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0.5" />
+      <stop offset="0.1" stop-color="#000" stop-opacity="0.16" />
+      <stop offset="0.34" stop-color="#fff" stop-opacity="0.12" />
+      <stop offset="0.55" stop-color="#fff" stop-opacity="0" />
+      <stop offset="0.9" stop-color="#000" stop-opacity="0.2" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.5" />
+    </linearGradient>
+    <linearGradient id="metal-<%= u %>" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.55" />
+      <stop offset="0.45" stop-color="#fff" stop-opacity="0" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.45" />
+    </linearGradient>
+    <linearGradient id="wheel-<%= u %>" x1="0" x2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0.38" />
+      <stop offset="0.38" stop-color="#fff" stop-opacity="0.28" />
+      <stop offset="0.6" stop-color="#fff" stop-opacity="0" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.45" />
+    </linearGradient>
+  </defs>
+
   <% Deck::TYPES.each do |type| %>
     <%= customizer_layer(deck, :type, type.key, editable) do %>
-      <defs><clipPath id="deck-<%= type.key %>-<%= uid %>"><path d="<%= type.outline %>" /></clipPath></defs>
+      <% clip = "deck-#{type.key}-#{u}" %>
+      <% top, bottom = type.span %>
+      <% wheel_w, wheel_h = type.wheel %>
+      <defs><clipPath id="<%= clip %>"><path d="<%= type.outline %>" /></clipPath></defs>
 
-      <%# Estampa, recortada no formato do shape %>
-      <g clip-path="url(#deck-<%= type.key %>-<%= uid %>)">
-        <% case type.key %>
-        <% when "street" %>
-          <rect width="140" height="380" fill="#ffb800" />
-          <% (-4..14).each do |i| %><path d="M<%= i * 24 - 60 %> 380 L<%= i * 24 + 60 %> 0" stroke="#1a1b20" stroke-width="7" /><% end %>
-          <rect x="54" y="120" width="32" height="140" rx="6" fill="#1a1b20" />
-          <text x="70" y="190" transform="rotate(-90 70 190)" text-anchor="middle" dominant-baseline="central" class="deck-word">STANCE</text>
-        <% when "new_school" %>
-          <rect width="140" height="380" fill="#1f1f23" />
-          <circle cx="62" cy="110" r="26" fill="#fd591e" />
-          <path d="M40 210 L96 170 L92 236 Z" fill="#3b8cff" />
-          <path d="M36 286 L52 270 L68 286 L84 270 L100 286" fill="none" stroke="#ffb800" stroke-width="6" stroke-linejoin="round" />
-          <circle cx="86" cy="320" r="9" fill="#e3e2e6" /><circle cx="54" cy="56" r="5" fill="#ffb800" />
-        <% when "bowl" %>
-          <rect width="140" height="380" fill="#2f6fd6" />
-          <rect y="250" width="140" height="130" fill="#1f4fa3" />
-          <% (0..13).each do |i| %>
-            <path d="M0 <%= 30 + i * 26 %> Q35 <%= 20 + i * 26 %> 70 <%= 30 + i * 26 %> T140 <%= 30 + i * 26 %>" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3" />
+      <%# 1. Em cima: a lixa, com a borda da madeira e os furos dos parafusos %>
+      <g transform="translate(-6 0)">
+        <path d="<%= type.outline %>" fill="#000" opacity="0.35" transform="translate(3 5)" />
+        <path d="<%= type.outline %>" fill="url(#grip-<%= u %>)" stroke="#dcbf8f" stroke-width="2.6" />
+        <path d="<%= type.outline %>" fill="url(#concave-<%= u %>)" opacity="0.6" />
+        <% type.trucks.each do |y| %>
+          <% [ -9, 9 ].product([ -7, 7 ]).each do |dx, dy| %>
+            <circle cx="<%= 70 + dx %>" cy="<%= y + dy %>" r="2.1" fill="#0b0b0d" stroke="#4a4a50" stroke-width="0.7" />
           <% end %>
-          <rect x="30" y="240" width="80" height="6" fill="#e3e2e6" />
-        <% when "old_school" %>
-          <rect width="140" height="380" fill="#e8dcc2" />
-          <% (0..9).each do |i| %>
-            <rect x="<%= 30 + i * 8 %>" y="70" width="8" height="8" fill="<%= i.even? ? "#1a1b20" : "#e8dcc2" %>" />
-            <rect x="<%= 30 + i * 8 %>" y="78" width="8" height="8" fill="<%= i.even? ? "#e8dcc2" : "#1a1b20" %>" />
-          <% end %>
-          <path d="M30 380 L30 250 Q44 280 50 230 Q60 262 70 200 Q80 262 90 230 Q96 280 110 250 L110 380 Z" fill="#d64545" />
-          <path d="M40 380 L40 290 Q52 300 56 266 Q64 290 70 246 Q76 290 84 266 Q88 300 100 290 L100 380 Z" fill="#fd7a1e" />
-          <path d="M52 380 L52 320 Q60 322 62 300 Q68 316 70 292 Q72 316 78 300 Q80 322 88 320 L88 380 Z" fill="#ffd23f" />
         <% end %>
       </g>
-      <path d="<%= type.outline %>" class="deck-edge" />
 
-      <%# Trucks e rodas, por cima da estampa (o skate é visto de baixo) %>
-      <% type.trucks.each do |y| %>
-        <% wheel_w, wheel_h = type.wheel %>
-        <rect class="deck-wheel" x="<%= 70 - type.axle - wheel_w %>" y="<%= y - wheel_h / 2 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.5 %>" />
-        <rect class="deck-wheel" x="<%= 70 + type.axle %>" y="<%= y - wheel_h / 2 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.5 %>" />
-        <rect class="deck-truck" x="<%= 70 - type.axle - 2 %>" y="<%= y - 3 %>" width="<%= type.axle * 2 + 4 %>" height="6" rx="3" />
-        <rect class="deck-truck" x="58" y="<%= y - 9 %>" width="24" height="18" rx="3" />
-        <circle class="deck-bolt" cx="62" cy="<%= y - 5 %>" r="1.4" /><circle class="deck-bolt" cx="78" cy="<%= y - 5 %>" r="1.4" />
-        <circle class="deck-bolt" cx="62" cy="<%= y + 5 %>" r="1.4" /><circle class="deck-bolt" cx="78" cy="<%= y + 5 %>" r="1.4" />
-      <% end %>
+      <%# 2. Embaixo: a estampa, com o brilho do verniz, e os trucks e as rodas %>
+      <g transform="translate(112 0)">
+        <path d="<%= type.outline %>" fill="#000" opacity="0.35" transform="translate(3 5)" />
+        <g clip-path="url(#<%= clip %>)">
+          <%= render "decks/prints/#{type.key}", uid: "#{type.key}-#{u}" %>
+          <path d="M18 380 L122 0" stroke="#fff" stroke-opacity="0.07" stroke-width="22" />
+        </g>
+        <path d="<%= type.outline %>" fill="url(#concave-<%= u %>)" />
+        <path d="<%= type.outline %>" fill="none" stroke="#e8d3a8" stroke-width="1.6" />
+        <path d="<%= type.outline %>" fill="none" stroke="#0d0e11" stroke-width="0.8" stroke-opacity="0.7" />
+
+        <% type.trucks.each_with_index do |y, index| %>
+          <%# O parafuso central (kingpin) aponta para o meio do skate %>
+          <% kingpin = index.zero? ? 1 : -1 %>
+          <% [ 70 - type.axle - wheel_w, 70 + type.axle ].each do |x| %>
+            <rect x="<%= x %>" y="<%= y - wheel_h / 2.0 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.6 %>" class="deck-wheel" />
+            <rect x="<%= x %>" y="<%= y - wheel_h / 2.0 %>" width="<%= wheel_w %>" height="<%= wheel_h %>" rx="<%= wheel_w / 2.6 %>" fill="url(#wheel-<%= u %>)" />
+            <path d="M<%= x + 2 %> <%= y - wheel_h / 2.0 + 3 %> L<%= x + wheel_w - 2 %> <%= y - wheel_h / 2.0 + 3 %>" stroke="#fff" stroke-opacity="0.35" stroke-width="1" />
+          <% end %>
+          <rect x="<%= 70 - type.axle - 1 %>" y="<%= y - 2.4 %>" width="<%= type.axle * 2 + 2 %>" height="4.8" rx="2.4" fill="#8d9097" />
+          <path d="M<%= 70 - type.axle + 4 %> <%= y - 4.8 %> L<%= 70 + type.axle - 4 %> <%= y - 4.8 %> L<%= 70 + 12 %> <%= y + 6 %> L<%= 70 - 12 %> <%= y + 6 %> Z" class="deck-truck" />
+          <path d="M<%= 70 - type.axle + 4 %> <%= y - 4.8 %> L<%= 70 + type.axle - 4 %> <%= y - 4.8 %> L<%= 70 + 12 %> <%= y + 6 %> L<%= 70 - 12 %> <%= y + 6 %> Z" fill="url(#metal-<%= u %>)" />
+          <rect x="57" y="<%= y - 12 %>" width="26" height="24" rx="3" class="deck-truck" opacity="0.9" />
+          <rect x="57" y="<%= y - 12 %>" width="26" height="24" rx="3" fill="url(#metal-<%= u %>)" opacity="0.7" />
+          <% [ -9, 9 ].product([ -7, 7 ]).each do |dx, dy| %>
+            <circle cx="<%= 70 + dx %>" cy="<%= y + dy %>" r="1.7" class="deck-bolt" />
+          <% end %>
+          <rect x="64.5" y="<%= y + kingpin * 5 - 4 %>" width="11" height="8" rx="3.5" fill="#e8a33c" stroke="#0d0e11" stroke-width="0.8" />
+          <circle cx="70" cy="<%= y + kingpin * 5 %>" r="2.4" fill="#d6d9de" stroke="#0d0e11" stroke-width="0.8" />
+        <% end %>
+      </g>
+
+      <%# 3. De lado: bico e rabo levantados, as camadas da madeira e as rodas %>
+      <g transform="translate(262 0)">
+        <% side = "M8 #{top} C10 #{top + 18} 15 #{top + 36} 19 #{top + 54} L19 #{bottom - 54} C15 #{bottom - 36} 10 #{bottom - 18} 8 #{bottom}" %>
+        <path d="<%= side %>" stroke="#000" stroke-opacity="0.3" stroke-width="7" fill="none" stroke-linecap="round" transform="translate(3 4)" />
+        <path d="<%= side %>" stroke="#1c1c1f" stroke-width="7" fill="none" stroke-linecap="round" />
+        <path d="<%= side %>" stroke="#dcbf8f" stroke-width="3.4" fill="none" stroke-linecap="round" transform="translate(1.6 0)" />
+        <path d="<%= side %>" stroke="#b98d55" stroke-width="0.7" fill="none" transform="translate(1.6 0)" />
+        <path d="<%= side %>" stroke="<%= type.veneer %>" stroke-width="1.8" fill="none" stroke-linecap="round" transform="translate(3.6 0)" />
+        <% type.trucks.each do |y| %>
+          <rect x="23" y="<%= y - 10 %>" width="4" height="20" rx="1" class="deck-truck" />
+          <path d="M27 <%= y - 6 %> L35 <%= y - 3 %> L35 <%= y + 3 %> L27 <%= y + 6 %> Z" class="deck-truck" />
+          <path d="M27 <%= y - 6 %> L35 <%= y - 3 %> L35 <%= y + 3 %> L27 <%= y + 6 %> Z" fill="url(#metal-<%= u %>)" />
+          <circle cx="<%= 35 + wheel_h / 2.0 %>" cy="<%= y %>" r="<%= wheel_h / 2.0 %>" class="deck-wheel" />
+          <circle cx="<%= 35 + wheel_h / 2.0 %>" cy="<%= y %>" r="<%= wheel_h / 2.0 %>" fill="url(#wheel-<%= u %>)" />
+          <circle cx="<%= 35 + wheel_h / 2.0 %>" cy="<%= y %>" r="<%= wheel_h / 5.0 %>" fill="#2a2b30" stroke="#8d9097" stroke-width="1" />
+        <% end %>
+      </g>
     <% end %>
   <% end %>
 </svg>

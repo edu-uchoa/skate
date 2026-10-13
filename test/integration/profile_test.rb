@@ -57,6 +57,17 @@ class ProfileTest < ActionDispatch::IntegrationTest
     assert_equal Avatar::OPTIONS[:hair].map(&:key).sort, editor_hair.sort
   end
 
+  test "a aba Skate mostra street, bowl, new school e old school, cada um com a sua estampa" do
+    get my_account_path(aba: "skate")
+
+    assert_equal [ "Street", "Bowl", "New school", "Old school" ], css_select(".profile-panel.is-skate .choice-card strong").map(&:text)
+    # O marcador é só o círculo do CSS: com um ícone dentro, os dois apareciam sobrepostos.
+    assert css_select(".profile-panel.is-skate .choice-mark").all? { |mark| mark.text.strip.empty? }
+    Deck::TYPES.each do |type|
+      assert_select ".profile-preview.is-deck [data-part=type][data-option=?] clipPath", type.key
+    end
+  end
+
   test "salvar o skate volta para a aba Skate" do
     patch deck_path, params: { deck: { type: "old_school", wheels: "laranja", trucks: "dourado" } }
     assert_redirected_to my_account_path(aba: "skate", anchor: "personalizar")

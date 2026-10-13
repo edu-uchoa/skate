@@ -1,0 +1,62 @@
+<%# Estampa "Mandala dourada" (street): árvore no meio de uma mandala, com
+    arabescos dourados sobre preto. Desenhada no shape de 140 x 380 (centro x = 70). %>
+<% gold = "#d8a23a" %>
+<% light = "#f3c968" %>
+<rect width="140" height="380" fill="#121214" />
+<radialGradient id="glow-<%= uid %>" cx="0.5" cy="0.5" r="0.5">
+  <stop offset="0" stop-color="<%= gold %>" stop-opacity="0.22" />
+  <stop offset="1" stop-color="<%= gold %>" stop-opacity="0" />
+</radialGradient>
+<circle cx="70" cy="190" r="70" fill="url(#glow-<%= uid %>)" />
+
+<%# Arabescos: desenhados num canto e espelhados nos outros três %>
+<% [ nil, "translate(140 0) scale(-1 1)", "translate(0 380) scale(1 -1)", "translate(140 380) scale(-1 -1)" ].each do |mirror| %>
+  <g transform="<%= mirror %>">
+    <g fill="none" stroke="<%= gold %>" stroke-width="1.6" stroke-linecap="round">
+      <path d="M70 28 C60 38 46 40 42 54 C38 68 48 78 58 74 C64 71 63 63 57 62" />
+      <path d="M70 66 C62 74 50 76 46 90 C42 104 54 112 62 106 C66 103 64 97 60 97" />
+      <path d="M70 106 C64 116 56 120 52 132 C49 142 56 144 60 140" />
+      <path d="M42 54 C34 58 30 66 32 76" stroke-width="1.1" />
+      <path d="M46 90 C38 94 34 102 36 112" stroke-width="1.1" />
+    </g>
+    <g fill="<%= gold %>">
+      <ellipse cx="50" cy="44" rx="4.2" ry="1.8" transform="rotate(-30 50 44)" />
+      <ellipse cx="44" cy="84" rx="4.2" ry="1.8" transform="rotate(-50 44 84)" />
+      <ellipse cx="56" cy="124" rx="4" ry="1.7" transform="rotate(-40 56 124)" />
+      <ellipse cx="34" cy="70" rx="3.4" ry="1.5" transform="rotate(70 34 70)" />
+      <circle cx="38" cy="108" r="1.3" /><circle cx="46" cy="138" r="1.3" /><circle cx="62" cy="34" r="1.1" />
+    </g>
+    <path d="M70 22 L70 140" stroke="<%= gold %>" stroke-width="1" stroke-dasharray="2 4" />
+  </g>
+<% end %>
+
+<%# Mandala %>
+<% 28.times do |i| %>
+  <% angle = i * Math::PI * 2 / 28 %>
+  <circle cx="<%= (70 + 47 * Math.sin(angle)).round(2) %>" cy="<%= (190 - 47 * Math.cos(angle)).round(2) %>" r="1.4" fill="<%= gold %>" />
+<% end %>
+<circle cx="70" cy="190" r="42" fill="none" stroke="<%= gold %>" stroke-width="1.4" />
+<% 16.times do |i| %>
+  <g transform="rotate(<%= i * 22.5 %> 70 190)">
+    <ellipse cx="70" cy="154" rx="4.4" ry="7.6" fill="none" stroke="<%= gold %>" stroke-width="1.2" />
+    <circle cx="70" cy="155" r="1.3" fill="<%= light %>" />
+  </g>
+<% end %>
+<circle cx="70" cy="190" r="30" fill="#1b1a17" stroke="<%= gold %>" stroke-width="2.6" />
+
+<%# A árvore: raízes, tronco, galhos e a copa %>
+<g fill="none" stroke="<%= gold %>" stroke-width="1.8" stroke-linecap="round">
+  <path d="M66 211 C60 213 56 215 52 213 M74 211 C80 213 84 215 88 213 M70 211 L70 216" />
+  <path d="M69 194 C62 188 58 182 54 178 M71 194 C78 188 82 182 86 178 M70 192 L70 172 M69 188 C64 180 62 174 62 168 M71 188 C76 180 78 174 78 168" />
+  <path d="M51 214 Q70 220 89 214" stroke-width="1.2" />
+</g>
+<path d="M66 212 C67 205 67 199 68 192 L72 192 C73 199 73 205 74 212 Z" fill="<%= gold %>" />
+<g fill="<%= gold %>">
+  <circle cx="54" cy="176" r="5" /><circle cx="60" cy="169" r="6" /><circle cx="70" cy="165" r="7" />
+  <circle cx="80" cy="169" r="6" /><circle cx="86" cy="176" r="5" /><circle cx="64" cy="177" r="4" /><circle cx="76" cy="177" r="4" />
+</g>
+<g fill="<%= light %>">
+  <circle cx="58" cy="167" r="1.8" /><circle cx="68" cy="162" r="2" /><circle cx="78" cy="166" r="1.8" /><circle cx="52" cy="174" r="1.4" />
+</g>
+
+<text x="70" y="336" text-anchor="middle" class="deck-print-word" fill="<%= gold %>">STANCE</text>

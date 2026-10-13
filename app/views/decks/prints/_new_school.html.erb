@@ -1,0 +1,36 @@
+<%# Estampa "Grafite" (new school): um grafite de letras gordas, com sombra,
+    escorridos e respingos, sobre concreto. Desenhada no shape de 140 x 380 (centro x = 70). %>
+<rect width="140" height="380" fill="#6f7178" />
+<% [ [ "#ff4fa3", 40, 90, 46 ], [ "#2ee6d6", 104, 200, 52 ], [ "#ffb800", 46, 300, 50 ] ].each_with_index do |(color, x, y, r), index| %>
+  <radialGradient id="mist-<%= index %>-<%= uid %>">
+    <stop offset="0" stop-color="<%= color %>" stop-opacity="0.45" />
+    <stop offset="1" stop-color="<%= color %>" stop-opacity="0" />
+  </radialGradient>
+  <circle cx="<%= x %>" cy="<%= y %>" r="<%= r %>" fill="url(#mist-<%= index %>-<%= uid %>)" />
+<% end %>
+<%# Marcas do concreto %>
+<path d="M20 60 L44 64 M96 120 L122 114 M18 250 L40 246 M98 330 L124 336" stroke="#000" stroke-opacity="0.15" stroke-width="1.2" />
+
+<linearGradient id="paint-<%= uid %>" x1="0" x2="0" y1="0" y2="1">
+  <stop offset="0" stop-color="#ffb800" />
+  <stop offset="0.55" stop-color="#ff4fa3" />
+  <stop offset="1" stop-color="#8f7bff" />
+</linearGradient>
+
+<%# A palavra, de pé no shape: sombra, contorno e a tinta %>
+<g transform="rotate(-90 70 190)">
+  <text x="73" y="204" class="deck-graffiti" fill="#121214" stroke="#121214">STANCE</text>
+  <text x="70" y="201" class="deck-graffiti" fill="url(#paint-<%= uid %>)" stroke="#121214">STANCE</text>
+  <text x="70" y="201" class="deck-graffiti is-shine" fill="none" stroke="#fff">STANCE</text>
+</g>
+<%# Escorridos e respingos %>
+<g stroke="#ff4fa3" stroke-width="2.4" stroke-linecap="round">
+  <path d="M93 150 L104 150" /><path d="M93 196 L109 196" stroke="#8f7bff" /><path d="M93 236 L101 236" stroke="#ffb800" />
+</g>
+<circle cx="106" cy="150" r="2" fill="#ff4fa3" /><circle cx="111" cy="196" r="2.2" fill="#8f7bff" /><circle cx="103" cy="236" r="1.8" fill="#ffb800" />
+<g fill="#121214" opacity="0.7">
+  <circle cx="36" cy="120" r="1.6" /><circle cx="30" cy="132" r="1" /><circle cx="44" cy="282" r="1.4" /><circle cx="104" cy="96" r="1.2" />
+</g>
+<%# Coroa de tag no bico e um recado no rabo %>
+<path d="M54 56 L58 40 L66 50 L70 36 L74 50 L82 40 L86 56 Z" fill="none" stroke="#ecebe6" stroke-width="2.2" stroke-linejoin="round" />
+<text x="70" y="318" text-anchor="middle" class="deck-print-word is-tight" fill="#2ee6d6">BORA ANDAR</text>

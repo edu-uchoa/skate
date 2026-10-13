@@ -2589,7 +2589,7 @@ a.guide-tab {
 
 .profile-preview.is-avatar .avatar { width: auto; height: 300px; }
 @media (max-height: 700px) { .profile-preview.is-avatar .avatar { height: 230px; } }
-.profile-preview.is-deck .deck { width: auto; height: 240px; }
+.profile-preview.is-deck .deck { width: auto; max-width: 100%; height: clamp(220px, 40dvh, 320px); }
 
 .customizer-group {
   display: flex;
@@ -2711,13 +2711,26 @@ a.guide-tab {
 .avatar .av-upper { transform-origin: 100px 150px; }
 .avatar[data-base="feminino"] .av-upper { transform: scale(0.92, 1); }
 
-/* Desenho do skate (decks/_deck). Rodas e trucks vêm de --deck-wheels / --deck-trucks. */
+/* Desenho do skate (decks/_deck): lixa, estampa com trucks e perfil. Rodas e trucks
+   vêm de --deck-wheels / --deck-trucks; as estampas ficam em decks/prints/. */
 .deck { display: block; width: 100%; height: auto; }
-.deck .deck-wheel { fill: var(--deck-wheels); stroke: #0d0e11; stroke-width: 1.5; }
-.deck .deck-truck { fill: var(--deck-trucks); stroke: #0d0e11; stroke-width: 1.5; }
-.deck .deck-edge { fill: none; stroke: #0d0e11; stroke-width: 3; }
-.deck .deck-bolt { fill: #0d0e11; opacity: 0.55; }
-.deck .deck-word { font-family: var(--font-display); font-size: 22px; font-weight: 900; letter-spacing: 3px; fill: #ffb800; }
+.deck .deck-wheel { fill: var(--deck-wheels); stroke: #0d0e11; stroke-width: 1; }
+.deck .deck-truck { fill: var(--deck-trucks); stroke: #0d0e11; stroke-width: 1; }
+.deck .deck-bolt { fill: #2a2b30; stroke: #d6d9de; stroke-width: 0.6; }
+.deck .deck-print-word { font-family: var(--font-display); font-size: 9px; font-weight: 900; letter-spacing: 3px; }
+.deck .deck-print-word.is-tight { letter-spacing: 1.5px; }
+.deck .deck-print-word.is-script { font-size: 15px; font-style: italic; letter-spacing: 0; }
+.deck .deck-graffiti {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  text-anchor: middle;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  paint-order: stroke fill;
+}
+.deck .deck-graffiti.is-shine { stroke-width: 1px; stroke-opacity: 0.55; }
 
 /* Cartão da ofensiva no Perfil: é um botão que abre /ofensiva. */
 .profile-stat.is-button {
