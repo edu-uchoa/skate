@@ -25,19 +25,35 @@ pegam (já aconteceu com Ajuda e Retorno).
 
 ## iPhone / Safari
 
-- `<video>` sempre com `playsinline` (sem ele o iPhone abre em tela cheia). Faltam
-  ainda em `maneuvers/_drill.html.erb` e `_maneuver.html.erb`.
+- `<video>` sempre com `playsinline` (sem ele o iPhone abre em tela cheia). Os vídeos de
+  treino usam `training_video_tag`, que já põe.
 - Câmera dentro da página (`getUserMedia`/`MediaRecorder`) só em **HTTPS** ou
   `localhost`. Por `http://IP` o app cai na câmera nativa (input `capture`).
-- `:has()`, `aspect-ratio` e `100dvh` exigem iOS 15.4+. Isso é aceitável, mas não use
-  recursos mais novos sem um plano B.
-- `ApplicationController` tem `allow_browser versions: :modern`, que **bloqueia Safari
-  abaixo de 17.2**. Há uma decisão pendente com o usuário para baixar para 15.4.
-- Vídeos WebM (gravados no Android) podem não tocar em iOS antigo.
-- Ícone de tela inicial (`apple-touch-icon`) e o manifesto (`pwa/manifest.json.erb`, ainda
-  "Skate" e vermelho) estão pendentes.
+- **Piso de aparelhos:** iPhone com **iOS 16.4+** e **Chrome 111+** no Android
+  (`ApplicationController::MINIMUM_BROWSERS`). É o mínimo do CSS do Tailwind 4 e do
+  import map do JavaScript; abaixo disso aparece `public/406-unsupported-browser.html`,
+  em português. Não use recurso mais novo que isso sem plano B (ex.: `backdrop-filter`
+  precisa também de `-webkit-backdrop-filter` até o iOS 17).
+- Vídeos WebM (gravados no Android): o Safari toca desde o iOS 15/16, mas ainda não foi
+  conferido num iPhone de verdade com um vídeo gravado no Android.
 - Para testar num iPhone real na mesma rede: `bin/rails server -b 0.0.0.0` e abrir
   `http://<IPv4 do PC>:3000` (liberar no firewall do Windows).
+
+## App instalado na tela do celular (PWA)
+
+- Página `/instalar` (`pages/install`, `install_controller.js`): passo a passo do
+  iPhone, do Android e do computador; no Android, botão de um toque (o aviso
+  `beforeinstallprompt` é guardado em `application.js`). Atalhos: selo "Instalar" no
+  topo da Trilha e link no Perfil, que somem quando o app já está instalado
+  (`html.is-standalone` e `@media (display-mode: standalone)`).
+- Manifesto em `pwa/manifest.json.erb` (ícones 192 e 512, comum e maskable, e atalhos);
+  service worker em `pwa/service-worker.js` (guarda só `/assets` e a página
+  `public/offline.html`; mudou um dos dois, troque a `VERSION`).
+- No iPhone o app instalado não usa o login do Safari: pode pedir para entrar de novo.
+- Conferir: `Page.getInstallabilityErrors` (CDP) deve voltar vazio no Chrome/Edge; a
+  página Sem sinal só aparece com o servidor desligado de verdade (o modo offline do
+  DevTools não corta a rede do service worker); para fingir o app aberto pelo ícone,
+  troque `window.matchMedia` por `Page.addScriptToEvaluateOnNewDocument`.
 
 ## Conferindo com prints (Windows, Edge sem janela)
 

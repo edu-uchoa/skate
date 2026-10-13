@@ -69,6 +69,9 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
   chama): o ffmpeg tira localização (GPS), data, aparelho e o nome original do arquivo.
   Não guarde vídeo por outro caminho (ex.: `ActiveStorage::Blob.create_and_upload!`).
   Sem ffmpeg o vídeo é recusado, de propósito. Vídeos antigos: `bin/rails videos:limpar`.
+- O service worker do app instalado (`pwa/service-worker.js`) guarda no celular só o
+  visual (`/assets`) e a página Sem sinal. Nunca guarde páginas (têm dados pessoais),
+  vídeos (`/clips`) nem respostas de formulário: o celular pode ser de outra pessoa.
 - Vídeo só abre por `clip_path` (`ClipsController`: login, permissão e registro de quem
   assistiu). As rotas públicas do Active Storage estão desligadas; não religue nem use
   `url_for(clip)`/`rails_blob_path`, que davam link sem login e sem prazo.

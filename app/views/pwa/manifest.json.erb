@@ -1,23 +1,26 @@
 {
+  "id": "/",
   "name": "Stance",
   "short_name": "Stance",
-  "icons": [
-    {
-      "src": "/icon.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    },
-    {
-      "src": "/icon-maskable.png",
-      "type": "image/png",
-      "sizes": "512x512",
-      "purpose": "maskable"
-    }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "scope": "/",
   "description": "Bora andar de skate! Passos práticos para mandar a sua primeira manobra no seu ritmo.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#121317",
-  "background_color": "#121316"
+  "background_color": "#121316",
+  "categories": ["sports", "education", "lifestyle"],
+  "icons": [
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "/icon-maskable-192.png", "type": "image/png", "sizes": "192x192", "purpose": "maskable" },
+    { "src": "/icon-maskable.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Trilha", "short_name": "Trilha", "url": "/trilha", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Gravar um treino", "short_name": "Gravar", "url": "/gravar", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Picos", "short_name": "Picos", "url": "/picos", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ]
 }

@@ -70,3 +70,12 @@ Leia quando for montar uma tela e precisar saber qual classe usar. Todas ficam e
 ## Zine, gravação e IA
 `zine-*` (cards de vídeo e etapas da análise), `rec-*` (tela Gravar: câmera, upload,
 checklist e progresso), `feedback-block` / `ia-loader-card` (devolutiva da IA).
+
+## Instalar o app (/instalar)
+| Classe | Para quê |
+| --- | --- |
+| `install-preview` / `install-preview-app` | O ícone do Stance entre silhuetas de outros apps, como fica na tela inicial |
+| `install-status` (`.is-done`, `.is-warning`) | Aviso de "já instalado", "pronto, instalado" ou "abra no navegador" |
+| `install-platform` (`details`, `.is-mine`) + `install-steps` | Passo a passo de cada aparelho, com o número do passo e um ícone; o do aparelho da pessoa abre sozinho |
+| `install-perks` | Lista de motivos para instalar, com ícone |
+| `install-pill` / `install-link` | Atalho para a página (topo da Trilha e Perfil); somem quando o app já está instalado |

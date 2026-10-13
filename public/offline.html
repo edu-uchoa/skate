@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <!-- Página "Sem sinal" do app instalado: o service worker guarda esta página no
+         celular e mostra quando uma tela não carrega por falta de internet. Precisa
+         funcionar sozinha, sem o CSS do app (que pode não estar no celular). -->
+    <title>Sem sinal · Stance</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#121317">
+    <meta name="robots" content="noindex, nofollow">
+    <style>
+      .offline-page * { box-sizing: border-box; margin: 0; padding: 0; }
+      .offline-page {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+        background: #121316;
+        color: #e3e2e6;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      .offline-card {
+        width: 100%;
+        max-width: 360px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+      }
+      .offline-card img { width: 88px; height: 88px; border-radius: 20px; box-shadow: 0 0 0 2px #ffb800; }
+      .offline-card h1 { font-size: 24px; font-weight: 900; letter-spacing: 0.02em; text-transform: uppercase; }
+      .offline-card p { font-size: 15px; line-height: 1.5; color: #d5c4ab; }
+      .offline-card button {
+        width: 100%;
+        margin-top: 6px;
+        padding: 15px 18px;
+        border: 0;
+        border-radius: 10px;
+        background: #ffb800;
+        box-shadow: 0 4px 0 #6b4c00;
+        color: #121316;
+        font: inherit;
+        font-size: 16px;
+        font-weight: 900;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="offline-page">
+    <main class="offline-card">
+      <img src="/icon-192.png" alt="" width="88" height="88">
+      <h1>Sem sinal</h1>
+      <p>O Stance precisa de internet para abrir a trilha e enviar vídeos. Tudo bem: quando o sinal voltar, é só tentar de novo.</p>
+      <button type="button" onclick="location.reload()">Tentar de novo</button>
+    </main>
+  </body>
+</html>

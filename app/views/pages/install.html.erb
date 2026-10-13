@@ -1,39 +1,103 @@
-<% content_for :section, "Instalação" %>
+<% content_for :section, "Instalar" %>
+<%# Instalar o Stance na tela do celular (PWA). install_controller.js descobre o
+    aparelho, abre o passo a passo dele e, no Android, mostra o botão de um toque.
+    Sem JavaScript, os três passo a passos continuam aqui para abrir na mão. %>
+<% onboarded = current_user.onboarded? %>
+<% platforms = [
+     [ "ios", "phone_iphone", "No iPhone", [
+       [ "ios_share", safe_join([ "No ", tag.strong("Safari"), ", toque em ", tag.strong("Compartilhar"), " (o quadrado com uma seta para cima), na barra de baixo." ]) ],
+       [ "add_box", safe_join([ "Role a lista e toque em ", tag.strong("Adicionar à Tela de Início"), "." ]) ],
+       [ "check_circle", safe_join([ "Toque em ", tag.strong("Adicionar"), ", no canto de cima. O ícone do Stance aparece junto com os seus apps." ]) ]
+     ], "No Chrome do iPhone também dá: toque em Compartilhar, na barra de endereço, e depois em \"Adicionar à Tela de Início\"." ],
+     [ "android", "android", "No Android", [
+       [ "more_vert", safe_join([ "No ", tag.strong("Chrome"), ", toque no menu ", tag.strong("⋮"), " (três pontinhos, no canto de cima)." ]) ],
+       [ "install_mobile", safe_join([ "Toque em ", tag.strong("Instalar app"), ". Em alguns celulares o nome é ", tag.strong("Adicionar à tela inicial"), "." ]) ],
+       [ "check_circle", safe_join([ "Confirme em ", tag.strong("Instalar"), ". O ícone do Stance vai para a tela inicial." ]) ]
+     ], "No navegador da Samsung: menu ☰ (embaixo) › Adicionar página a › Tela inicial." ],
+     [ "desktop", "computer", "No computador", [
+       [ "install_desktop", safe_join([ "No ", tag.strong("Chrome"), " ou no ", tag.strong("Edge"), ", clique no ícone de instalar, no fim da barra de endereço." ]) ],
+       [ "check_circle", safe_join([ "Ou abra o menu ", tag.strong("⋮"), " e escolha ", tag.strong("Instalar Stance"), "." ]) ]
+     ], "O Stance foi feito para o celular: no computador ele abre numa janela estreita, do tamanho de um celular." ]
+   ] %>
 
-<div style="position: relative; width: 100%; height: 160px; background: linear-gradient(135deg, #1f1f23, #0d0e11); border-radius: 12px; border: 1px solid #343538; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; box-shadow: 4px 4px 0 #121316; overflow: hidden;">
-  <div style="width: 140px; height: auto;">
-    <img src="<%= asset_path('stance_logo_oficial.svg') %>" alt="STANCE Logo Oficial" style="width: 100%; height: auto; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));">
+<section class="streak-screen install-screen" data-controller="install">
+  <header class="auth-head">
+    <% if onboarded %>
+      <%= link_to track_path, class: "auth-back" do %>
+        <span class="material-symbols-outlined">arrow_back</span> Voltar para a trilha
+      <% end %>
+    <% end %>
+    <span class="step-indicator">App na tela do celular</span>
+    <h2 class="screen-title">Instale o Stance</h2>
+    <p class="screen-desc">Coloque o Stance na tela inicial, junto com os seus outros apps: abre com um toque, em tela cheia, sem a barra do navegador.</p>
+  </header>
+
+  <div class="install-preview" aria-hidden="true">
+    <span class="install-preview-app is-ghost"></span>
+    <span class="install-preview-app">
+      <img src="/icon-192.png" alt="" width="64" height="64">
+      <span>Stance</span>
+    </span>
+    <span class="install-preview-app is-ghost"></span>
   </div>
-  <div class="version-badge" style="top: 8px; right: 8px; background: #ffb800; color: black; font-size: 9px;">PWA OFICIAL</div>
-</div>
 
-<div class="flex flex-col gap-1 mb-2">
-  <h1 class="main-headline" style="font-size: 26px; line-height: 28px;">
-    Adicione o <span style="color: #ffb800;">Stance</span><br>à sua tela inicial
-  </h1>
-</div>
-
-<div class="sub-headline-card" style="border-left: 4px solid #fd591e; transform: none; background: #1a1b20; margin-bottom: 10px; padding: 10px;">
-  <p style="font-size: 12px; color: #d5c4ab; line-height: 1.4;">
-    Evite que o navegador apague seu progresso após uma semana. É rápido, leve e você treina sem precisar ir para a App Store.
-  </p>
-</div>
-
-<div id="os-instructions-container" class="sub-headline-card" style="transform: none; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; background: #1a1b20; border: 1px solid #343538; padding: 10px;">
-  <div style="width: 38px; height: 38px; border-radius: 50%; background: #292a2d; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-    <span id="os-icon" class="material-symbols-outlined" style="color: #ffdca1; font-size: 20px;">ios_share</span>
+  <div class="auth-card install-status is-done" data-install-target="standalone" hidden>
+    <span class="material-symbols-outlined">verified</span>
+    <span><strong>Você já está no app instalado.</strong> Da próxima vez, é só tocar no ícone do Stance na tela inicial.</span>
   </div>
-  <p id="os-text" style="font-size: 12px; color: #e3e2e6; line-height: 1.35;">
-    No iPhone: Toque em <strong>Compartilhar</strong> e depois em <strong style="color: #ffb800;">"Adicionar à Tela de Início"</strong>.
-  </p>
-</div>
+  <div class="auth-card install-status is-done" data-install-target="added" hidden>
+    <span class="material-symbols-outlined">celebration</span>
+    <span><strong>Pronto, instalado!</strong> Procure o ícone do Stance na tela inicial do celular.</span>
+  </div>
+  <div class="auth-card install-status is-warning" data-install-target="inApp" hidden>
+    <span class="material-symbols-outlined">open_in_browser</span>
+    <span><strong>Abra no navegador para instalar.</strong> Você abriu o Stance dentro de outro app: toque nos três pontinhos e escolha "Abrir no navegador" (Safari no iPhone, Chrome no Android).</span>
+  </div>
 
-<div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
-  <%= link_to store_path, class: "tactile-btn-primary", style: "background-color: #1a1b20; color: #f5f5f7; border: 2px solid #343538; box-shadow: 0 4px 0 #0d0e11; transform: rotate(-1deg); justify-content: center; align-items: center; display: flex;" do %>
-    <span style="font-weight: 800; margin-right: 8px;">Adicionar Atalho</span>
-    <span class="material-symbols-outlined" style="color: #ffb800;">add_to_home_screen</span>
+  <button type="button" class="tactile-btn-primary" data-install-target="button" data-action="install#install" hidden>
+    <span>Instalar o Stance</span>
+    <span class="material-symbols-outlined btn-arrow">install_mobile</span>
+  </button>
+
+  <section class="streak-section">
+    <h3 class="auth-card-label">Como instalar</h3>
+    <% platforms.each do |key, icon, title, steps, hint| %>
+      <details class="install-platform" data-install-target="platform" data-platform="<%= key %>">
+        <summary>
+          <span class="material-symbols-outlined"><%= icon %></span>
+          <span class="install-platform-title"><%= title %></span>
+          <span class="guide-tag is-must install-mine">Seu aparelho</span>
+          <span class="material-symbols-outlined install-platform-chevron">expand_more</span>
+        </summary>
+        <ol class="install-steps">
+          <% steps.each_with_index do |(step_icon, text), index| %>
+            <li>
+              <span class="install-step-number"><%= index + 1 %></span>
+              <span class="install-step-text"><%= text %></span>
+              <span class="material-symbols-outlined install-step-icon"><%= step_icon %></span>
+            </li>
+          <% end %>
+        </ol>
+        <p class="auth-hint"><%= hint %></p>
+      </details>
+    <% end %>
+    <p class="auth-hint">Se o app abrir sem a sua conta, é só entrar de novo com o seu contato e a sua senha.</p>
+  </section>
+
+  <section class="streak-section">
+    <h3 class="auth-card-label">Por que instalar</h3>
+    <ul class="install-perks">
+      <% [ [ "touch_app", "Abre com um toque, direto da tela inicial." ],
+           [ "fullscreen", "Tela cheia, sem a barra do navegador: sobra mais espaço para a trilha e para gravar." ],
+           [ "bolt", "Abre mais rápido: o visual do app fica guardado no celular." ],
+           [ "wifi_off", "Sem sinal no pico? O app avisa e você tenta de novo quando a internet voltar." ],
+           [ "lock", "Não precisa de loja de apps nem de nenhum dado a mais." ] ].each do |icon, text| %>
+        <li><span class="material-symbols-outlined"><%= icon %></span><span><%= text %></span></li>
+      <% end %>
+    </ul>
+  </section>
+
+  <% unless onboarded %>
+    <%= link_to "Continuar no navegador por enquanto", store_path, class: "secondary-link-btn install-skip" %>
   <% end %>
-  <%= link_to store_path, class: "secondary-link-btn", style: "text-align: center; display: block;" do %>
-    Continuar no navegador por enquanto
-  <% end %>
-</div>
+</section>

@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  # Só a landing é pública; abertura e instalação (PWA) já exigem conta.
+  # Só a landing é pública; abertura e instalação do app (PWA) já exigem conta.
   allow_unauthenticated_access only: :landing
 
   def landing

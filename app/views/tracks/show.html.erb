@@ -12,6 +12,10 @@
     </h3>
   </div>
   <div style="display: flex; gap: 6px; align-items: center;">
+    <%# Atalho para instalar o app na tela do celular; some quando já está instalado (CSS). %>
+    <%= link_to install_path, class: "install-pill", aria: { label: "Instalar o app no celular" } do %>
+      <span class="material-symbols-outlined">install_mobile</span> Instalar
+    <% end %>
     <%# Ofensiva de verdade (Streak): sessões de skate comprovadas. Some quando é zero. %>
     <% if @streak.positive? %>
       <%= link_to streak_path, class: "streak-pill", title: "Ofensiva: #{streak_sessions_label(@streak)}",

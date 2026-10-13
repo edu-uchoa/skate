@@ -89,6 +89,7 @@ body {
   padding-top: env(safe-area-inset-top, 0px);
   height: calc(54px + env(safe-area-inset-top, 0px));
   background-color: rgba(18, 19, 22, 0.96);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   display: flex;
   justify-content: space-between;
@@ -689,6 +690,7 @@ body {
   left: 8px;
   right: 8px;
   background: rgba(31, 31, 35, 0.96);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid var(--surface-highest);
   border-radius: var(--radius-lg);
@@ -891,6 +893,7 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   z-index: 900;
   opacity: 0;
@@ -983,6 +986,7 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
   height: calc(56px + env(safe-area-inset-bottom, 0px));
   background: rgba(18, 19, 22, 0.96);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-top: 1px solid rgba(81, 69, 50, 0.4);
   display: flex;
@@ -2872,3 +2876,175 @@ a.guide-tab {
 }
 
 .rec-meetup .material-symbols-outlined { color: var(--secondary-color); }
+
+/* Instalar o app na tela do celular (pages/install, install_controller.js). */
+.install-preview {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  padding: 18px 12px;
+  background: radial-gradient(circle at 50% 30%, #2b2c33, var(--surface-low));
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+}
+
+.install-preview-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+}
+
+.install-preview-app img {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), 0 0 0 2px var(--primary-color);
+}
+
+/* Os outros apps da tela inicial, só a silhueta. */
+.install-preview-app.is-ghost {
+  width: 52px;
+  height: 52px;
+  align-self: center;
+  border-radius: 14px;
+  background: var(--surface-high);
+  opacity: 0.6;
+}
+
+.install-status {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-on-surface);
+}
+
+.install-status[hidden] { display: none; }
+.install-status.is-done { border-color: var(--tertiary-color); }
+.install-status.is-done .material-symbols-outlined { color: var(--tertiary-color); }
+.install-status.is-warning { border-color: var(--secondary-color); }
+.install-status.is-warning .material-symbols-outlined { color: var(--secondary-color); }
+
+.install-screen .tactile-btn-primary[hidden] { display: none; }
+
+.install-platform {
+  background: var(--surface-color);
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+}
+
+.install-platform.is-mine { border-color: var(--primary-color); }
+
+.install-platform summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  min-height: 48px;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+}
+
+.install-platform summary::-webkit-details-marker { display: none; }
+.install-platform summary > .material-symbols-outlined:first-child { color: var(--primary-color); }
+.install-platform-title { flex: 1; }
+.install-mine { display: none; }
+.install-platform.is-mine .install-mine { display: inline-block; }
+.install-platform-chevron { color: var(--text-variant); transition: transform 0.2s; }
+.install-platform[open] .install-platform-chevron { transform: rotate(180deg); }
+
+.install-platform > .auth-hint { padding: 0 14px 14px; }
+
+.install-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 14px 12px;
+  list-style: none;
+}
+
+.install-steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text-on-surface);
+}
+
+.install-step-number {
+  flex: 0 0 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #121316;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.install-step-text { flex: 1; }
+.install-step-text strong { color: var(--primary-color); }
+.install-step-icon { font-size: 22px; color: var(--text-variant); }
+
+.install-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  list-style: none;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+.install-perks li { display: flex; align-items: center; gap: 10px; }
+.install-perks .material-symbols-outlined { font-size: 20px; color: var(--primary-color); }
+.install-skip { display: block; text-decoration: underline; }
+
+/* Atalho "Instalar" no topo da Trilha e no Perfil: some quando o app já está instalado. */
+.install-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 4px 10px;
+  border: 1px solid var(--primary-color);
+  border-radius: 14px;
+  background: rgba(255, 184, 0, 0.12);
+  color: var(--primary-color);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.install-pill .material-symbols-outlined { font-size: 15px; }
+
+.install-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.install-link .material-symbols-outlined { font-size: 18px; text-decoration: none; }
+
+.is-standalone .install-pill,
+.is-standalone .install-link { display: none; }
+
+@media (display-mode: standalone) {
+  .install-pill,
+  .install-link { display: none; }
+}

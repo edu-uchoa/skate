@@ -68,6 +68,10 @@
       <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %>. Use este contato e sua senha para entrar em qualquer aparelho.</span>
     </div>
 
+    <%= link_to install_path, class: "auth-link install-link" do %>
+      <span class="material-symbols-outlined">install_mobile</span> Instalar o Stance no celular
+    <% end %>
+
     <% if current_user.mentor_access? %>
       <%= link_to "Abrir a Zine do mentor", mentor_zine_path, class: "auth-link" %>
     <% elsif current_user.mentor_requested? %>

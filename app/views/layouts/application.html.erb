@@ -4,10 +4,15 @@
     <title><%= content_for(:title) || "STANCE · Bora andar de skate!" %></title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <%# App instalado na tela do celular (PWA, página /instalar): abre em tela cheia.
+        No iPhone, a barra de status fica por cima do app; o cabeçalho e o menu de
+        baixo já descontam o entalhe e a barrinha (env(safe-area-inset-*)). %>
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Stance">
     <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
     <meta name="theme-color" content="#121317">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
