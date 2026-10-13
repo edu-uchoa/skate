@@ -5,6 +5,9 @@ class StreakFlowTest < ActionDispatch::IntegrationTest
   ANSWER = { strengths: "Boa base.", mistake: "Olhou para o chão.", next_focus: "Olhe para a frente." }.freeze
 
   setup do
+    # Meio da tarde: o rolê de "uma hora atrás até daqui a uma hora" cabe no mesmo dia
+    # (perto da meia-noite, o fim caía no dia seguinte e o teste falhava).
+    travel_to Time.current.in_time_zone(User.new.time_zone).change(hour: 15)
     learning_module = LearningModule.create!(code: "0", name: "BASE", position: 0)
     @maneuver = Maneuver.create!(learning_module: learning_module, code: "0.1", slug: "t-setup", name: "SETUP",
                                  position: 0, kind: :drill, description: "Monte o seu skate.")
