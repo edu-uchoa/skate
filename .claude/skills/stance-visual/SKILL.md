@@ -85,6 +85,20 @@ O público trava por **medo de se machucar** e **vergonha de ser visto**. Por is
   parar". Não crie avisos de "você vai perder a ofensiva" nem metas diárias.
 - Imagens e exemplos com representação feminina, e português de rua.
 
+## Junto com as skills de design de fora
+
+O projeto também tem duas skills de terceiros:
+- **frontend-design** (Anthropic): ajuda a pensar telas novas e os textos;
+- **web-design-guidelines** (Vercel, adaptada): revisão de acessibilidade, foco, formulários
+  e toque.
+
+Use as duas, mas **esta skill é a direção visual do Stance e vence em conflito**. Estas são
+escolhas da marca, não "padrões genéricos" a evitar:
+- fundo quase preto com o amarelo de destaque;
+- títulos e rótulos em caixa-alta (via CSS);
+- o "·" entre informações;
+- as setas nos botões.
+
 ## Antes de dar como pronto
 
 Confira no navegador com a skill **stance-responsivo**. Compare o print com uma tela

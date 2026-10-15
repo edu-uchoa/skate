@@ -99,6 +99,18 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - `filter_parameter_logging.rb` filtra senha, e-mail e token dos logs; ao criar campos
   sensíveis novos, inclua-os lá.
 
+**Skills de terceiros (`.claude/skills/`)**
+- Uma skill vira instrução que o Claude segue dentro do projeto. Antes de trazer uma, leia
+  **todos** os arquivos dela.
+- Prefira fontes oficiais (`anthropics`, `vercel-labs`...).
+- Recuse skills que:
+  - mandam dados do projeto para serviços de fora;
+  - pedem chave paga;
+  - buscam instruções na internet a cada uso (guarde uma cópia revisada).
+- Não instale com `-y` nem `-g` sem revisar.
+- Guarde junto a origem (repositório, commit, data) e a licença, como em
+  `frontend-design/ORIGEM.md` e `web-design-guidelines/guidelines.md`.
+
 **Gems e JavaScript**
 - Gem nova: confira se é mantida e popular; prefira o que o Rails já traz.
 - Atualizações do Dependabot: revise uma de cada vez e rode os testes.
