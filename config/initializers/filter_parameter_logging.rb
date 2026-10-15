@@ -5,5 +5,6 @@
 # See the ActiveSupport::ParameterFilter documentation for supported notations and behaviors.
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc,
-  :body # mensagens do chat entre aprendiz e mentores
+  :body, # mensagens do chat entre aprendiz e mentores
+  :code  # código de recuperação de senha e o código que o Google devolve no login
 ]

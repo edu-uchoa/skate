@@ -82,8 +82,12 @@ class AdminTest < ActionDispatch::IntegrationTest
   end
 
   test "não existe caminho no app para virar administrador" do
-    post account_path, params: { account_type: "admin",
-                                 user: { contact: "esperto@example.com", password: PASSWORD, password_confirmation: PASSWORD, role: "admin" } }
+    post "/cadastro", params: { account_type: "admin",
+                                user: { contact: "esperto@example.com", password: PASSWORD, password_confirmation: PASSWORD, role: "admin" } }
+    assert_response :not_found, "não há mais cadastro com senha"
+    assert_nil User.find_by(email: "esperto@example.com")
+
+    sign_up_with_google("esperto@example.com")
     assert User.find_by(email: "esperto@example.com").role_learner?
   end
 

@@ -8,9 +8,11 @@ Tudo foi construído sobre a arquitetura existente: não há modelo novo de usu�
 
 | Funcionalidade | Rota | Onde fica o código |
 | --- | --- | --- |
-| Cadastro | `/cadastro` | `AccountsController#new/create` |
-| Login | `/entrar` | `SessionsController` |
-| Esqueci minha senha | `/recuperar-senha` | `PasswordResetsController` |
+| Cadastro (só Google) | `/cadastro` | `AccountsController#new` |
+| Login | `/entrar` | `SessionsController` (senha, contas antigas) |
+| Entrar com o Google | `POST /auth/google_oauth2` → `/auth/google_oauth2/callback` | OmniAuth + `GoogleSessionsController` |
+| Nickname#0000 | `/apelido` | `NicknamesController` |
+| Esqueci minha senha | `/recuperar-senha` | `PasswordResetsController` (só contas com senha) |
 | Minha conta / sair | `/conta`, `DELETE /sair`, `DELETE /sair-de-todos` | `AccountsController#show/destroy/destroy_all` |
 | Gravar vídeo | `/gravar` | `RecordingsController` + `recorder_controller.js` |
 | Zine | `/zine` | `ZinesController` + `ZinesHelper` |
@@ -29,10 +31,11 @@ O antigo **perfil anônimo** (usuário criado automaticamente por cookie) foi re
 
 ### Como funciona
 
-- **Cadastro:** e-mail **ou** telefone (WhatsApp) + senha (8 a 72 caracteres) + confirmação. Após criar a conta, a pessoa segue para o onboarding (`/instalar` → abertura → idade → diagnóstico → trilha).
-- **Login:** e-mail ou telefone + senha. Contato inexistente e senha errada mostram a mesma mensagem, para não revelar quem tem conta.
+- **Entrar com o Google:** cadastro e login são o mesmo botão, "Continuar com o Google" (`shared/_google_button`, sempre por POST com token CSRF). O app pede só `openid email` e aceita apenas e-mail **confirmado** no Google. A conta é achada pelo `google_uid`; se não houver, pelo e-mail (uma conta antiga com o mesmo e-mail vira conta Google, mantendo trilha, vídeos e XP, e a senha antiga deixa de valer); se não houver nenhuma, é criada como aprendiz. Não existe cadastro como mentor: quem quer ser mentor pede pelo Perfil, e um administrador aprova.
+- **Nickname#0000:** logo depois do primeiro login pelo Google, a pessoa escolhe o nickname (3 a 20 letras, números, `_` ou `.`, sem parecer telefone). O número de 4 dígitos (0001 a 9999) pode ser escolhido ou sorteado; nicknames iguais são permitidos, o par nickname#número não (sem diferenciar maiúsculas). Enquanto não escolher, o app manda para `/apelido`. É o nickname#0000 que mentores e outros skatistas veem.
+- **Login com senha (contas antigas):** fica dentro de "Conta antiga" em `/entrar`. Contato inexistente e senha errada mostram a mesma mensagem, para não revelar quem tem conta. No Perfil, essas contas têm o botão para ligar ao Google.
 - **Telefone:** aceito em qualquer formato — `(61) 99999-0000` e `61999990000` são o mesmo número (o modelo guarda só os dígitos).
-- **Esqueci minha senha:** reaproveita o `AccessCode` (código de 6 dígitos com bcrypt, validade de 10 min e limite de tentativas). A resposta é a mesma com ou sem conta. Ao criar a senha nova, a sessão é encerrada em todos os aparelhos.
+- **Esqueci minha senha:** reaproveita o `AccessCode` (código de 6 dígitos com bcrypt, validade de 10 min e limite de tentativas). A resposta é a mesma com ou sem conta. Ao criar a senha nova, a sessão é encerrada em todos os aparelhos. Conta ligada ao Google não recebe código (entra só pelo Google).
 - **Sessão:** cookie assinado e permanente com o `token` do usuário (`Authentication` concern). A sessão é reiniciada ao entrar e ao sair (proteção contra fixação de sessão). "Sair de todos os aparelhos" regenera o token.
 - **Rate limit:** 10 tentativas a cada 3 minutos em cadastro, login e recuperação.
 
@@ -152,7 +155,8 @@ bin/rails test
 
 28 testes, incluindo:
 
-- `test/integration/authentication_flow_test.rb` — cadastro, login, logout, rotas protegidas, recuperação de senha;
+- `test/integration/authentication_flow_test.rb` — cadastro só pelo Google, login com senha das contas antigas, logout, rotas protegidas, recuperação de senha;
+- `test/integration/google_login_test.rb` — conta nova pelo Google, volta, e-mail não confirmado, ligação de conta antiga, regras do nickname#0000;
 - `test/integration/recording_flow_test.rb` — envio válido, metadados, arquivo no storage, formato/tamanho/duração inválidos, checklist, manobra bloqueada;
 - `test/integration/zine_test.rb` — acesso, lista vazia, cada etapa da análise, isolamento entre usuários.
 

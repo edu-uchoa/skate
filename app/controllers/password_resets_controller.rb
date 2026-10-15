@@ -20,7 +20,7 @@ class PasswordResetsController < ApplicationController
     end
 
     session[:password_reset_contact] = User.normalize_contact(contact)
-    user = User.find_registered_by_contact(contact)
+    user = password_account(contact)
     deliver_code_to(user) if user
 
     # Mesma resposta com ou sem conta: não revela quem está cadastrado.
@@ -61,7 +61,13 @@ class PasswordResetsController < ApplicationController
   def set_user
     @contact = session[:password_reset_contact]
     return redirect_to new_password_reset_path if @contact.blank?
-    @user = User.find_registered_by_contact(@contact)
+    @user = password_account(@contact)
+  end
+
+  # Conta ligada ao Google entra só pelo Google: não ganha senha de volta por aqui.
+  def password_account(contact)
+    user = User.find_registered_by_contact(contact)
+    user unless user&.google?
   end
 
   def deliver_code_to(user)

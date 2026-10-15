@@ -12,6 +12,10 @@ Rails.application.configure do
   config.x.stance.google_maps_map_id = ENV.fetch("GOOGLE_MAPS_MAP_ID", "DEMO_MAP_ID")
   config.x.stance.map_center         = [ -15.7939, -47.8828 ] # Brasília (DF), enquanto a localização não chega
   config.x.stance.spots_file         = Rails.root.join("config/picos.yml") # picos fixos do mapa
+  # Entrar com o Google (OmniAuth, config/initializers/omniauth.rb). O ID e o segredo
+  # vêm do Google Cloud (veja o README) e ficam em variáveis de ambiente, nunca no código.
+  config.x.stance.google_client_id     = ENV["GOOGLE_CLIENT_ID"]
+  config.x.stance.google_client_secret = ENV["GOOGLE_CLIENT_SECRET"]
   # Análise automática do vídeo (IA ou reconhecimento corporal). Desligada: hoje o
   # vídeo fica na fila do mentor. Só ligue depois de implementar Ai::FallAnalyzer#call.
   config.x.stance.automatic_review = false

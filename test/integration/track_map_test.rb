@@ -13,7 +13,7 @@ class TrackMapTest < ActionDispatch::IntegrationTest
     @last     = Maneuver.create!(learning_module: tricks, code: "3.1", slug: "t-no-comply", name: "NO COMPLY", position: 1,
                                  description: "Pé da frente no chão.", prerequisite: @shove_it)
 
-    post account_path, params: { user: { contact: "mapa@example.com", password: "manobra123", password_confirmation: "manobra123" } }
+    sign_up_with_google("mapa@example.com")
     @user = User.last
     @user.update!(birth_year: 2000, terms_accepted_at: Time.current)
     DiagnosisPlanner.new(@user.create_diagnosis!(level: :advanced, setup: :store_board, completed_at: Time.current)).apply!

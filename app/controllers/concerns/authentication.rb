@@ -1,4 +1,4 @@
-# Acesso à plataforma exige conta: cadastro ou login com e-mail/telefone e senha.
+# Acesso à plataforma exige conta: entrar com o Google (ou, nas contas antigas, e-mail/telefone e senha).
 #
 # O usuário é identificado por um cookie assinado e permanente com o token da
 # conta. Controllers públicos liberam ações com `allow_unauthenticated_access`.
@@ -74,8 +74,10 @@ module Authentication
     Current.user.last_seen_at.nil? || Current.user.last_seen_at < 1.hour.ago
   end
 
-  # Bloqueia o app enquanto a porta de idade não for respondida.
+  # Bloqueia o app enquanto a porta de idade não for respondida. Quem entrou pelo
+  # Google escolhe antes o nickname#0000 (é como aparece para os outros).
   def require_age_gate
+    return redirect_to(edit_nickname_path) if current_user.google? && current_user.handle.nil?
     return if current_user.accepted_terms? && current_user.old_enough?
     redirect_to onboarding_age_gate_path
   end

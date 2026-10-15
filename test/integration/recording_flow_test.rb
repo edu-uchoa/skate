@@ -10,7 +10,7 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     @locked   = Maneuver.create!(learning_module: learning_module, code: "9.1", slug: "t-kickflip",
                                  name: "KICKFLIP", position: 1, prerequisite: @maneuver)
 
-    post account_path, params: { user: { contact: "rec@example.com", password: "manobra123", password_confirmation: "manobra123" } }
+    sign_up_with_google("rec@example.com")
     @user = User.last
     @user.update!(birth_year: 2000, terms_accepted_at: Time.current)
     @user.create_diagnosis!(level: :never_ridden, setup: :store_board, completed_at: Time.current)

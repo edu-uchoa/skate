@@ -39,7 +39,19 @@ class User < ApplicationRecord
             numericality: { only_integer: true, greater_than: 1900, less_than_or_equal_to: ->(_) { Date.current.year } },
             allow_nil: true
   validate :validate_contact
-  validate :validate_password, if: :registered?
+  # Quem entra pelo Google não tem senha.
+  validate :validate_password, if: -> { registered? && google_uid.blank? }
+
+  # Nickname#0000: como a pessoa aparece para os outros usuários e para os mentores.
+  # O nickname pode repetir; os 4 números depois do "#" separam os iguais.
+  NICKNAME_LENGTH = 3..20
+  NICKNAME_FORMAT = /\A[\p{L}\p{N}_.]+\z/ # letras (com acento), números, "_" e "."
+  NICKNAME_TAG    = /\A\d{4}\z/
+
+  normalizes :nickname, with: ->(value) { value.to_s.strip.presence }
+  normalizes :nickname_tag, with: ->(value) { value.to_s.strip.delete_prefix("#").presence }
+  before_validation { self.nickname_key = nickname&.downcase }
+  validate :validate_nickname, if: -> { nickname.present? || nickname_tag.present? }
 
   scope :anonymous, -> { where(registered_at: nil) }
   scope :registered, -> { where.not(registered_at: nil) }
@@ -127,7 +139,51 @@ class User < ApplicationRecord
     public_send("#{self.class.contact_attribute(@contact_input)}=", @contact_input)
   end
 
-  def can_sign_in? = registered? && password_digest.present?
+  def can_sign_in? = registered? && (password_digest.present? || google_uid.present?)
+
+  # "skatista#0420", como a pessoa aparece no app; nil enquanto não escolheu.
+  def handle = ("#{nickname}##{nickname_tag}" if nickname.present? && nickname_tag.present?)
+
+  def google? = google_uid.present?
+
+  # Um dos 4 números ainda livres para esse nickname, sorteado (nil se acabaram).
+  def self.free_nickname_tag(nickname, except: nil)
+    taken = where(nickname_key: nickname.to_s.strip.downcase).where.not(id: except).pluck(:nickname_tag)
+    ((1..9999).map { |number| format("%04d", number) } - taken).sample
+  end
+
+  # Entrar com o Google: devolve a conta da pessoa ou cria uma nova. Só aceita e-mail
+  # confirmado pelo Google (a gem só preenche info.email quando o Google confirmou).
+  # Se o e-mail já tinha conta (cadastro antigo, com senha), é a mesma conta: o
+  # histórico, os vídeos e o XP continuam. nil se o Google não mandou o necessário.
+  def self.from_google(auth)
+    uid   = auth&.uid.to_s
+    email = auth&.info&.email.to_s.strip.downcase
+    return if uid.blank? || email.blank?
+
+    find_by(google_uid: uid) ||
+      find_by(email: email)&.tap { |user| user.link_google!(uid) } ||
+      create!(email: email, google_uid: uid, registered_at: Time.current)
+  rescue ActiveRecord::RecordNotUnique
+    find_by(google_uid: uid)
+  end
+
+  # Liga a conta ao Google. A senha antiga deixa de valer e as outras sessões caem:
+  # daqui em diante só entra quem tem a conta Google (que confirmou o e-mail).
+  def link_google!(uid)
+    transaction do
+      update!(google_uid: uid, password_digest: nil, registered_at: registered_at || Time.current)
+      regenerate_token
+    end
+  end
+
+  # Escolher (ou trocar) o nickname. Sem número, o app sorteia um livre. Devolve false com erros.
+  def choose_nickname(nickname:, tag: nil)
+    self.nickname = nickname
+    self.nickname_tag = tag.presence || (nickname_tag if nickname_key_was == self.nickname.to_s.downcase) ||
+                        self.class.free_nickname_tag(self.nickname, except: id)
+    save
+  end
 
   # Invalida o cookie em todos os aparelhos.
   def sign_out_everywhere! = regenerate_token
@@ -191,6 +247,24 @@ class User < ApplicationRecord
       errors.add(:base, "Esse telefone já tem uma conta. Use \"Entrar\".")
     elsif registered? && contact.blank?
       errors.add(:base, "Informe um e-mail ou telefone.")
+    end
+  end
+
+  def validate_nickname
+    if nickname.blank?
+      errors.add(:base, "Escolha um nickname.")
+    elsif !NICKNAME_LENGTH.cover?(nickname.length)
+      errors.add(:base, "O nickname precisa ter de #{NICKNAME_LENGTH.min} a #{NICKNAME_LENGTH.max} caracteres.")
+    elsif !nickname.match?(NICKNAME_FORMAT)
+      errors.add(:base, "Use só letras, números, \"_\" e \".\" no nickname (sem espaço).")
+    elsif nickname.scan(/\d/).size >= 8
+      errors.add(:base, "Por segurança, o nickname não pode parecer um telefone.")
+    elsif nickname_tag.blank?
+      errors.add(:base, "Todos os números para esse nickname já foram usados. Tente outro nickname.")
+    elsif !nickname_tag.match?(NICKNAME_TAG) || nickname_tag == "0000"
+      errors.add(:base, "O número depois do # precisa ter 4 dígitos, de 0001 a 9999.")
+    elsif User.where.not(id: id).exists?(nickname_key: nickname_key, nickname_tag: nickname_tag)
+      errors.add(:base, "#{handle} já existe. Escolha outro número ou deixe o app sortear.")
     end
   end
 

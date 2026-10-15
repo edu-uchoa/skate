@@ -119,7 +119,7 @@ test/                Testes automatizados
 
 ## Fluxo da aplicacao
 
-1. A pessoa informa o ano de nascimento.
+1. A pessoa entra com o Google e escolhe o nickname#0000 (como os outros a veem); depois informa o ano de nascimento.
 2. O diagnostico identifica nivel, dificuldades e setup.
 3. O `DiagnosisPlanner` resume o diagnostico e recomenda drills; a trilha comeca na 0.1 para todo mundo.
 4. O `TrackProgression` controla nos disponiveis, bloqueados, pulados e concluidos. A seta laranja do mapa marca a tarefa atual.
@@ -131,7 +131,8 @@ Principais rotas:
 | Tela | Rota |
 | --- | --- |
 | Pagina inicial | `/` |
-| Cadastro / Entrar | `/cadastro`, `/entrar` |
+| Cadastro / Entrar (Google) | `/cadastro`, `/entrar` |
+| Nickname#0000 | `/apelido` |
 | Recuperar senha | `/recuperar-senha` |
 | Minha conta | `/conta` |
 | Gravar video | `/gravar` |
@@ -166,6 +167,24 @@ docker run --rm -p 3000:80 \
 ## Variaveis e credenciais
 
 Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e as credenciais necessarias no ambiente de execucao.
+
+### Entrar com o Google (login)
+
+Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Sem `GOOGLE_CLIENT_ID`, `/entrar` e `/cadastro` mostram um aviso no lugar do botao (contas antigas com senha ainda entram por "Conta antiga").
+
+1. Em [console.cloud.google.com](https://console.cloud.google.com), abra o mesmo projeto do Maps (ou crie um) e va em **Google Auth Platform**.
+2. **Branding** (tela de consentimento): nome do app `Stance`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).
+3. **Audience**: tipo **External**. Em "Testing", so entram os e-mails listados em **Test users**; quando estiver pronto, clique em **Publish app**. Como o app so pede escopos basicos (`openid`, `email`), o Google nao exige a verificacao demorada de escopos sensiveis.
+4. **Data Access**: deixe so `openid` e `.../auth/userinfo.email`.
+5. **Clients > Create client**, tipo **Web application**, com estas **Authorized redirect URIs**:
+   - `http://localhost:3000/auth/google_oauth2/callback`
+   - `https://SEU-DOMINIO/auth/google_oauth2/callback`
+6. Copie o **Client ID** e o **Client secret** e defina as variaveis (nunca no codigo nem no Git):
+   - Windows (PowerShell): `setx GOOGLE_CLIENT_ID "SEU_ID"` e `setx GOOGLE_CLIENT_SECRET "SEU_SECRET"`, depois abra um terminal novo e ligue o servidor.
+   - Render: **Environment > Add Environment Variable**, as mesmas duas.
+7. Reinicie o servidor e rode `ruby bin/rails db:migrate` se ainda nao rodou (cria `google_uid` e o nickname#0000 em `users`).
+
+O Google so aceita voltar para `localhost` ou para um dominio com `https`. Pelo IP da rede no celular (`http://192.168...`) o login do Google nao funciona: no celular, teste pelo endereco do Render.
 
 ### Google Maps (mapa de picos)
 

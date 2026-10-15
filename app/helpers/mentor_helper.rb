@@ -14,9 +14,12 @@ module MentorHelper
     "could_not"   => "Não saiu / travou"
   }.freeze
 
-  # O mentor identifica o aprendiz sem ver o contato inteiro (muitos são menores).
+  # O mentor identifica o aprendiz sem ver o contato (muitos são menores): pelo
+  # nickname#0000, ou, nas contas que ainda não escolheram, pelo contato mascarado.
   def masked_contact(user)
-    if user.email.present?
+    if user.handle
+      user.handle
+    elsif user.email.present?
       name, domain = user.email.split("@", 2)
       "#{name.first(2)}•••@#{domain}"
     elsif user.phone.present?

@@ -8,7 +8,7 @@ class ManeuverGuideTest < ActionDispatch::IntegrationTest
     @other = Maneuver.create!(learning_module: learning_module, code: "0.9", slug: "t-sem-guia",
                               name: "SEM GUIA", position: 1, kind: :drill)
 
-    post account_path, params: { user: { contact: "guia@example.com", password: "manobra123", password_confirmation: "manobra123" } }
+    sign_up_with_google("guia@example.com")
     User.last.update!(birth_year: 2000, terms_accepted_at: Time.current)
   end
 

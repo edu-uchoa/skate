@@ -12,11 +12,13 @@ class MentorAccountTest < ActionDispatch::IntegrationTest
     %w[mentor:promover mentor:remover].each { |task| Rake::Task[task].reenable }
   end
 
-  test "toda conta nova é aprendiz, mesmo tentando se cadastrar como mentor" do
-    post account_path, params: { user: { contact: "esperto@example.com", password: PASSWORD,
-                                         password_confirmation: PASSWORD, role: "mentor" } }
+  test "toda conta nova é aprendiz, e não existe mais cadastro como mentor" do
+    sign_up_with_google("esperto@example.com")
+    assert User.find_by(email: "esperto@example.com").role_learner?
 
-    assert User.last.role_learner?
+    delete sign_out_path
+    get new_account_path
+    assert_select "input[name=account_type]", 0, "o cadastro não tem mais a opção Conta Mentor"
   end
 
   test "promover e remover mentor pelo terminal" do

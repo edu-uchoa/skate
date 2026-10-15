@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_001200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_15_151000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -272,11 +272,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_001200) do
     t.json "board_options", default: {}, null: false
     t.datetime "created_at", null: false
     t.string "email"
+    t.string "google_uid"
     t.datetime "last_seen_at"
     t.datetime "mentor_approved_at"
     t.integer "mentor_approved_by_id"
     t.text "mentor_request_note"
     t.datetime "mentor_requested_at"
+    t.string "nickname"
+    t.string "nickname_key"
+    t.string "nickname_tag"
     t.string "password_digest"
     t.string "phone"
     t.datetime "registered_at"
@@ -286,7 +290,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_001200) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true, where: "email IS NOT NULL"
+    t.index ["google_uid"], name: "index_users_on_google_uid", unique: true, where: "google_uid IS NOT NULL"
     t.index ["mentor_approved_by_id"], name: "index_users_on_mentor_approved_by_id"
+    t.index ["nickname_key", "nickname_tag"], name: "index_users_on_nickname_key_and_nickname_tag", unique: true, where: "nickname_key IS NOT NULL"
     t.index ["phone"], name: "index_users_on_phone", unique: true, where: "phone IS NOT NULL"
     t.index ["token"], name: "index_users_on_token", unique: true
   end

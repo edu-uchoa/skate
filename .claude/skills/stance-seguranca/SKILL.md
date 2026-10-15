@@ -53,6 +53,14 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - Ações de cadastro, login e recuperação têm `rate_limit to: 10, within: 3.minutes`;
   mantenha em ações novas desse tipo.
 - Mensagens de login/recuperação não podem revelar se a conta existe.
+- Login pelo Google (OmniAuth): só por POST com token CSRF (`omniauth-rails_csrf_protection`;
+  link GET não inicia o login), só aceita e-mail **confirmado** (o gem só preenche
+  `info.email` quando `email_verified`), pede só `openid email`. Client ID e secret ficam em
+  `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (ENV), nunca no código. Conta ligada ao Google
+  perde a senha e não recebe código de "Esqueci minha senha".
+- Para os outros, a pessoa é o **nickname#0000** (`User#handle`, `masked_contact`): não
+  mostre e-mail/telefone de aprendiz em telas de mentor (exceção: pedidos de mentor, para
+  o admin saber quem é).
 - Ao trocar senha ou identidade: `reset_session` (já feito em `start_session_for`/`sign_out`).
 - O código de recuperação hoje **só é escrito no log** (`AccessCodeDelivery`). Isso não
   pode ir para produção: o envio real por e-mail/WhatsApp é pendência conhecida.

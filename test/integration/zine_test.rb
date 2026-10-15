@@ -11,7 +11,7 @@ class ZineTest < ActionDispatch::IntegrationTest
   end
 
   def sign_up_onboarded(contact)
-    post account_path, params: { user: { contact: contact, password: "manobra123", password_confirmation: "manobra123" } }
+    sign_up_with_google(contact)
     User.last.tap do |user|
       user.update!(birth_year: 2000, terms_accepted_at: Time.current)
       user.create_diagnosis!(level: :never_ridden, setup: :store_board, completed_at: Time.current)

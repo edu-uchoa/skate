@@ -5,62 +5,12 @@
     <span class="material-symbols-outlined auth-icon">person_add</span>
     <h2 class="screen-title">Crie sua conta</h2>
     <p class="screen-desc">
-      Seu progresso, treinos e devolutivas ficam salvos e privados. Use e-mail ou telefone e uma senha.
+      Entre com a sua conta Google: a trilha, os vídeos, o XP e as devolutivas ficam guardados nela.
+      Depois você escolhe o nickname com que aparece no app.
     </p>
   </header>
 
-  <% if @user.errors.any? %>
-    <ul class="auth-errors" role="alert">
-      <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  <% end %>
-
-  <%= form_with model: @user, url: account_path, method: :post, class: "auth-form" do |f| %>
-    <fieldset class="choice-list">
-      <legend class="auth-label" style="margin-bottom: 8px;">Tipo de conta</legend>
-      <% [
-           [ "learner", "skateboarding", "Aprendiz", "Quero aprender com a trilha e receber devolutivas." ],
-           [ "mentor",  "school",        "Mentor",   "Quero ver os vídeos dos aprendizes e responder. Precisa de aprovação." ]
-         ].each do |value, icon, title, hint| %>
-        <label class="choice-card">
-          <%= radio_button_tag "account_type", value, (params[:account_type] || "learner") == value %>
-          <span class="material-symbols-outlined choice-icon"><%= icon %></span>
-          <span class="choice-text">
-            <strong><%= title %></strong>
-            <small><%= hint %></small>
-          </span>
-          <span class="choice-mark"></span>
-        </label>
-      <% end %>
-    </fieldset>
-
-    <div class="auth-field">
-      <%= f.label :contact, "E-mail ou telefone (WhatsApp)", class: "auth-label" %>
-      <%= f.text_field :contact, value: params.dig(:user, :contact), class: "auth-input", required: true,
-            autocomplete: "username", autocapitalize: "none", spellcheck: false,
-            placeholder: "voce@email.com ou (61) 90000-0000" %>
-    </div>
-
-    <div class="auth-field">
-      <%= f.label :password, "Senha", class: "auth-label" %>
-      <%= f.password_field :password, class: "auth-input", required: true, autocomplete: "new-password",
-            minlength: User::PASSWORD_LENGTH.min, maxlength: User::PASSWORD_LENGTH.max,
-            placeholder: "Mínimo de #{User::PASSWORD_LENGTH.min} caracteres" %>
-    </div>
-
-    <div class="auth-field">
-      <%= f.label :password_confirmation, "Confirme a senha", class: "auth-label" %>
-      <%= f.password_field :password_confirmation, class: "auth-input", required: true,
-            autocomplete: "new-password", placeholder: "Repita a senha" %>
-    </div>
-
-    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
-      <span>Criar conta</span>
-      <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
-    <% end %>
-  <% end %>
+  <%= render "shared/google_button" %>
 
   <div class="auth-links">
     <%= link_to "Já tenho conta — entrar", new_session_path, class: "auth-link" %>
@@ -68,6 +18,6 @@
 
   <p class="auth-note">
     <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
-    Senha criptografada. Ninguém vê seus dados.
+    O Stance não vê sua senha do Google. Ele usa só o seu e-mail, que ninguém no app vê.
   </p>
 </section>

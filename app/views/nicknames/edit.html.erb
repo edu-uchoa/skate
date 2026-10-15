@@ -1,0 +1,54 @@
+<% content_for :section, "Nickname" %>
+<% first_time = current_user.nickname_was.blank? %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <% unless first_time %>
+      <%= link_to my_account_path, class: "auth-back" do %>
+        <span class="material-symbols-outlined">arrow_back</span> Voltar ao perfil
+      <% end %>
+    <% end %>
+    <span class="material-symbols-outlined auth-icon">badge</span>
+    <span class="step-indicator">Seu nome no Stance</span>
+    <h2 class="screen-title"><%= first_time ? "Escolha seu nickname" : "Trocar o nickname" %></h2>
+    <p class="screen-desc">
+      É assim que outros skatistas e os mentores te encontram. Pode ser igual ao de outra pessoa:
+      os 4 números depois do # separam vocês.
+    </p>
+  </header>
+
+  <%= render "shared/errors", record: current_user %>
+
+  <%= form_with scope: :nickname, url: nickname_path, method: :patch, class: "auth-form",
+                data: { controller: "nickname", nickname_fallback_value: "skatista" } do |f| %>
+    <div class="nickname-fields">
+      <div class="auth-field nickname-name">
+        <%= f.label :nickname, "Nickname", class: "auth-label" %>
+        <%= f.text_field :nickname, value: current_user.nickname, required: true,
+              minlength: User::NICKNAME_LENGTH.min, maxlength: User::NICKNAME_LENGTH.max,
+              autocomplete: "nickname", autocapitalize: "none", spellcheck: false, class: "auth-input",
+              placeholder: "skatista", data: { nickname_target: "name", action: "input->nickname#preview" } %>
+      </div>
+      <span class="nickname-hash" aria-hidden="true">#</span>
+      <div class="auth-field nickname-tag">
+        <%= f.label :tag, "Número", class: "auth-label" %>
+        <%= f.text_field :tag, value: (params.dig(:nickname, :tag) || current_user.nickname_tag_was), inputmode: "numeric",
+              maxlength: 4, pattern: "[0-9]{4}", autocomplete: "off", class: "auth-input",
+              placeholder: @suggested_tag, data: { nickname_target: "tag", action: "input->nickname#preview" } %>
+      </div>
+    </div>
+
+    <p class="nickname-preview">
+      Você vai aparecer como <strong data-nickname-target="preview"><%= current_user.handle || "skatista##{@suggested_tag}" %></strong>
+    </p>
+    <p class="auth-hint">
+      Deixe o número em branco para o app sortear um livre. Não use seu nome completo nem telefone:
+      o nickname aparece para outras pessoas.
+    </p>
+
+    <%= f.button type: :submit, class: "tactile-btn-primary" do %>
+      <span>Salvar nickname</span>
+      <span class="material-symbols-outlined btn-arrow">check</span>
+    <% end %>
+  <% end %>
+</section>

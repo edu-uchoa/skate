@@ -1,35 +1,34 @@
 require "test_helper"
 
 class MentorApplicationTest < ActionDispatch::IntegrationTest
-  PASSWORD = "manobra123"
+  def sign_up(contact) = sign_up_with_google(contact)
 
-  def sign_up(contact, account_type: nil)
-    post account_path, params: { account_type: account_type,
-                                 user: { contact: contact, password: PASSWORD, password_confirmation: PASSWORD } }
-  end
-
-  def sign_in(contact) = post session_path, params: { session: { contact: contact, password: PASSWORD } }
+  def sign_in(contact) = sign_in_with_google(contact)
 
   def apply(birth_year:, note: "Ando há 10 anos e dou aula na pista do bairro.")
     post mentor_application_path, params: { mentor_application: { birth_year: birth_year, note: note } }
   end
 
-  test "escolher mentor no cadastro leva ao pedido, sem dar acesso de mentor" do
-    sign_up("candidato@example.com", account_type: "mentor")
+  test "o pedido de mentor é pelo Perfil e não dá acesso de mentor" do
+    sign_up("candidato@example.com")
 
-    assert_redirected_to new_mentor_application_path
+    get new_mentor_application_path
+    assert_response :success
     assert User.last.role_learner?
     get mentor_zine_path
     assert_response :not_found
   end
 
-  test "aprendiz continua indo para a instalação" do
-    sign_up("aprendiz@example.com")
+  test "conta nova pelo Google escolhe o nickname e segue para a instalação" do
+    sign_in_with_google("aprendiz@example.com")
+    assert_redirected_to edit_nickname_path
+
+    patch nickname_path, params: { nickname: { nickname: "aprendiz", tag: "" } }
     assert_redirected_to install_path
   end
 
   test "o pedido exige 18 anos e a experiência no skate" do
-    sign_up("novinho@example.com", account_type: "mentor")
+    sign_up("novinho@example.com")
 
     apply(birth_year: Date.current.year - 16)
     assert_response :unprocessable_entity
@@ -41,7 +40,7 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
   end
 
   test "pedido enviado fica em análise até um mentor aprovar" do
-    sign_up("candidato@example.com", account_type: "mentor")
+    sign_up("candidato@example.com")
     apply(birth_year: 1990)
 
     assert_redirected_to new_mentor_application_path
@@ -58,7 +57,7 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
   end
 
   test "administrador vê o pedido, aprova e o candidato passa a ter acesso" do
-    sign_up("candidato@example.com", account_type: "mentor")
+    sign_up("candidato@example.com")
     apply(birth_year: 1990)
     candidate = User.find_by(email: "candidato@example.com")
     delete sign_out_path
@@ -84,7 +83,7 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
   end
 
   test "administrador recusa o pedido e a conta segue como aprendiz" do
-    sign_up("candidato@example.com", account_type: "mentor")
+    sign_up("candidato@example.com")
     apply(birth_year: 1990)
     candidate = User.find_by(email: "candidato@example.com")
     delete sign_out_path

@@ -8,7 +8,7 @@
     <div class="profile-hero-info">
       <span class="step-indicator">Seu perfil</span>
       <h2 class="screen-title">Nível <%= level.number %></h2>
-      <span class="auth-hint"><%= masked_contact(current_user) %></span>
+      <span class="auth-hint profile-handle"><%= current_user.handle || masked_contact(current_user) %></span>
       <div class="profile-xp" role="progressbar" aria-label="XP até o próximo nível"
            aria-valuemin="0" aria-valuemax="100" aria-valuenow="<%= progress %>">
         <span style="width: <%= progress %>%;"></span>
@@ -63,9 +63,21 @@
   <section class="profile-account">
     <h3 class="auth-card-label">Conta</h3>
     <div class="auth-card">
-      <span class="auth-card-label"><%= current_user.email ? "E-mail" : "Telefone (WhatsApp)" %></span>
+      <span class="auth-card-label">Nickname</span>
+      <span class="auth-card-value"><%= current_user.handle || "Ainda não escolhido" %></span>
+      <span class="auth-hint">É assim que outros skatistas e os mentores te veem.</span>
+      <%= link_to (current_user.handle ? "Trocar o nickname" : "Escolher o nickname"), edit_nickname_path, class: "auth-link" %>
+    </div>
+
+    <div class="auth-card">
+      <span class="auth-card-label"><%= current_user.google? ? "Conta Google" : (current_user.email ? "E-mail" : "Telefone (WhatsApp)") %></span>
       <span class="auth-card-value"><%= current_user.contact %></span>
-      <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %>. Use este contato e sua senha para entrar em qualquer aparelho.</span>
+      <% if current_user.google? %>
+        <span class="auth-hint">Conta criada em <%= current_user.registered_at.strftime("%d/%m/%Y") %>. Entre com esta conta Google em qualquer aparelho.</span>
+      <% else %>
+        <span class="auth-hint">Conta antiga, com senha. Ligue ao Google para entrar só com ele: a trilha, os vídeos e o XP continuam.</span>
+        <%= render "shared/google_button" %>
+      <% end %>
     </div>
 
     <%= link_to install_path, class: "auth-link install-link" do %>

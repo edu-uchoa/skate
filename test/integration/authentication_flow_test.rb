@@ -4,8 +4,12 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
   PASSWORD = "manobra123"
   CODE     = "123456"
 
-  def sign_up(contact, password: PASSWORD, confirmation: password)
-    post account_path, params: { user: { contact: contact, password: password, password_confirmation: confirmation } }
+  # Contas de antes do login pelo Google: e-mail ou telefone + senha, e já logada.
+  def sign_up(contact)
+    User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|
+      assert user.persisted?, user.errors.full_messages.to_sentence
+      sign_in(contact)
+    end
   end
 
   def sign_in(contact, password: PASSWORD)
@@ -37,56 +41,33 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
   end
 
-  test "cadastro com e-mail e senha entra na plataforma" do
-    sign_up("Skater@Example.com ")
-    assert_redirected_to install_path
+  test "o cadastro é só pelo Google: não há mais conta nova com senha" do
+    get new_account_path
+    assert_select "form[action='/auth/google_oauth2'][method=post]"
+    assert_select "input[type=password]", 0
 
-    user = User.last
-    assert user.registered?
+    post "/cadastro", params: { user: { contact: "novo@example.com", password: PASSWORD, password_confirmation: PASSWORD } }
+    assert_response :not_found
+    assert_equal 0, User.count
+  end
+
+  test "conta antiga com e-mail e senha ainda entra" do
+    user = sign_up("Skater@Example.com ")
+    assert_redirected_to track_path
     assert_equal "skater@example.com", user.email
-    assert user.authenticate(PASSWORD)
 
     get track_path
     assert_redirected_to onboarding_age_gate_path # logado; segue para o onboarding
 
     get my_account_path
     assert_response :success
-    assert_match "skater@example.com", response.body
+    assert_select "form[action='/auth/google_oauth2']", 1, "o Perfil oferece ligar a conta ao Google"
   end
 
-  test "cadastro com telefone normaliza o número" do
-    sign_up("(61) 99999-0000")
-    assert_redirected_to install_path
-    assert_equal "61999990000", User.last.phone
-  end
-
-  test "cadastro rejeita dados inválidos" do
-    { "abc"      => "e-mail ou telefone válido",
-      "123"      => "Informe um telefone com DDD",
-      "x@"       => "Informe um e-mail válido",
-      ""         => "Informe um e-mail ou telefone" }.each do |contact, message|
-      sign_up(contact)
-      assert_response :unprocessable_entity
-      assert_match message, response.body
-    end
-
-    sign_up("a@b.com", password: "curta")
-    assert_match "entre 8 e 72 caracteres", response.body
-
-    sign_up("a@b.com", confirmation: "outrasenha")
-    assert_match "confirmação não confere", response.body
-
-    assert_equal 0, User.count
-  end
-
-  test "cadastro com contato já usado é recusado" do
-    sign_up("dup@example.com")
-    delete sign_out_path
-
-    sign_up("DUP@example.com")
-    assert_response :unprocessable_entity
-    assert_match "já tem uma conta", response.body
-    assert_equal 1, User.count
+  test "conta antiga com telefone entra com o número formatado" do
+    User.register(contact: "61999990000", password: PASSWORD, password_confirmation: PASSWORD)
+    sign_in("(61) 99999-0000")
+    assert_redirected_to track_path
   end
 
   test "logout, login com senha e retorno à rota protegida" do
@@ -158,6 +139,19 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     sign_in("reset@example.com", password: "novasenha1")
     assert_redirected_to track_path
+  end
+
+  test "conta ligada ao Google não ganha senha pelo esqueci minha senha" do
+    sign_up_with_google("gmail@example.com")
+    delete sign_out_path
+
+    post password_reset_path, params: { password_reset: { contact: "gmail@example.com" } }
+    assert_redirected_to edit_password_reset_path
+    assert_equal 0, AccessCode.count
+
+    patch password_reset_path, params: { code: CODE, password: "novasenha1", password_confirmation: "novasenha1" }
+    assert_response :unprocessable_entity
+    assert_nil User.find_by(email: "gmail@example.com").password_digest
   end
 
   test "recuperar senha não revela se o contato existe" do
