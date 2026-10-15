@@ -1,6 +1,6 @@
 ---
 name: stance-visual
-description: Identidade visual do app Stance (skate) e como montar telas bonitas e consistentes com ela. Use sempre que for criar ou alterar uma tela, view ERB, partial, CSS, cor, fonte, ícone, botão, card, formulário ou texto visível no app — inclusive quando o usuário disser "deixa com a minha estética", "fica bonito", "arruma o layout", "está quebrado/espremido" ou mandar um print de uma tela. Evita o erro clássico do projeto: margens do Tailwind que não funcionam.
+description: 'Identidade visual do app Stance (skate) e como montar telas bonitas e consistentes com ela. Use sempre que for criar ou alterar uma tela, view ERB, partial, CSS, cor, fonte, ícone, botão, card, formulário ou texto visível no app — inclusive quando o usuário disser "deixa com a minha estética", "fica bonito", "arruma o layout", "está quebrado/espremido" ou mandar um print de uma tela. Evita o erro clássico do projeto: margens do Tailwind que não funcionam.'
 ---
 
 # Visual Stance

@@ -1,6 +1,6 @@
 ---
 name: stance-guia-trilha
-description: Modelo para criar ou editar o conteúdo dos passos da trilha do Stance (drills e manobras, ex.: 0.1 Setup, 0.2 Equipamento, 0.3 Queda controlada) — pesquisa em fontes de profissionais, texto resumido em português sem citar marcas e a estrutura visual do guia. Use sempre que o usuário pedir para "criar a tela do passo", "colocar explicação/orientações" num passo ou manobra, "seguir o modelo da trilha", ou falar de conteúdo educativo de skate (setup, equipamento, queda, postura, manobras).
+description: 'Modelo para criar ou editar o conteúdo dos passos da trilha do Stance (drills e manobras, ex.: 0.1 Setup, 0.2 Equipamento, 0.3 Queda controlada) — pesquisa em fontes de profissionais, texto resumido em português sem citar marcas e a estrutura visual do guia. Use sempre que o usuário pedir para "criar a tela do passo", "colocar explicação/orientações" num passo ou manobra, "seguir o modelo da trilha", ou falar de conteúdo educativo de skate (setup, equipamento, queda, postura, manobras).'
 ---
 
 # Guias dos passos da trilha
