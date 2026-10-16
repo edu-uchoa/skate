@@ -33,7 +33,7 @@
     <div class="grain"></div>
 
     <!-- Mobile Phone Simulator Container -->
-    <div class="phone-container">
+    <div class="phone-container<%= " no-bottom-nav" unless show_bottom_nav? %>">
 
       <!-- Fixed Top Header -->
       <header class="phone-header-bar">
@@ -73,6 +73,7 @@
       </div>
 
       <!-- Bottom Navigation -->
+      <% if show_bottom_nav? %>
       <nav class="phone-bottom-nav">
         <a href="<%= my_account_path %>" class="nav-btn <%= 'active' if controller_name == "accounts" && action_name == "show" %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">person</span>
@@ -105,6 +106,7 @@
           </a>
         <% end %>
       </nav>
+      <% end %>
 
     </div>
   </body>

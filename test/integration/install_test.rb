@@ -24,7 +24,7 @@ class InstallTest < ActionDispatch::IntegrationTest
 
   test "logo depois do cadastro, dá para seguir no navegador" do
     get install_path
-    assert_select "a.install-skip[href=?]", store_path
+    assert_select "a.install-skip[href=?]", track_path # segue para as perguntas, sem passar pela Loja
     assert_select "a.auth-back", 0
   end
 

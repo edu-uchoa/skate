@@ -21,7 +21,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_select "input[name='nickname[tag]'][placeholder]"
 
     choose "Rato.de_Pista-01"
-    assert_redirected_to install_path
+    assert_redirected_to onboarding_age_gate_path
     user.reload
     assert_equal "Rato.de_Pista-01", user.nickname
     assert_match(/\A\d{4}\z/, user.nickname_tag)
@@ -104,7 +104,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_equal 1, User.count
 
     choose "telefone"
-    assert_redirected_to install_path
+    assert_redirected_to onboarding_age_gate_path
     delete sign_out_path
     sign_in_with_google("telefone@example.com")
     assert_redirected_to track_path
@@ -134,7 +134,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_match "skatista#0420 já existe", response.body
 
     choose "skatista", tag: "#0421"
-    assert_redirected_to install_path
+    assert_redirected_to onboarding_age_gate_path
     assert_equal "skatista#0421", User.find_by(email: "segunda@example.com").handle
     assert_equal 2, User.where(nickname_key: "skatista").count
   end

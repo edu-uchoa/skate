@@ -54,6 +54,7 @@ class MentorZineTest < ActionDispatch::IntegrationTest
     assert_select ".phone-bottom-nav a[href=?]", zine_path, count: 0
     delete sign_out_path
 
+    @teen.create_diagnosis!(level: :never_ridden, setup: :store_board, completed_at: Time.current) # menu só depois das perguntas
     sign_in("aprendiz.um@example.com")
     get zine_path
     assert_response :success

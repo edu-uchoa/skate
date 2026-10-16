@@ -3399,3 +3399,57 @@ a.guide-tab {
 .nickname-preview { font-size: 13px; color: var(--text-variant); overflow-wrap: anywhere; }
 .nickname-preview strong { color: var(--primary-color); font-family: var(--font-display); font-size: 15px; }
 .profile-handle { font-weight: 700; overflow-wrap: anywhere; }
+
+/* Sem o menu de baixo (antes da trilha): o conteúdo vai até o fim e respeita a
+   barra do iPhone. */
+.phone-container.no-bottom-nav .phone-content { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* Primeira tela (pages/landing): a logo e as opções de entrar. */
+.splash {
+  flex: 1;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.splash-brand {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.splash-logo {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+}
+
+.splash-tagline {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+  text-wrap: balance;
+}
+
+.splash-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.splash-secondary {
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  text-decoration: none;
+}

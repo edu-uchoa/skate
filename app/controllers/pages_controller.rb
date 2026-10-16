@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   allow_unauthenticated_access only: :landing
 
   def landing
-    redirect_to track_path if current_user&.onboarded?
+    redirect_to track_path if signed_in? # a trilha leva ao passo que falta (nickname, idade, perguntas)
   end
 
   def intro; end

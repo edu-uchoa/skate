@@ -19,12 +19,12 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "conta nova pelo Google escolhe o nickname e segue para a instalação" do
+  test "conta nova pelo Google escolhe o nickname e segue para as perguntas" do
     sign_in_with_google("aprendiz@example.com")
     assert_redirected_to edit_nickname_path
 
     patch nickname_path, params: { nickname: { nickname: "aprendiz", tag: "" } }
-    assert_redirected_to install_path
+    assert_redirected_to onboarding_age_gate_path
   end
 
   test "o pedido exige 18 anos e a experiência no skate" do

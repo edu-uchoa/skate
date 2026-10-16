@@ -1,44 +1,19 @@
-<% content_for :section, "Landing" %>
+<% content_for :section, "Início" %>
+<%# Primeira tela do app: a logo e as duas portas de entrada. Quem já entrou nem vê
+    esta tela (PagesController#landing manda para a trilha). %>
 
-<div class="hero-card-container">
-  <div class="version-badge">V. 1.0.4</div>
-  <img src="<%= asset_path('skater_hero.jpg') %>" alt="Skatista" class="hero-bg-img">
-  <div class="hero-overlay-border"></div>
-  
-  <div class="hero-logo-center">
-    <img src="<%= asset_path('flipaai_logo.png') %>" alt="FlipaAi" class="flipaai-logo-img">
+<section class="splash">
+  <div class="splash-brand">
+    <%= image_tag "flipaai_logo.png", alt: "FlipaAi", class: "splash-logo", width: 1000, height: 620 %>
+    <p class="splash-tagline">Do zero ao primeiro flip, no seu ritmo.</p>
   </div>
-</div>
 
-<div class="hero-text-block">
-  <div class="yellow-accent-bar"></div>
-  <h1 class="main-headline">Bora andar<br>de skate!</h1>
-  
-  <div class="sub-headline-card">
-    <h2 class="sub-headline-title">Sem vergonha de errar<br>e sem cair à toa.</h2>
-    <p class="sub-headline-body">
-      Uma sequência de passos práticos desenhados para você dar sua primeira manobra no seu ritmo. 100% privado.
+  <div class="splash-actions">
+    <%= render "shared/google_button" %>
+    <%= link_to "Já tenho conta", new_session_path, id: "landing-sign-in", class: "auth-secondary-btn splash-secondary" %>
+    <p class="privacy-note">
+      <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 15px;">lock</span>
+      Grátis. Seus vídeos ficam privados.
     </p>
   </div>
-</div>
-
-<div class="hero-cta-section" style="margin-top: auto; padding-top: 10px;">
-  <%= link_to (signed_in? ? install_path : new_account_path), id: "landing-cta", class: "tactile-btn-primary" do %>
-    <span class="btn-text">
-      Começar agora
-      <span class="btn-subtext">(Grátis, leva 1 min)</span>
-    </span>
-    <span class="material-symbols-outlined btn-arrow">arrow_forward</span>
-  <% end %>
-
-  <p class="privacy-note">
-    <span class="material-symbols-outlined" style="font-size: 15px;">lock</span>
-    Crie sua conta grátis. Seus dados ficam privados.
-  </p>
-
-  <% unless signed_in? %>
-    <%= link_to "Já tem conta? Entrar", new_session_path, id: "landing-sign-in", class: "secondary-link-btn",
-          style: "display: block; width: 100%; text-decoration: underline;" %>
-  <% end %>
-
-</div>
+</section>
