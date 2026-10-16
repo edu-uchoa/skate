@@ -3,7 +3,7 @@ module SpotsHelper
 
   # Dados que o spots_map_controller.js usa para montar o mapa do Google.
   def spots_map_data(spots, meetups)
-    config = Rails.configuration.x.stance
+    config = Rails.configuration.x.flipaai
     {
       controller: "spots-map",
       spots_map_api_key_value: config.google_maps_key.to_s,

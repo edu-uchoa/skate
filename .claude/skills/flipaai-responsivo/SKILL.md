@@ -1,6 +1,6 @@
 ---
-name: stance-responsivo
-description: Como garantir que as telas do app Stance funcionam e ficam bem no celular (Android e iPhone/Safari), em tela baixa e no computador — e como conferir isso de verdade com prints no navegador. Use sempre que uma tela, CSS, layout, vídeo, câmera, formulário ou JavaScript for criado ou alterado, antes de dizer que algo está pronto, e quando o usuário falar de celular, iPhone, Safari, "responsivo", "cortado", "desalinhado", "não aparece" ou mandar print de uma tela.
+name: flipaai-responsivo
+description: Como garantir que as telas do app FlipaAi funcionam e ficam bem no celular (Android e iPhone/Safari), em tela baixa e no computador — e como conferir isso de verdade com prints no navegador. Use sempre que uma tela, CSS, layout, vídeo, câmera, formulário ou JavaScript for criado ou alterado, antes de dizer que algo está pronto, e quando o usuário falar de celular, iPhone, Safari, "responsivo", "cortado", "desalinhado", "não aparece" ou mandar print de uma tela.
 ---
 
 # Responsivo de verdade
@@ -62,7 +62,7 @@ pegam (já aconteceu com Ajuda e Retorno).
 
 ## Conferindo com prints (Windows, Edge sem janela)
 
-Scripts em `.claude/skills/stance-responsivo/scripts/`. Salve os prints no diretório de
+Scripts em `.claude/skills/flipaai-responsivo/scripts/`. Salve os prints no diretório de
 rascunho (scratchpad) da sessão, não no repositório.
 
 1. **Servidor de teste na porta 3001** (o do usuário fica na 3000 e não é tocado), em
@@ -70,13 +70,13 @@ rascunho (scratchpad) da sessão, não no repositório.
    `bin/rails server -p 3001 -P tmp/pids/server_3001.pid`
    Espere `curl -s -o /dev/null -w "%{http_code}" http://localhost:3001/up` dar 200.
 2. **Usuário de teste**:
-   `bin/rails runner .claude/skills/stance-responsivo/scripts/usuario_teste.rb criar`
+   `bin/rails runner .claude/skills/flipaai-responsivo/scripts/usuario_teste.rb criar`
    (`novo` para telas de Idade/Diagnóstico).
 3. **Prints**:
-   `bundle exec ruby .claude/skills/stance-responsivo/scripts/prints.rb --email teste.prints@stance.dev --saida <scratchpad>/prints --tamanhos celular,baixo,desktop /trilha /manobras/escolher-setup`
+   `bundle exec ruby .claude/skills/flipaai-responsivo/scripts/prints.rb --email teste.prints@flipaai.dev --saida <scratchpad>/prints --tamanhos celular,baixo,desktop /trilha /manobras/escolher-setup`
    A saída mostra o status de cada página e avisa se a tela de erro do Rails apareceu.
 4. **Olhe os prints** com a ferramenta de leitura de imagens. Para comparar muitas telas:
-   `bundle exec ruby .claude/skills/stance-responsivo/scripts/folha.rb <saida.png> <prints...>`.
+   `bundle exec ruby .claude/skills/flipaai-responsivo/scripts/folha.rb <saida.png> <prints...>`.
 5. **Interação** (abas, botões, envio de formulário): escreva um roteiro Selenium curto
    no mesmo estilo de `prints.rb` (clicar no `label`, enviar, conferir `current_url` e o
    título da tela seguinte). Se um envio "não faz nada", leia o log do servidor de teste:

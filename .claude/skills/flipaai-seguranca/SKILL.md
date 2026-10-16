@@ -1,9 +1,9 @@
 ---
-name: stance-seguranca
-description: Checklist de segurança do app Stance (Rails 8) e como rodar as mesmas verificações do CI do GitHub. Use sempre que mexer em login/cadastro/senha, controllers, rotas, dados de usuário, uploads de vídeo, formulários, redirecionamentos, logs, credenciais/segredos, variáveis de ambiente, Gemfile/gems ou importmap — e quando o usuário pedir revisão de segurança, "está seguro?", "pode publicar?" ou antes de abrir um Pull Request. Inclui menores de idade (13+) e vídeos pessoais, então privacidade importa.
+name: flipaai-seguranca
+description: Checklist de segurança do app FlipaAi (Rails 8) e como rodar as mesmas verificações do CI do GitHub. Use sempre que mexer em login/cadastro/senha, controllers, rotas, dados de usuário, uploads de vídeo, formulários, redirecionamentos, logs, credenciais/segredos, variáveis de ambiente, Gemfile/gems ou importmap — e quando o usuário pedir revisão de segurança, "está seguro?", "pode publicar?" ou antes de abrir um Pull Request. Inclui menores de idade (13+) e vídeos pessoais, então privacidade importa.
 ---
 
-# Segurança no Stance
+# Segurança no FlipaAi
 
 O app guarda e-mail/telefone, senha, ano de nascimento e **vídeos pessoais de
 skatistas a partir de 13 anos**. Um vazamento entre usuários é o pior cenário possível.

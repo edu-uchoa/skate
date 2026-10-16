@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Página "Instale o Stance" (/instalar). Descobre o aparelho da pessoa e abre o passo
+// Página "Instale o FlipaAi" (/instalar). Descobre o aparelho da pessoa e abre o passo
 // a passo dele. No Android, o botão instala com um toque (o aviso do navegador fica
 // guardado em application.js, porque chega uma vez só, logo ao abrir o app). No
 // iPhone não existe esse botão: a Apple só deixa instalar pelo Compartilhar do Safari.
@@ -10,8 +10,8 @@ export default class extends Controller {
   connect() {
     this.refresh = this.refresh.bind(this)
     this.added = this.added.bind(this)
-    document.addEventListener("stance:installable", this.refresh)
-    document.addEventListener("stance:installed", this.added)
+    document.addEventListener("flipaai:installable", this.refresh)
+    document.addEventListener("flipaai:installed", this.added)
 
     const platform = this.platform()
     this.platformTargets.forEach((details) => {
@@ -23,17 +23,17 @@ export default class extends Controller {
   }
 
   disconnect() {
-    document.removeEventListener("stance:installable", this.refresh)
-    document.removeEventListener("stance:installed", this.added)
+    document.removeEventListener("flipaai:installable", this.refresh)
+    document.removeEventListener("flipaai:installed", this.added)
   }
 
   async install() {
-    const prompt = window.stanceInstallPrompt
+    const prompt = window.flipaaiInstallPrompt
     if (!prompt) return
 
     prompt.prompt()
     const { outcome } = await prompt.userChoice
-    window.stanceInstallPrompt = null
+    window.flipaaiInstallPrompt = null
     outcome === "accepted" ? this.added() : this.refresh()
   }
 
@@ -46,7 +46,7 @@ export default class extends Controller {
     const standalone = document.documentElement.classList.contains("is-standalone")
     this.standaloneTarget.hidden = !standalone
     this.inAppTarget.hidden = standalone || !this.inAppBrowser()
-    this.buttonTarget.hidden = standalone || !window.stanceInstallPrompt
+    this.buttonTarget.hidden = standalone || !window.flipaaiInstallPrompt
   }
 
   platform() {

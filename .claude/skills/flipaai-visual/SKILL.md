@@ -1,9 +1,9 @@
 ---
-name: stance-visual
-description: 'Identidade visual do app Stance (skate) e como montar telas bonitas e consistentes com ela. Use sempre que for criar ou alterar uma tela, view ERB, partial, CSS, cor, fonte, ícone, botão, card, formulário ou texto visível no app — inclusive quando o usuário disser "deixa com a minha estética", "fica bonito", "arruma o layout", "está quebrado/espremido" ou mandar um print de uma tela. Evita o erro clássico do projeto: margens do Tailwind que não funcionam.'
+name: flipaai-visual
+description: 'Identidade visual do app FlipaAi (skate) e como montar telas bonitas e consistentes com ela. Use sempre que for criar ou alterar uma tela, view ERB, partial, CSS, cor, fonte, ícone, botão, card, formulário ou texto visível no app — inclusive quando o usuário disser "deixa com a minha estética", "fica bonito", "arruma o layout", "está quebrado/espremido" ou mandar um print de uma tela. Evita o erro clássico do projeto: margens do Tailwind que não funcionam.'
 ---
 
-# Visual Stance
+# Visual FlipaAi
 
 O app imita um celular (moldura de até 414px no computador, tela cheia no celular),
 fundo quase preto, amarelo como cor de ação e laranja como destaque, títulos em
@@ -63,7 +63,7 @@ Toda view é renderizada dentro de `.screen` (flex em coluna, com rolagem) no la
 ## Texto
 
 - Português do Brasil, frases curtas, vocabulário de skate (rolê, pico, shape, lixa,
-  bowl, mandar a manobra). O nome do app é **Stance** — nunca "Skate" nem "Sakte".
+  bowl, mandar a manobra). O nome do app é **FlipaAi** — nunca "Skate" nem "Sakte".
 - Títulos em caixa-alta vêm do CSS (`text-transform`): escreva o texto normal no ERB.
 - Mensagens de erro em português e sem nome de campo em inglês: prefira
   `errors.add(:base, "...")` a `errors.add(:birth_year, ...)` (o locale padrão é `en`).
@@ -92,7 +92,7 @@ O projeto também tem duas skills de terceiros:
 - **web-design-guidelines** (Vercel, adaptada): revisão de acessibilidade, foco, formulários
   e toque.
 
-Use as duas, mas **esta skill é a direção visual do Stance e vence em conflito**. Estas são
+Use as duas, mas **esta skill é a direção visual do FlipaAi e vence em conflito**. Estas são
 escolhas da marca, não "padrões genéricos" a evitar:
 - fundo quase preto com o amarelo de destaque;
 - títulos e rótulos em caixa-alta (via CSS);
@@ -101,7 +101,7 @@ escolhas da marca, não "padrões genéricos" a evitar:
 
 ## Antes de dar como pronto
 
-Confira no navegador com a skill **stance-responsivo**. Compare o print com uma tela
+Confira no navegador com a skill **flipaai-responsivo**. Compare o print com uma tela
 vizinha já aprovada (ex.: `/entrar` para formulários, `/manobras/escolher-setup` para
 drills): espaçamentos, botão amarelo com sombra, títulos em caixa-alta, nada encostado
 na borda nem escondido atrás do menu inferior.

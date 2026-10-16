@@ -71,7 +71,7 @@ class Avatar
     ]
   }.freeze
 
-  # Começa de capacete: no Stance, segurança vem primeiro.
+  # Começa de capacete: no FlipaAi, segurança vem primeiro.
   DEFAULTS = {
     base: "feminino", skin: "3", vitiligo: false, eyes: "castanho", hair: "trancas", hair_color: "preto",
     beard: "nenhuma", top: "moletom-capuz", top_color: "verde-musgo", bottom: "caqui", socks: "branca",

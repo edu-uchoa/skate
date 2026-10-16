@@ -1,13 +1,13 @@
 require "test_helper"
 
 class PwaTest < ActionDispatch::IntegrationTest
-  test "o manifesto instala o app com o nome e os ícones da Stance" do
+  test "o manifesto instala o app com o nome e os ícones da FlipaAi" do
     get pwa_manifest_path(format: :json)
 
     assert_response :success
     manifest = JSON.parse(response.body)
-    assert_equal "Stance", manifest["name"]
-    assert_equal "Stance", manifest["short_name"]
+    assert_equal "FlipaAi", manifest["name"]
+    assert_equal "FlipaAi", manifest["short_name"]
     assert manifest["icons"].any? { |icon| icon["purpose"] == "maskable" }, "precisa de um ícone maskable (Android)"
     manifest["icons"].each do |icon|
       assert Rails.public_path.join(icon["src"].delete_prefix("/")).exist?, "ícone #{icon["src"]} não existe em public/"

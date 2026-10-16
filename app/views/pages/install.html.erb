@@ -1,5 +1,5 @@
 <% content_for :section, "Instalar" %>
-<%# Instalar o Stance na tela do celular (PWA). install_controller.js descobre o
+<%# Instalar o FlipaAi na tela do celular (PWA). install_controller.js descobre o
     aparelho, abre o passo a passo dele e, no Android, mostra o botão de um toque.
     Sem JavaScript, os três passo a passos continuam aqui para abrir na mão. %>
 <% onboarded = current_user.onboarded? %>
@@ -7,17 +7,17 @@
      [ "ios", "phone_iphone", "No iPhone", [
        [ "ios_share", safe_join([ "No ", tag.strong("Safari"), ", toque em ", tag.strong("Compartilhar"), " (o quadrado com uma seta para cima), na barra de baixo." ]) ],
        [ "add_box", safe_join([ "Role a lista e toque em ", tag.strong("Adicionar à Tela de Início"), "." ]) ],
-       [ "check_circle", safe_join([ "Toque em ", tag.strong("Adicionar"), ", no canto de cima. O ícone do Stance aparece junto com os seus apps." ]) ]
+       [ "check_circle", safe_join([ "Toque em ", tag.strong("Adicionar"), ", no canto de cima. O ícone do FlipaAi aparece junto com os seus apps." ]) ]
      ], "No Chrome do iPhone também dá: toque em Compartilhar, na barra de endereço, e depois em \"Adicionar à Tela de Início\"." ],
      [ "android", "android", "No Android", [
        [ "more_vert", safe_join([ "No ", tag.strong("Chrome"), ", toque no menu ", tag.strong("⋮"), " (três pontinhos, no canto de cima)." ]) ],
        [ "install_mobile", safe_join([ "Toque em ", tag.strong("Instalar app"), ". Em alguns celulares o nome é ", tag.strong("Adicionar à tela inicial"), "." ]) ],
-       [ "check_circle", safe_join([ "Confirme em ", tag.strong("Instalar"), ". O ícone do Stance vai para a tela inicial." ]) ]
+       [ "check_circle", safe_join([ "Confirme em ", tag.strong("Instalar"), ". O ícone do FlipaAi vai para a tela inicial." ]) ]
      ], "No navegador da Samsung: menu ☰ (embaixo) › Adicionar página a › Tela inicial." ],
      [ "desktop", "computer", "No computador", [
        [ "install_desktop", safe_join([ "No ", tag.strong("Chrome"), " ou no ", tag.strong("Edge"), ", clique no ícone de instalar, no fim da barra de endereço." ]) ],
-       [ "check_circle", safe_join([ "Ou abra o menu ", tag.strong("⋮"), " e escolha ", tag.strong("Instalar Stance"), "." ]) ]
-     ], "O Stance foi feito para o celular: no computador ele abre numa janela estreita, do tamanho de um celular." ]
+       [ "check_circle", safe_join([ "Ou abra o menu ", tag.strong("⋮"), " e escolha ", tag.strong("Instalar FlipaAi"), "." ]) ]
+     ], "O FlipaAi foi feito para o celular: no computador ele abre numa janela estreita, do tamanho de um celular." ]
    ] %>
 
 <section class="streak-screen install-screen" data-controller="install">
@@ -28,34 +28,34 @@
       <% end %>
     <% end %>
     <span class="step-indicator">App na tela do celular</span>
-    <h2 class="screen-title">Instale o Stance</h2>
-    <p class="screen-desc">Coloque o Stance na tela inicial, junto com os seus outros apps: abre com um toque, em tela cheia, sem a barra do navegador.</p>
+    <h2 class="screen-title">Instale o FlipaAi</h2>
+    <p class="screen-desc">Coloque o FlipaAi na tela inicial, junto com os seus outros apps: abre com um toque, em tela cheia, sem a barra do navegador.</p>
   </header>
 
   <div class="install-preview" aria-hidden="true">
     <span class="install-preview-app is-ghost"></span>
     <span class="install-preview-app">
       <img src="/icon-192.png" alt="" width="64" height="64">
-      <span>Stance</span>
+      <span>FlipaAi</span>
     </span>
     <span class="install-preview-app is-ghost"></span>
   </div>
 
   <div class="auth-card install-status is-done" data-install-target="standalone" hidden>
     <span class="material-symbols-outlined">verified</span>
-    <span><strong>Você já está no app instalado.</strong> Da próxima vez, é só tocar no ícone do Stance na tela inicial.</span>
+    <span><strong>Você já está no app instalado.</strong> Da próxima vez, é só tocar no ícone do FlipaAi na tela inicial.</span>
   </div>
   <div class="auth-card install-status is-done" data-install-target="added" hidden>
     <span class="material-symbols-outlined">celebration</span>
-    <span><strong>Pronto, instalado!</strong> Procure o ícone do Stance na tela inicial do celular.</span>
+    <span><strong>Pronto, instalado!</strong> Procure o ícone do FlipaAi na tela inicial do celular.</span>
   </div>
   <div class="auth-card install-status is-warning" data-install-target="inApp" hidden>
     <span class="material-symbols-outlined">open_in_browser</span>
-    <span><strong>Abra no navegador para instalar.</strong> Você abriu o Stance dentro de outro app: toque nos três pontinhos e escolha "Abrir no navegador" (Safari no iPhone, Chrome no Android).</span>
+    <span><strong>Abra no navegador para instalar.</strong> Você abriu o FlipaAi dentro de outro app: toque nos três pontinhos e escolha "Abrir no navegador" (Safari no iPhone, Chrome no Android).</span>
   </div>
 
   <button type="button" class="tactile-btn-primary" data-install-target="button" data-action="install#install" hidden>
-    <span>Instalar o Stance</span>
+    <span>Instalar o FlipaAi</span>
     <span class="material-symbols-outlined btn-arrow">install_mobile</span>
   </button>
 

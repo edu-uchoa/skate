@@ -1,8 +1,8 @@
-# Tira prints de telas do Stance no Edge sem janela (Selenium), com login opcional.
+# Tira prints de telas do FlipaAi no Edge sem janela (Selenium), com login opcional.
 #
 # Uso (com o servidor de teste rodando na porta 3001):
-#   bundle exec ruby .claude/skills/stance-responsivo/scripts/prints.rb \
-#     --email teste.prints@stance.dev --saida <pasta> --tamanhos celular,desktop /trilha /zine
+#   bundle exec ruby .claude/skills/flipaai-responsivo/scripts/prints.rb \
+#     --email teste.prints@flipaai.dev --saida <pasta> --tamanhos celular,desktop /trilha /zine
 #
 # Para cada tamanho e caminho: mostra o status HTTP (200, 302 -> destino...), avisa se a
 # página de erro do Rails apareceu e salva <pasta>/<tamanho>_<caminho>.png.

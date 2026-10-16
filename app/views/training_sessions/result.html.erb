@@ -64,7 +64,7 @@
       </div>
       <div style="flex: 1; font-family: 'Inter', sans-serif;">
         <h4 style="font-size: 13px; font-weight: bold; color: #e3e2e6; margin-bottom: 2px;">Devolutiva do mentor</h4>
-        <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.stance.max_clip_seconds %>s do seu rolê: um mentor vê sua postura e responde em até 48h. Só você e ele veem o vídeo.</p>
+        <p style="font-size: 11px; color: #d5c4ab; margin-bottom: 10px;">Grave até <%= Rails.configuration.x.flipaai.max_clip_seconds %>s do seu rolê: um mentor vê sua postura e responde em até 48h. Só você e ele veem o vídeo.</p>
         
         <% if @training_session.clip.attached? && @training_session.clip.persisted? %>
           <%= training_video_tag(@training_session, style: "width: 100%; max-height: 220px; border-radius: 6px; background: #000;") %>

@@ -38,7 +38,7 @@ class GoogleSessionsController < ApplicationController
     elsif uid.blank? || auth.info&.email.blank?
       redirect_to my_account_path, alert: "A conta Google precisa ter o e-mail confirmado."
     elsif User.exists?(google_uid: uid)
-      redirect_to my_account_path, alert: "Essa conta Google já está ligada a outra conta do Stance."
+      redirect_to my_account_path, alert: "Essa conta Google já está ligada a outra conta do FlipaAi."
     else
       current_user.link_google!(uid)
       start_session_for(current_user) # o token mudou: a sessão deste aparelho continua

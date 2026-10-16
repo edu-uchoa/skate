@@ -5,7 +5,7 @@
 module Authentication
   extend ActiveSupport::Concern
 
-  COOKIE = :stance_token
+  COOKIE = :flipaai_token
 
   included do
     before_action :resume_session

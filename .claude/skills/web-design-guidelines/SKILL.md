@@ -1,13 +1,13 @@
 ---
 name: web-design-guidelines
-description: Revisão de interface do Stance contra as Web Interface Guidelines (acessibilidade, foco, formulários, toque no celular, áreas seguras, animação e textos). Use quando pedirem "revisa a tela", "confere a acessibilidade", "audita o design", "revisa a UX", "está tudo certo nesta tela?", ou antes de lançar uma tela nova ou mudança grande de layout.
+description: Revisão de interface do FlipaAi contra as Web Interface Guidelines (acessibilidade, foco, formulários, toque no celular, áreas seguras, animação e textos). Use quando pedirem "revisa a tela", "confere a acessibilidade", "audita o design", "revisa a UX", "está tudo certo nesta tela?", ou antes de lançar uma tela nova ou mudança grande de layout.
 metadata:
-  author: vercel (adaptado para o Stance)
-  version: "1.0.0-stance"
+  author: vercel (adaptado para o FlipaAi)
+  version: "1.0.0-flipaai"
   argument-hint: <arquivo-ou-padrão>
 ---
 
-# Web Interface Guidelines (no Stance)
+# Web Interface Guidelines (no FlipaAi)
 
 Adaptado de `vercel-labs/agent-skills` (skill `web-design-guidelines`, licença MIT; veja
 `LICENSE`). Diferenças do original:
@@ -22,7 +22,7 @@ Adaptado de `vercel-labs/agent-skills` (skill `web-design-guidelines`, licença 
    Se não disserem quais, pergunte.
 3. Confira cada regra e liste os achados no formato `arquivo:linha` do fim de `guidelines.md`.
 
-## Como as regras valem no Stance
+## Como as regras valem no FlipaAi
 
 - **Rails e ERB, não React:**
   - `link_to` gera `<a>` (navegação) e `button_to` ou `f.button` gera `<button>` (ação);
@@ -32,14 +32,14 @@ Adaptado de `vercel-labs/agent-skills` (skill `web-design-guidelines`, licença 
 - **Tailwind:** os exemplos com classes (`focus-visible:ring-*`, `truncate`) valem também para
   as classes próprias de `custom_styles.css`.
 - **Textos em português:**
-  - não use Title Case: o Stance escreve em frase normal, e os títulos em caixa-alta vêm
+  - não use Title Case: o FlipaAi escreve em frase normal, e os títulos em caixa-alta vêm
     do CSS;
-  - a voz é a da **stance-visual** (amigo mais velho que já caiu). Em conflito de estilo,
-    vale a stance-visual.
+  - a voz é a da **flipaai-visual** (amigo mais velho que já caiu). Em conflito de estilo,
+    vale a flipaai-visual.
 - **Datas e números:** o app formata no servidor (`strftime`, no fuso do usuário). Só aponte
   quando houver formato montado no navegador.
 - **Celular é o principal.** Dê atenção extra a toque, `env(safe-area-inset-*)`, zoom e
-  tamanho dos alvos (veja também a **stance-responsivo**).
+  tamanho dos alvos (veja também a **flipaai-responsivo**).
 
 ## Já conhecido
 

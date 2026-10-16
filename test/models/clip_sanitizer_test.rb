@@ -54,10 +54,10 @@ class ClipSanitizerTest < ActiveSupport::TestCase
   end
 
   test "sem ffmpeg nenhum vídeo entra" do
-    original = Rails.configuration.x.stance.ffmpeg_path
-    Rails.configuration.x.stance.ffmpeg_path = "ffmpeg-que-nao-existe"
+    original = Rails.configuration.x.flipaai.ffmpeg_path
+    Rails.configuration.x.flipaai.ffmpeg_path = "ffmpeg-que-nao-existe"
     assert_equal :unavailable, assert_raises(ClipSanitizer::Error) { clean("manobra.mp4", "video/mp4") }.reason
   ensure
-    Rails.configuration.x.stance.ffmpeg_path = original
+    Rails.configuration.x.flipaai.ffmpeg_path = original
   end
 end

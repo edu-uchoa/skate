@@ -3,7 +3,7 @@ module Ai
   # (IA ou reconhecimento corporal, decisão em aberto da equipe).
   #
   # Ainda não existe análise real: hoje o vídeo vai para a fila do mentor e este
-  # código só roda com config.x.stance.automatic_review ligado. Ao implementar,
+  # código só roda com config.x.flipaai.automatic_review ligado. Ao implementar,
   # devolva um Result com headline, strengths (o que fez bem), mistake (onde foi o
   # erro), next_focus (foco da próxima sessão) e raw (resposta bruta do provedor).
   class FallAnalyzer

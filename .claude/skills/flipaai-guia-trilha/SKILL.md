@@ -1,6 +1,6 @@
 ---
-name: stance-guia-trilha
-description: 'Modelo para criar ou editar o conteúdo dos passos da trilha do Stance (drills e manobras, ex.: 0.1 Setup, 0.2 Equipamento, 0.3 Queda controlada) — pesquisa em fontes de profissionais, texto resumido em português sem citar marcas e a estrutura visual do guia. Use sempre que o usuário pedir para "criar a tela do passo", "colocar explicação/orientações" num passo ou manobra, "seguir o modelo da trilha", ou falar de conteúdo educativo de skate (setup, equipamento, queda, postura, manobras).'
+name: flipaai-guia-trilha
+description: 'Modelo para criar ou editar o conteúdo dos passos da trilha do FlipaAi (drills e manobras, ex.: 0.1 Setup, 0.2 Equipamento, 0.3 Queda controlada) — pesquisa em fontes de profissionais, texto resumido em português sem citar marcas e a estrutura visual do guia. Use sempre que o usuário pedir para "criar a tela do passo", "colocar explicação/orientações" num passo ou manobra, "seguir o modelo da trilha", ou falar de conteúdo educativo de skate (setup, equipamento, queda, postura, manobras).'
 ---
 
 # Guias dos passos da trilha
@@ -13,13 +13,13 @@ ensina o essencial para quem está começando. Os guias de 0.1 e 0.2 são a refe
 
 - Arquivo: `app/views/maneuvers/guides/_<slug com _>.html.erb` (o slug está em
   `db/seeds.rb`; `escolher-setup` → `_escolher_setup`). Esqueleto pronto em
-  `.claude/skills/stance-guia-trilha/assets/guia-modelo.html.erb`.
+  `.claude/skills/flipaai-guia-trilha/assets/guia-modelo.html.erb`.
 - Drills (`kind: :drill`) já mostram o guia automaticamente: `maneuvers/_drill.html.erb`
   renderiza o arquivo se ele existir. Manobras comuns usam `_maneuver.html.erb`, que
   **ainda não tem esse gancho**. Se precisar, copie as 3 linhas do `_drill` para lá
   logo depois do `video-container`.
 - O vídeo indicativo do topo fica como está: o usuário vai gravar os vídeos depois.
-- Estilos: só classes `guide-*` já existentes (catálogo na skill **stance-visual**).
+- Estilos: só classes `guide-*` já existentes (catálogo na skill **flipaai-visual**).
   Crie classe nova só se nenhuma servir, e no fim do `custom_styles.css`.
 
 ## Pesquisa
@@ -59,5 +59,5 @@ ensina o essencial para quem está começando. Os guias de 0.1 e 0.2 são a refe
 Adicione um teste em `test/integration/maneuver_guide_test.rb` no padrão dos
 existentes: cria a manobra com o slug, abre `maneuver_path` e confere que o guia vem
 logo depois do vídeo (`.video-container + .guide`) e que as partes principais existem.
-Depois confira no navegador com **stance-responsivo** (abas trocando, bloco abrindo,
-botão "Praticar este passo" funcionando) e entregue com **stance-entrega**.
+Depois confira no navegador com **flipaai-responsivo** (abas trocando, bloco abrindo,
+botão "Praticar este passo" funcionando) e entregue com **flipaai-entrega**.

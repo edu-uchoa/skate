@@ -1,4 +1,4 @@
-# Conteúdo base da trilha do Stance.
+# Conteúdo base da trilha do FlipaAi.
 #
 # Idempotente: pode rodar quantas vezes quiser (bin/rails db:seed).
 # Os códigos ("0.1", "1.2", "3.2") são a referência usada pelo DiagnosisPlanner.

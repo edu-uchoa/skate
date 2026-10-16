@@ -1,4 +1,4 @@
-// Service worker do Stance: o que faz o app instalado na tela do celular abrir
+// Service worker do FlipaAi: o que faz o app instalado na tela do celular abrir
 // rápido e avisar quando não há internet. Registrado em app/javascript/application.js.
 //
 // - Visual do app (/assets: CSS, JavaScript e imagens, com uma impressão digital no
@@ -8,7 +8,7 @@
 // - Vídeos, envios de formulário e o resto: o service worker não mexe.
 //
 // Mudou /offline.html ou este arquivo? Troque a VERSION para os celulares baixarem de novo.
-const VERSION = "stance-v1"
+const VERSION = "flipaai-v1"
 const OFFLINE_URL = "/offline.html"
 const SHELL = `${VERSION}-shell`
 const ASSETS = `${VERSION}-assets`

@@ -8,12 +8,12 @@
     <% end %>
     <span class="step-indicator">Chat</span>
     <h2 class="screen-title">Fale com os mentores</h2>
-    <p class="screen-desc">Dúvida sobre uma tarefa ou sobre a devolutiva? Pergunte aqui: um mentor do Stance responde.</p>
+    <p class="screen-desc">Dúvida sobre uma tarefa ou sobre a devolutiva? Pergunte aqui: um mentor do FlipaAi responde.</p>
   </header>
 
   <p class="chat-note">
     <span class="material-symbols-outlined">lock</span>
-    <span>A conversa fica registrada e qualquer mentor do Stance pode ler e responder. Nunca mande telefone, endereço, e-mail ou redes sociais.</span>
+    <span>A conversa fica registrada e qualquer mentor do FlipaAi pode ler e responder. Nunca mande telefone, endereço, e-mail ou redes sociais.</span>
   </p>
 
   <%= render "chats/thread", messages: @messages, viewer: current_user, form_url: chat_messages_path, poll_url: chat_path,

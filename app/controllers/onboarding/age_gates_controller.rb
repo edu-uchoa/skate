@@ -15,7 +15,7 @@ module Onboarding
       end
 
       unless @user.old_enough?
-        @user.errors.add(:base, "O Stance é restrito a maiores de #{User::MINIMUM_AGE} anos.")
+        @user.errors.add(:base, "O FlipaAi é restrito a maiores de #{User::MINIMUM_AGE} anos.")
         return render :show, status: :unprocessable_entity
       end
 

@@ -78,8 +78,8 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "sem ffmpeg o vídeo é recusado e nada é guardado" do
-    original = Rails.configuration.x.stance.ffmpeg_path
-    Rails.configuration.x.stance.ffmpeg_path = "ffmpeg-que-nao-existe"
+    original = Rails.configuration.x.flipaai.ffmpeg_path
+    Rails.configuration.x.flipaai.ffmpeg_path = "ffmpeg-que-nao-existe"
 
     assert_no_difference -> { ActiveStorage::Blob.count } do
       upload
@@ -87,7 +87,7 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal [ "Não conseguimos proteger este vídeo agora. Tente de novo em alguns minutos." ], response.parsed_body["errors"]
   ensure
-    Rails.configuration.x.stance.ffmpeg_path = original
+    Rails.configuration.x.flipaai.ffmpeg_path = original
   end
 
   test "enviar o resultado de um treino com vídeo coloca o vídeo na fila do mentor" do
@@ -110,7 +110,7 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
   test "a análise automática ligada antes de existir recusa inventar uma devolutiva" do
     upload
     session = @user.training_sessions.last
-    Rails.configuration.x.stance.automatic_review = true
+    Rails.configuration.x.flipaai.automatic_review = true
 
     assert_enqueued_jobs 1, only: AnalyzeTrainingSessionJob do
       patch submit_training_session_path(session), params: { training_session: { outcome: "felt_safe" } }
@@ -118,7 +118,7 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     assert_raises(Ai::FallAnalyzer::NotConfigured) { perform_enqueued_jobs }
     assert session.reload.ai_review.status_failed?
   ensure
-    Rails.configuration.x.stance.automatic_review = false
+    Rails.configuration.x.flipaai.automatic_review = false
   end
 
   test "rejeita vídeo longo, formato inválido, sem vídeo e sem checklist" do
@@ -140,13 +140,13 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "rejeita vídeo acima do tamanho máximo" do
-    original = Rails.configuration.x.stance.max_clip_bytes
-    Rails.configuration.x.stance.max_clip_bytes = 10
+    original = Rails.configuration.x.flipaai.max_clip_bytes
+    Rails.configuration.x.flipaai.max_clip_bytes = 10
     upload
     assert_response :unprocessable_entity
     assert_match "MB", response.parsed_body["errors"].join
   ensure
-    Rails.configuration.x.stance.max_clip_bytes = original
+    Rails.configuration.x.flipaai.max_clip_bytes = original
   end
 
   test "não aceita manobra bloqueada: cai na manobra atual" do

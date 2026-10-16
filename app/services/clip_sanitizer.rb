@@ -30,7 +30,7 @@ class ClipSanitizer
 
   TIMEOUT = 60 # segundos; copiar um vídeo de 15s leva menos de um
 
-  def self.ffmpeg = Rails.configuration.x.stance.ffmpeg_path
+  def self.ffmpeg = Rails.configuration.x.flipaai.ffmpeg_path
 
   # attachable: o arquivo enviado pelo navegador ou { io:, filename:, content_type: }.
   def initialize(attachable, max_bytes: nil)

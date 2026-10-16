@@ -47,7 +47,7 @@ class ClipsController < ApplicationController
     if training_session.user_id == current_user.id
       redirect_to zine_path, notice: "Vídeo apagado. Ninguém mais consegue ver."
     else
-      Rails.logger.warn("[Stance] administrador #{current_user.id} apagou o vídeo do treino #{training_session.id} (aprendiz #{training_session.user_id})")
+      Rails.logger.warn("[FlipaAi] administrador #{current_user.id} apagou o vídeo do treino #{training_session.id} (aprendiz #{training_session.user_id})")
       redirect_to mentor_zine_path, notice: "Vídeo do aprendiz apagado. Ninguém mais consegue ver."
     end
   end

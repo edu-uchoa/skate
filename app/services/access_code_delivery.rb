@@ -29,6 +29,6 @@ class AccessCodeDelivery
   end
 
   def log
-    Rails.logger.info("[Stance] código #{access_code.code} para #{access_code.destination}")
+    Rails.logger.info("[FlipaAi] código #{access_code.code} para #{access_code.destination}")
   end
 end

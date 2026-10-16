@@ -173,7 +173,7 @@ Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e 
 Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Sem `GOOGLE_CLIENT_ID`, `/entrar` e `/cadastro` mostram um aviso no lugar do botao (contas antigas com senha ainda entram por "Conta antiga").
 
 1. Em [console.cloud.google.com](https://console.cloud.google.com), abra o mesmo projeto do Maps (ou crie um) e va em **Google Auth Platform**.
-2. **Branding** (tela de consentimento): nome do app `Stance`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).
+2. **Branding** (tela de consentimento): nome do app `FlipaAi`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).
 3. **Audience**: tipo **External**. Em "Testing", so entram os e-mails listados em **Test users**; quando estiver pronto, clique em **Publish app**. Como o app so pede escopos basicos (`openid`, `email`), o Google nao exige a verificacao demorada de escopos sensiveis.
 4. **Data Access**: deixe so `openid` e `.../auth/userinfo.email`.
 5. **Clients > Create client**, tipo **Web application**, com estas **Authorized redirect URIs**:
@@ -208,7 +208,7 @@ A localizacao do aparelho so funciona em `https` ou em `localhost`: abrindo pelo
 ## Estado atual
 
 - O envio de codigo de acesso ainda e representado nos logs.
-- O video do treino vai para a fila do mentor (resposta prometida em ate 48h); ainda nao ha analise automatica nem tela para o mentor responder. Ligar a analise automatica: `config.x.stance.automatic_review` + `Ai::FallAnalyzer#call`.
+- O video do treino vai para a fila do mentor (resposta prometida em ate 48h); ainda nao ha analise automatica nem tela para o mentor responder. Ligar a analise automatica: `config.x.flipaai.automatic_review` + `Ai::FallAnalyzer#call`.
 - A fila offline esta modelada, mas o service worker completo ainda pode ser evoluido.
 - A trilha e cadastrada por `db/seeds.rb`.
 

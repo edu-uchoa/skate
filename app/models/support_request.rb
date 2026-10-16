@@ -10,11 +10,11 @@ class SupportRequest < ApplicationRecord
   scope :urgent, -> { where(kind: :injury, status: :open) }
 
   # Monta o link de WhatsApp com contexto pré-preenchido (tela de ajuda mínima).
-  def whatsapp_url(number: Rails.configuration.x.stance.support_whatsapp)
+  def whatsapp_url(number: Rails.configuration.x.flipaai.support_whatsapp)
     text = case kind
-    when "injury"    then "Oi, me machuquei treinando no Stance e preciso de ajuda."
+    when "injury"    then "Oi, me machuquei treinando no FlipaAi e preciso de ajuda."
     when "stuck"     then "Oi, travei na manobra #{maneuver&.label || '(não informada)'}."
-    else                  "Oi, tive um problema técnico no Stance."
+    else                  "Oi, tive um problema técnico no FlipaAi."
     end
     "https://wa.me/#{number}?text=#{CGI.escape(text)}"
   end

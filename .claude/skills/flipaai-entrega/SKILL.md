@@ -1,9 +1,9 @@
 ---
-name: stance-entrega
-description: Fluxo de trabalho para qualquer mudança no app Stance (Rails, skate) — da leitura do código ao commit. Use sempre que for alterar código, telas, textos, CSS, testes ou configuração deste repositório, mesmo em mudanças pequenas como trocar um título, e também quando o usuário pedir "faça o commit", "continue adicionando aos commits", "pode subir", "abre o PR" ou perguntar se algo está pronto. Garante branch certa, testes, conferência no navegador, um commit por mudança e nada enviado ao GitHub sem autorização.
+name: flipaai-entrega
+description: Fluxo de trabalho para qualquer mudança no app FlipaAi (Rails, skate) — da leitura do código ao commit. Use sempre que for alterar código, telas, textos, CSS, testes ou configuração deste repositório, mesmo em mudanças pequenas como trocar um título, e também quando o usuário pedir "faça o commit", "continue adicionando aos commits", "pode subir", "abre o PR" ou perguntar se algo está pronto. Garante branch certa, testes, conferência no navegador, um commit por mudança e nada enviado ao GitHub sem autorização.
 ---
 
-# Entrega de mudanças no Stance
+# Entrega de mudanças no FlipaAi
 
 O dono do produto está aprendendo a desenvolver e um parceiro revisa tudo antes de ir
 para o GitHub. Por isso cada mudança precisa chegar **testada, isolada num commit próprio
@@ -26,9 +26,9 @@ commit e que qualquer mudança possa ser desfeita sozinha.
 ## 2. Fazendo a mudança
 
 - Siga o jeito do código ao redor (nomes, comentários em português, estrutura).
-- Tela ou CSS → siga a skill **stance-visual**.
-- Conteúdo de passo da trilha → siga a skill **stance-guia-trilha**.
-- Login, dados do usuário, upload, formulário, segredo ou gem → siga **stance-seguranca**.
+- Tela ou CSS → siga a skill **flipaai-visual**.
+- Conteúdo de passo da trilha → siga a skill **flipaai-guia-trilha**.
+- Login, dados do usuário, upload, formulário, segredo ou gem → siga **flipaai-seguranca**.
 - Não amplie o escopo por conta própria. Achou outro problema no caminho? Anote e
   conte ao usuário no final, com a sugestão de correção como mudança separada.
 
@@ -41,7 +41,7 @@ commit e que qualquer mudança possa ser desfeita sozinha.
    sem isso, o `/trecho/` vira um caminho do Windows e nenhum teste roda ("0 runs").
    Para provar que um teste novo pega o bug, rode-o uma vez sem a correção (deve falhar).
 3. `bin/rubocop <arquivos .rb alterados>` — o CI do GitHub roda o RuboCop.
-4. Mudou tela, CSS ou formulário → confira no navegador com a skill **stance-responsivo**
+4. Mudou tela, CSS ou formulário → confira no navegador com a skill **flipaai-responsivo**
    (prints em celular e computador e, para formulários, o envio de verdade). Testes de
    integração não pegam problemas de Turbo/JS: os botões de Ajuda e Retorno passavam nos
    testes e não funcionavam no navegador.

@@ -75,7 +75,7 @@ checklist e progresso), `feedback-block` / `ia-loader-card` (devolutiva da IA).
 ## Instalar o app (/instalar)
 | Classe | Para quê |
 | --- | --- |
-| `install-preview` / `install-preview-app` | O ícone do Stance entre silhuetas de outros apps, como fica na tela inicial |
+| `install-preview` / `install-preview-app` | O ícone do FlipaAi entre silhuetas de outros apps, como fica na tela inicial |
 | `install-status` (`.is-done`, `.is-warning`) | Aviso de "já instalado", "pronto, instalado" ou "abra no navegador" |
 | `install-platform` (`details`, `.is-mine`) + `install-steps` | Passo a passo de cada aparelho, com o número do passo e um ícone; o do aparelho da pessoa abre sozinho |
 | `install-perks` | Lista de motivos para instalar, com ícone |

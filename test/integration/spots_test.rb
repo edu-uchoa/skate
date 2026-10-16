@@ -34,19 +34,19 @@ class SpotsTest < ActionDispatch::IntegrationTest
   end
 
   test "os picos fixos aparecem no mapa e na lista" do
-    original = Rails.configuration.x.stance.spots_file
+    original = Rails.configuration.x.flipaai.spots_file
     file = Tempfile.new([ "picos", ".yml" ])
     file.write({ "picos" => [ { "nome" => "Pista teste", "tipo" => "pista", "descricao" => "Piso liso.",
                                 "lat" => -15.79, "lng" => -47.88 } ] }.to_yaml)
     file.close
-    Rails.configuration.x.stance.spots_file = file.path
+    Rails.configuration.x.flipaai.spots_file = file.path
 
     get spots_path
     assert_select "#spot_0 strong", "Pista teste"
     assert_select "#spot_0 [data-action='spots-map#pickSpot'][data-spots-map-index-param='0']"
     assert_includes css_select("[data-controller=spots-map]").first["data-spots-map-spots-value"], "Pista teste"
   ensure
-    Rails.configuration.x.stance.spots_file = original
+    Rails.configuration.x.flipaai.spots_file = original
     file&.unlink
   end
 

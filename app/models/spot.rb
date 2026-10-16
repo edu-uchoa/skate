@@ -1,7 +1,7 @@
 # Pico fixo do mapa (config/picos.yml): fica sempre marcado, para todo mundo.
 # Não fica no banco: a lista é curta e quem cuida dela edita o arquivo.
 Spot = Data.define(:name, :kind, :description, :latitude, :longitude) do
-  def self.file = Rails.configuration.x.stance.spots_file
+  def self.file = Rails.configuration.x.flipaai.spots_file
 
   # Em desenvolvimento relê o arquivo a cada página, para ver a mudança na hora.
   def self.all

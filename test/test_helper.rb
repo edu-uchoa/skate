@@ -28,7 +28,7 @@ end
 
 # Entrar com o Google nos testes: o OmniAuth devolve uma resposta pronta, sem ir ao Google.
 OmniAuth.config.test_mode = true
-Rails.configuration.x.stance.google_client_id = "id-de-teste" # mostra o botão do Google nas telas
+Rails.configuration.x.flipaai.google_client_id = "id-de-teste" # mostra o botão do Google nas telas
 
 module GoogleSignIn
   # A volta do Google para essa conta. verified: false simula e-mail não confirmado.

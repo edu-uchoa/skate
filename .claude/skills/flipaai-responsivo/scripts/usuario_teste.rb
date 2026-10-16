@@ -1,19 +1,19 @@
 # Cria ou apaga usuários de teste no banco de DESENVOLVIMENTO para conferir telas.
 #
-#   bin/rails runner .claude/skills/stance-responsivo/scripts/usuario_teste.rb criar [nivel]
-#   bin/rails runner .claude/skills/stance-responsivo/scripts/usuario_teste.rb novo
-#   bin/rails runner .claude/skills/stance-responsivo/scripts/usuario_teste.rb apagar
+#   bin/rails runner .claude/skills/flipaai-responsivo/scripts/usuario_teste.rb criar [nivel]
+#   bin/rails runner .claude/skills/flipaai-responsivo/scripts/usuario_teste.rb novo
+#   bin/rails runner .claude/skills/flipaai-responsivo/scripts/usuario_teste.rb apagar
 #
-# criar  -> teste.prints@stance.dev: diagnóstico feito (nível padrão can_push, ou o
+# criar  -> teste.prints@flipaai.dev: diagnóstico feito (nível padrão can_push, ou o
 #           informado: never_ridden, can_push, stuck_on_ollie, advanced) e um treino com
 #           vídeo na fila do mentor (para Zine, Resultado e Devolutiva).
-# novo   -> teste.novo@stance.dev: só a conta, para Idade e Diagnóstico.
+# novo   -> teste.novo@flipaai.dev: só a conta, para Idade e Diagnóstico.
 # apagar -> remove os dois (rode sempre ao terminar).
 # Senha de ambos: senha1234
 abort "Use só em desenvolvimento." unless Rails.env.development?
 
 SENHA = "senha1234".freeze
-EMAILS = { pronto: "teste.prints@stance.dev", novo: "teste.novo@stance.dev" }.freeze
+EMAILS = { pronto: "teste.prints@flipaai.dev", novo: "teste.novo@flipaai.dev" }.freeze
 
 def apagar_todos = EMAILS.each_value { |e| User.find_by(email: e)&.destroy! }
 

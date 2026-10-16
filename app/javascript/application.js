@@ -17,11 +17,11 @@ document.documentElement.classList.toggle("is-standalone", standalone)
 // página /instalar (install_controller.js).
 window.addEventListener("beforeinstallprompt", (event) => {
   event.preventDefault()
-  window.stanceInstallPrompt = event
-  document.dispatchEvent(new CustomEvent("stance:installable"))
+  window.flipaaiInstallPrompt = event
+  document.dispatchEvent(new CustomEvent("flipaai:installable"))
 })
 
 window.addEventListener("appinstalled", () => {
-  window.stanceInstallPrompt = null
-  document.dispatchEvent(new CustomEvent("stance:installed"))
+  window.flipaaiInstallPrompt = null
+  document.dispatchEvent(new CustomEvent("flipaai:installed"))
 })

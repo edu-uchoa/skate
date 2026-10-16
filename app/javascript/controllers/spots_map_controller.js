@@ -15,13 +15,13 @@ export default class extends Controller {
 
   connect() {
     this.onAuthFailure = () => this.mapUnavailable()
-    document.addEventListener("stance:maps-auth-failure", this.onAuthFailure)
+    document.addEventListener("flipaai:maps-auth-failure", this.onAuthFailure)
     this.watchPermission()
     this.locate()
   }
 
   disconnect() {
-    document.removeEventListener("stance:maps-auth-failure", this.onAuthFailure)
+    document.removeEventListener("flipaai:maps-auth-failure", this.onAuthFailure)
     if (this.permission) this.permission.onchange = null
   }
 
@@ -31,7 +31,7 @@ export default class extends Controller {
 
   locate() {
     if (!window.isSecureContext || !("geolocation" in navigator)) {
-      return this.deny("Este navegador não libera a localização nesta página. Abra o Stance pelo endereço com https ou pelo app instalado.")
+      return this.deny("Este navegador não libera a localização nesta página. Abra o FlipaAi pelo endereço com https ou pelo app instalado.")
     }
 
     this.show("asking")
@@ -179,12 +179,12 @@ function loadGoogleMaps(key) {
   googleMaps ||= new Promise((resolve, reject) => {
     if (window.google?.maps?.importLibrary) return resolve()
 
-    window.stanceGoogleMapsReady = () => resolve()
+    window.flipaaiGoogleMapsReady = () => resolve()
     // O Google chama esta função quando a chave é inválida ou não vale para este endereço.
-    window.gm_authFailure = () => document.dispatchEvent(new CustomEvent("stance:maps-auth-failure"))
+    window.gm_authFailure = () => document.dispatchEvent(new CustomEvent("flipaai:maps-auth-failure"))
 
     const params = new URLSearchParams({ key, v: "weekly", loading: "async", libraries: "marker",
-                                         language: "pt-BR", region: "BR", callback: "stanceGoogleMapsReady" })
+                                         language: "pt-BR", region: "BR", callback: "flipaaiGoogleMapsReady" })
     const script = document.createElement("script")
     script.src = `https://maps.googleapis.com/maps/api/js?${params}`
     script.async = true

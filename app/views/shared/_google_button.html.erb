@@ -2,7 +2,7 @@
     quatro cores, sem mudar, e o texto "Continuar com o Google"). Faz POST para
     /auth/google_oauth2 com o token CSRF; o OmniAuth leva a pessoa ao Google.
     Sem o GOOGLE_CLIENT_ID configurado no servidor, mostra um aviso no lugar. %>
-<% if Rails.configuration.x.stance.google_client_id.present? %>
+<% if Rails.configuration.x.flipaai.google_client_id.present? %>
   <%= button_to "/auth/google_oauth2", method: :post, class: "google-btn", form: { class: "google-form", data: { turbo: false } } do %>
     <svg class="google-g" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
       <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />

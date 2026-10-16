@@ -1,6 +1,6 @@
 # Junta vários prints numa folha só (metade do tamanho, 7 por linha) para comparar telas.
 #
-#   bundle exec ruby .claude/skills/stance-responsivo/scripts/folha.rb <saida.png> <print1.png> <print2.png> ...
+#   bundle exec ruby .claude/skills/flipaai-responsivo/scripts/folha.rb <saida.png> <print1.png> <print2.png> ...
 require "vips"
 
 saida, *prints = ARGV

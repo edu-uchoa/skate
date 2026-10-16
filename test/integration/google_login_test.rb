@@ -111,7 +111,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_equal old, User.find_by(google_uid: "google-telefone@example.com")
   end
 
-  test "uma conta Google não pode ser ligada a duas contas do Stance" do
+  test "uma conta Google não pode ser ligada a duas contas do FlipaAi" do
     sign_up_with_google("dono@example.com")
     delete sign_out_path
 

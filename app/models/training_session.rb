@@ -114,9 +114,9 @@ class TrainingSession < ApplicationRecord
   # Desde quando o vídeo espera o mentor (o prazo de 48h conta a partir daqui).
   def waiting_since = clip.blob.created_at
 
-  def self.max_clip_seconds = Rails.configuration.x.stance.max_clip_seconds
-  def self.max_clip_bytes   = Rails.configuration.x.stance.max_clip_bytes
-  def self.automatic_review? = Rails.configuration.x.stance.automatic_review
+  def self.max_clip_seconds = Rails.configuration.x.flipaai.max_clip_seconds
+  def self.max_clip_bytes   = Rails.configuration.x.flipaai.max_clip_bytes
+  def self.automatic_review? = Rails.configuration.x.flipaai.automatic_review
 
   # Duração informada pelo navegador na gravação/seleção (salva no blob).
   def clip_duration = clip.attached? ? clip.blob.custom_metadata["duration_seconds"]&.to_f : nil
