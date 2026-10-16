@@ -1,0 +1,41 @@
+<% content_for :section, "Apagar conta" %>
+
+<section class="auth-screen">
+  <header class="auth-head">
+    <%= link_to my_account_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar ao perfil
+    <% end %>
+    <span class="material-symbols-outlined auth-icon">delete_forever</span>
+    <span class="step-indicator">Seus dados, sua escolha</span>
+    <h2 class="screen-title">Apagar minha conta</h2>
+    <p class="screen-desc">
+      Tudo bem dar um tempo. Mas, se quiser sair de vez, apagamos agora e não tem volta:
+    </p>
+  </header>
+
+  <ul class="auth-card legal-list">
+    <li>todos os seus vídeos e as devolutivas dos mentores;</li>
+    <li>o progresso na trilha, a ofensiva e os rolês marcados;</li>
+    <li>o chat com os mentores, o avatar e o skate;</li>
+    <li>o nickname <%= current_user.handle %> e a sua conta<%= " de mentor" if current_user.mentor_account? %>.</li>
+  </ul>
+
+  <p class="auth-hint">
+    Quer guardar uma cópia antes?
+    <%= link_to "Baixe os seus dados", my_data_path(format: :json), class: "auth-link" %>.
+    Depois, se quiser voltar, é só entrar com o Google de novo: começa do zero.
+  </p>
+
+  <%= form_with url: account_deletion_path, method: :delete, class: "auth-form",
+                data: { turbo_confirm: "Apagar a sua conta e tudo dela agora? Não dá para desfazer." } do |f| %>
+    <div class="auth-field">
+      <%= f.label :confirmation, "Para confirmar, digite APAGAR", class: "auth-label" %>
+      <%= f.text_field :confirmation, class: "auth-input", required: true, autocomplete: "off",
+            autocapitalize: "characters", spellcheck: false, placeholder: "APAGAR" %>
+    </div>
+
+    <%= f.button type: :submit, class: "auth-secondary-btn danger" do %>
+      <span>Apagar minha conta</span>
+    <% end %>
+  <% end %>
+</section>

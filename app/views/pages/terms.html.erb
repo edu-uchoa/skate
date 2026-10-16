@@ -1,0 +1,101 @@
+<% content_for :section, "Termos" %>
+<% content_for :title, "Termos de Uso · FlipaAi" %>
+<%# Termos de Uso. Mudou uma regra do app? Atualize aqui e a data em
+    config.x.flipaai.legal_updated_on. %>
+
+<article class="legal-page">
+  <header class="auth-head">
+    <%= link_to legal_back_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar
+    <% end %>
+    <span class="material-symbols-outlined auth-icon">gavel</span>
+    <span class="step-indicator">Atualizados em <%= legal_updated_on %></span>
+    <h2 class="screen-title">Termos de Uso</h2>
+    <p class="screen-desc">As regras do rolê no FlipaAi. Ao aceitar, você concorda com elas e com a
+      <%= link_to "Política de Privacidade", privacy_path, class: "auth-link" %>.</p>
+  </header>
+
+  <section class="legal-section">
+    <h3>1. O que é o FlipaAi</h3>
+    <p>
+      Um app gratuito para aprender a andar de skate no seu ritmo: uma trilha de passos, vídeos
+      dos seus treinos e devolutivas de mentores. Quem responde pelo app é
+      <strong><%= legal_controller %></strong> (<%= legal_email_link("Termos do FlipaAi") %>).
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>2. Quem pode usar</h3>
+    <ul>
+      <li>Quem tem <%= User::MINIMUM_AGE %> anos ou mais. Se você tem de <%= User::MINIMUM_AGE %> a 17 anos,
+        use com o conhecimento de um responsável.</li>
+      <li>Uma conta por pessoa, entrando com a sua própria conta Google. Não crie conta em nome de
+        outra pessoa.</li>
+      <li>Mentores são aprovados por um administrador e precisam ter 18 anos ou mais.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h3>3. Segurança no treino</h3>
+    <p>
+      Skate tem risco de queda e de lesão. Use capacete e proteções, escolha um lugar seguro, sem
+      carros e com chão liso, e respeite o seu limite. As dicas e devolutivas do FlipaAi ajudam
+      a treinar, mas não substituem um professor presente nem orientação médica. Você é
+      responsável pelos cuidados no seu treino; se for menor de idade, treine com alguém por perto.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>4. Seus vídeos</h3>
+    <ul>
+      <li>Os vídeos continuam seus. Você nos autoriza a guardá-los e a mostrá-los aos mentores do
+        app, só para a devolutiva e a segurança da comunidade.</li>
+      <li>Grave só você mesmo, ou pessoas que concordaram em aparecer. Nada de nudez, violência,
+        ofensas ou qualquer coisa que exponha outra pessoa.</li>
+      <li>Você pode apagar qualquer vídeo pela Zine, quando quiser.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h3>5. Respeito no chat e nas devolutivas</h3>
+    <ul>
+      <li>Trate todo mundo com respeito: sem ofensa, preconceito, assédio ou ameaça.</li>
+      <li>Não mande nem peça telefone, endereço, e-mail, redes sociais ou links. O chat bloqueia esses
+        contatos para proteger a comunidade, que tem menores de idade.</li>
+      <li>Mentores nunca pedem encontro fora do app, foto ou dado pessoal. Se isso acontecer, avise
+        pelo e-mail acima.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h3>6. Moderação</h3>
+    <p>
+      Para proteger a comunidade, a administração pode apagar vídeos, mensagens ou devolutivas e
+      suspender ou remover contas que descumpram estes termos.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>7. O app pode mudar</h3>
+    <p>
+      O FlipaAi está em construção: telas e funções podem mudar ou sair, e o serviço pode ficar
+      fora do ar às vezes. Se os termos mudarem, a data lá em cima muda junto.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>8. Sair do app</h3>
+    <p>
+      Você pode apagar a sua conta quando quiser pelo Perfil, e tudo é apagado (veja a
+      <%= link_to "Política de Privacidade", privacy_path, class: "auth-link" %>).
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>9. Lei aplicável</h3>
+    <p>
+      Estes termos seguem as leis do Brasil, incluindo o Código de Defesa do Consumidor, o Marco Civil
+      da Internet, a LGPD e o Estatuto da Criança e do Adolescente.
+    </p>
+  </section>
+</article>

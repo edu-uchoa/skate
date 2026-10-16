@@ -52,6 +52,10 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_no_bottom_nav "idade"
 
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 } }
+    assert_response :unprocessable_entity, "sem aceitar os termos não segue"
+    assert_match "aceite os Termos de Uso e a Política de Privacidade", response.body
+
+    patch onboarding_age_gate_path, params: { user: { birth_year: 2000 }, accept_terms: "1" }
     assert_redirected_to onboarding_diagnosis_path
     follow_redirect!
     assert_no_bottom_nav "perguntas"

@@ -1,0 +1,174 @@
+<% content_for :section, "Privacidade" %>
+<% content_for :title, "Política de Privacidade · FlipaAi" %>
+<%# Política de Privacidade (LGPD, Lei 13.709/2018). Mudou o que o app coleta ou
+    para que usa? Atualize este texto e a data em config.x.flipaai.legal_updated_on. %>
+
+<article class="legal-page">
+  <header class="auth-head">
+    <%= link_to legal_back_path, class: "auth-back" do %>
+      <span class="material-symbols-outlined">arrow_back</span> Voltar
+    <% end %>
+    <span class="material-symbols-outlined auth-icon">shield_lock</span>
+    <span class="step-indicator">LGPD · atualizada em <%= legal_updated_on %></span>
+    <h2 class="screen-title">Política de Privacidade</h2>
+    <p class="screen-desc">
+      Aqui está, sem juridiquês, o que o FlipaAi guarda sobre você, para que usa, com quem
+      divide e como você pede para ver, corrigir ou apagar tudo.
+    </p>
+  </header>
+
+  <nav class="legal-summary" aria-label="Resumo">
+    <p><strong>Resumo:</strong> seus vídeos são privados (só você e os mentores veem), ninguém
+      vê seu e-mail, não vendemos dados, não tem propaganda e você pode baixar ou apagar tudo
+      pelo Perfil, quando quiser.</p>
+  </nav>
+
+  <section class="legal-section">
+    <h3>1. Quem cuida dos seus dados</h3>
+    <p>
+      O responsável pelos dados (o "controlador", na LGPD) é <strong><%= legal_controller %></strong>,
+      que também atende os pedidos sobre privacidade (o "encarregado"). Fale pelo e-mail
+      <%= legal_email_link %>.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>2. O que guardamos</h3>
+    <ul>
+      <li><strong>Conta:</strong> o e-mail da sua conta Google e o código que o Google usa para
+        identificar a conta (não vemos sua senha do Google), seu nickname#0000, o ano de
+        nascimento e quando você aceitou estes termos. Contas antigas guardam também o
+        telefone ou e-mail e a senha (embaralhada, nunca em texto).</li>
+      <li><strong>Treino:</strong> as respostas das perguntas iniciais (nível, travas e setup), o
+        progresso na trilha, os compromissos marcados, o resultado de cada treino, as
+        anotações e o checklist de segurança.</li>
+      <li><strong>Vídeos:</strong> os vídeos de até 15 segundos que você grava ou envia. Antes de
+        guardar, o app apaga deles a localização (GPS), a data e o modelo do aparelho.</li>
+      <li><strong>Devolutivas e chat:</strong> o que os mentores escrevem sobre seus vídeos e as
+        mensagens trocadas no chat com a equipe de mentores.</li>
+      <li><strong>Ofensiva e Picos:</strong> as sessões de skate comprovadas, as justificativas de
+        parada (podem falar de saúde, como uma lesão: escreva só o necessário) e os rolês
+        que você marca no mapa (o pico escolhido, o horário e um recado).</li>
+      <li><strong>Avatar e skate:</strong> as roupas, o cabelo e o shape que você escolhe no Perfil.</li>
+      <li><strong>Ajuda:</strong> os pedidos de ajuda e retorno que você envia.</li>
+      <li><strong>Segurança dos vídeos:</strong> quando alguém que não é você assiste a um vídeo seu
+        (um mentor), guardamos quem foi, quando, o endereço de internet (IP) e o navegador.</li>
+      <li><strong>Funcionamento:</strong> a última vez que você usou o app e um cookie que mantém
+        você conectado.</li>
+    </ul>
+    <p>
+      A localização do seu aparelho, usada para centralizar o mapa de Picos, fica só no seu
+      celular: ela nunca é enviada para o FlipaAi.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>3. Para que usamos (e com qual base da lei)</h3>
+    <ul>
+      <li><strong>Fazer o app funcionar</strong> (conta, trilha, vídeos, devolutivas, chat,
+        ofensiva): é o serviço que você pediu ao aceitar os Termos de Uso (execução de
+        contrato, art. 7º, V).</li>
+      <li><strong>Proteger você e os outros</strong> (idade mínima, registro de quem assistiu a
+        cada vídeo, filtro de contato no chat, moderação): legítimo interesse e proteção da
+        segurança (art. 7º, IX), sempre no melhor interesse de quem tem menos de 18 anos
+        (art. 14).</li>
+      <li><strong>Saúde:</strong> uma justificativa que fale de lesão só é lida por mentores para
+        manter a sua ofensiva, porque você escolheu enviar (consentimento, art. 11, I).</li>
+    </ul>
+    <p>Não usamos seus dados para propaganda, não vendemos e não montamos perfil para terceiros.</p>
+  </section>
+
+  <section class="legal-section">
+    <h3>4. Quem vê o quê</h3>
+    <ul>
+      <li><strong>Seus vídeos e devolutivas:</strong> você e os mentores aprovados do FlipaAi.
+        Mentores só são aprovados por um administrador, depois de confirmar quem são.</li>
+      <li><strong>Seu e-mail ou telefone:</strong> ninguém do app vê. Os mentores veem o seu
+        nickname#0000 (nas contas antigas sem nickname, o contato com o meio escondido,
+        como "ca•••@gmail.com") e a sua idade.</li>
+      <li><strong>Seu chat:</strong> você e a equipe de mentores.</li>
+      <li><strong>Um rolê que você compartilha:</strong> quem tiver o link vê o pico, o horário e o
+        recado, até o rolê acabar. Você decide se manda o link.</li>
+      <li><strong>Administração:</strong> o responsável pelo app pode acessar contas, vídeos e
+        devolutivas para moderar e corrigir problemas, e cada remoção fica registrada.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h3>5. Empresas que ajudam o app a funcionar</h3>
+    <ul>
+      <li><strong>Google:</strong> o login (recebemos só o e-mail confirmado), o mapa de Picos e as
+        fontes e ícones das telas. Para entregar as fontes e o mapa, o Google recebe o
+        endereço de internet do seu aparelho.</li>
+      <li><strong>Render:</strong> a empresa que hospeda o servidor, onde ficam o banco de dados e
+        os vídeos.</li>
+    </ul>
+    <p>
+      Essas empresas podem guardar dados fora do Brasil. Elas seguem as próprias políticas
+      de privacidade e de segurança, e só recebem o necessário para o serviço funcionar
+      (transferência internacional, art. 33 da LGPD).
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>6. Quanto tempo guardamos</h3>
+    <ul>
+      <li>Tudo fica enquanto a sua conta existir.</li>
+      <li>Você pode apagar um vídeo a qualquer momento pela Zine; ele sai do servidor na hora.</li>
+      <li>Um rolê marcado no mapa some sozinho depois que acaba.</li>
+      <li>Os códigos de recuperação de senha valem só 10 minutos.</li>
+      <li>Quando você apaga a conta, apagamos na hora os dados, os vídeos, o progresso e o
+        chat. Restam só os registros de acesso que o servidor guarda por pouco tempo, por
+        segurança.</li>
+    </ul>
+  </section>
+
+  <section class="legal-section">
+    <h3>7. Seus direitos</h3>
+    <p>Pela LGPD (art. 18), você pode, quando quiser:</p>
+    <ul>
+      <li><strong>Ver e levar seus dados:</strong> <%= signed_in? ? link_to("baixe uma cópia em Meus dados", my_data_path(format: :json), class: "auth-link") : "baixe uma cópia em Perfil › Meus dados" %>;</li>
+      <li><strong>Corrigir:</strong> troque o nickname, o avatar e o skate pelo Perfil; para o resto,
+        mande um e-mail;</li>
+      <li><strong>Apagar tudo:</strong> <%= signed_in? ? link_to("apague a conta pelo Perfil", account_deletion_path, class: "auth-link") : "apague a conta em Perfil › Apagar minha conta" %>;</li>
+      <li><strong>Tirar o consentimento</strong> de uma justificativa de saúde, saber com quem
+        dividimos e tirar qualquer dúvida: escreva para <%= legal_email_link %>.</li>
+    </ul>
+    <p>
+      Respondemos em até 15 dias. Se não ficar resolvido, você pode reclamar na Autoridade
+      Nacional de Proteção de Dados (ANPD), em gov.br/anpd.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>8. Menores de idade</h3>
+    <p>
+      O FlipaAi é para quem tem <%= User::MINIMUM_AGE %> anos ou mais; ninguém mais novo pode criar
+      conta. Se você tem de <%= User::MINIMUM_AGE %> a 17 anos, mostre esta política a um responsável
+      e treine com alguém por perto. Os mentores veem quem é menor de idade e o chat bloqueia
+      telefone, e-mail, links e redes sociais, para ninguém levar a conversa para fora do app.
+      Um responsável pode pedir para ver ou apagar os dados de um adolescente pelo e-mail
+      acima.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>9. Segurança</h3>
+    <p>
+      O app só funciona com conexão segura (HTTPS), os vídeos só abrem para quem tem
+      permissão e não têm link público, as senhas antigas ficam embaralhadas e cada acesso de
+      mentor a um vídeo fica registrado. Se acontecer um incidente que coloque seus dados em
+      risco, avisamos você e a ANPD.
+    </p>
+  </section>
+
+  <section class="legal-section">
+    <h3>10. Mudanças nesta política</h3>
+    <p>
+      Se esta política mudar, a data lá em cima muda junto e avisamos no app quando a mudança
+      for importante.
+    </p>
+  </section>
+
+  <p class="auth-hint">Leia também os <%= link_to "Termos de Uso", terms_path, class: "auth-link" %>.</p>
+</article>

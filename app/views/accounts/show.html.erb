@@ -92,6 +92,24 @@
       <%= link_to "Quero ser mentor", new_mentor_application_path, class: "auth-link" %>
     <% end %>
 
+    <%# LGPD: ver, levar e apagar os próprios dados, sem precisar pedir para ninguém. %>
+    <div class="auth-card profile-privacy">
+      <span class="auth-card-label">Seus dados</span>
+      <span class="auth-hint">Veja o que o FlipaAi guarda, baixe uma cópia ou apague tudo quando quiser.</span>
+      <%= link_to my_data_path(format: :json), class: "auth-link", data: { turbo: false } do %>
+        <span class="material-symbols-outlined" aria-hidden="true">download</span> <span class="link-text">Baixar meus dados</span>
+      <% end %>
+      <%= link_to privacy_path, class: "auth-link" do %>
+        <span class="material-symbols-outlined" aria-hidden="true">shield_lock</span> <span class="link-text">Política de Privacidade</span>
+      <% end %>
+      <%= link_to terms_path, class: "auth-link" do %>
+        <span class="material-symbols-outlined" aria-hidden="true">gavel</span> <span class="link-text">Termos de Uso</span>
+      <% end %>
+      <%= link_to account_deletion_path, class: "auth-link danger-link" do %>
+        <span class="material-symbols-outlined" aria-hidden="true">delete_forever</span> <span class="link-text">Apagar minha conta</span>
+      <% end %>
+    </div>
+
     <div class="auth-actions">
       <%= button_to "Sair deste aparelho", sign_out_path, method: :delete, class: "auth-secondary-btn" %>
       <%= button_to "Sair de todos os aparelhos", sign_out_everywhere_path, method: :delete,

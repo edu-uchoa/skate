@@ -3529,3 +3529,80 @@ a.guide-tab {
 
 .mentor-nav .nav-fab-btn .nav-badge { top: -4px; right: -6px; }
 .mentor-nav .nav-fab-btn.is-active { outline: 2px solid var(--primary-color); outline-offset: 3px; }
+
+/* Perfil: cartão "Seus dados" (LGPD). */
+.profile-privacy { gap: 10px; }
+.profile-privacy .auth-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  width: fit-content;
+}
+.profile-privacy .auth-link { text-decoration: none; }
+.profile-privacy .link-text { text-decoration: underline; text-underline-offset: 3px; }
+.profile-privacy .material-symbols-outlined { font-size: 18px; }
+.danger-link { color: var(--error-color); }
+
+/* Política de Privacidade e Termos de Uso (pages/privacy, pages/terms). */
+.legal-page {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 640px;
+  width: 100%;
+  margin-inline: auto;
+  padding-bottom: 12px;
+}
+
+.legal-summary {
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.legal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-variant);
+}
+
+.legal-section h3 {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--text-on-surface);
+}
+
+.legal-section strong { color: var(--text-on-surface); }
+
+.legal-section ul,
+.legal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 18px;
+}
+
+.legal-list { padding: 12px 14px 12px 32px; font-size: 13px; line-height: 1.5; }
+
+/* Caixinha "Li e aceito" (tela da idade). */
+.legal-accept {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-on-surface);
+  cursor: pointer;
+}
+.legal-accept input { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; accent-color: var(--primary-color); }
+.splash-legal { margin-top: -4px; }
+.splash-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; min-height: 24px; display: inline-flex; align-items: center; }

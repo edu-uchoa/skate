@@ -11,6 +11,15 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 
 ## Checklist por tipo de mudança
 
+**Dado pessoal novo (LGPD)**
+- Começou a guardar um dado novo, a mandar algo para outra empresa ou a mostrar um dado a
+  outras pessoas? Atualize `pages/privacy.html.erb` (o que guardamos, quem vê, empresas) e a
+  data em `config.x.flipaai.legal_updated_on`.
+- Inclua o dado em "Meus dados" (`DataExport`), sem segredos (token, senha, códigos).
+- Garanta que "Apagar minha conta" leva o dado junto (`dependent:` no `User` e teste em
+  `test/integration/privacy_test.rb`).
+- O aceite dos termos fica na tela da idade (`accept_terms` obrigatório).
+
 **Controller ou rota nova**
 - Login já é obrigatório por padrão (`Authentication` em `ApplicationController`).
   Libere páginas públicas só com `allow_unauthenticated_access only: [...]`, nunca sem `only`

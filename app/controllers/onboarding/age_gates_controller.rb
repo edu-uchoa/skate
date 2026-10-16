@@ -19,6 +19,11 @@ module Onboarding
         return render :show, status: :unprocessable_entity
       end
 
+      unless params[:accept_terms] == "1"
+        @user.errors.add(:base, "Para continuar, leia e aceite os Termos de Uso e a Política de Privacidade.")
+        return render :show, status: :unprocessable_entity
+      end
+
       @user.terms_accepted_at = Time.current
       @user.save!
       redirect_to onboarding_diagnosis_path

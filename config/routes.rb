@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   get  "abertura", to: "pages#intro",   as: :intro
   get  "instalar", to: "pages#install", as: :install
+  # LGPD: textos públicos (dá para ler antes de entrar).
+  get  "privacidade", to: "pages#privacy", as: :privacy
+  get  "termos",      to: "pages#terms",   as: :terms
 
   namespace :onboarding, path: "comecar" do
     resource :age_gate,  only: %i[show update], path: "idade"
@@ -103,6 +106,9 @@ Rails.application.routes.draw do
     post :resend, on: :member, path: "reenviar"
   end
   get    "conta", to: "accounts#show",        as: :my_account
+  # LGPD (art. 18): baixar uma cópia dos próprios dados e apagar a conta sozinho.
+  get    "conta/meus-dados", to: "data_exports#show", as: :my_data, defaults: { format: :json }
+  resource :account_deletion, only: %i[show destroy], path: "conta/apagar"
   delete "sair",  to: "accounts#destroy",     as: :sign_out
   delete "sair-de-todos", to: "accounts#destroy_all", as: :sign_out_everywhere
 
