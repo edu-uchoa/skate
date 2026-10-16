@@ -131,7 +131,8 @@ Principais rotas:
 | Tela | Rota |
 | --- | --- |
 | Pagina inicial | `/` |
-| Cadastro / Entrar (Google) | `/cadastro`, `/entrar` |
+| Entrada (logo + Google) | `/` (`/entrar` e `/cadastro` voltam para ela) |
+| Login com senha (contas antigas, sem link no app) | `/entrar/senha` |
 | Nickname#0000 | `/apelido` |
 | Recuperar senha | `/recuperar-senha` |
 | Minha conta | `/conta` |
@@ -170,7 +171,7 @@ Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e 
 
 ### Entrar com o Google (login)
 
-Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Sem `GOOGLE_CLIENT_ID`, `/entrar` e `/cadastro` mostram um aviso no lugar do botao (contas antigas com senha ainda entram por "Conta antiga").
+Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Os botoes ficam na tela da logo (`/`), a unica porta de entrada. Sem `GOOGLE_CLIENT_ID`, ela mostra um aviso no lugar do botao. Contas antigas com senha (mentores e administradores) entram por `/entrar/senha`, que nao tem link no app.
 
 1. Em [console.cloud.google.com](https://console.cloud.google.com), abra o mesmo projeto do Maps (ou crie um) e va em **Google Auth Platform**.
 2. **Branding** (tela de consentimento): nome do app `FlipaAi`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).

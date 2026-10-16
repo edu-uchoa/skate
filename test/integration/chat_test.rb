@@ -113,8 +113,8 @@ class ChatTest < ActionDispatch::IntegrationTest
 
   test "sem login vai para o login" do
     get chat_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
     get mentor_chats_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 end

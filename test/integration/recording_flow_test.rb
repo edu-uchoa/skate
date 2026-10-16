@@ -25,7 +25,7 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
   test "a página Gravar exige login" do
     delete sign_out_path
     get new_recording_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 
   test "a página Gravar lista só manobras liberadas" do

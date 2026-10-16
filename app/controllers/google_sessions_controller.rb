@@ -7,7 +7,7 @@ class GoogleSessionsController < ApplicationController
   allow_unauthenticated_access
 
   rate_limit to: 20, within: 3.minutes, only: :create,
-             with: -> { redirect_to new_session_path, alert: "Muitas tentativas. Aguarde alguns minutos." }
+             with: -> { redirect_to root_path, alert: "Muitas tentativas. Aguarde alguns minutos." }
 
   def create
     auth = request.env["omniauth.auth"]
@@ -15,9 +15,9 @@ class GoogleSessionsController < ApplicationController
 
     user = User.from_google(auth)
     if user.nil?
-      redirect_to new_session_path, alert: "Não deu para entrar: a conta Google precisa ter o e-mail confirmado."
+      redirect_to root_path, alert: "Não deu para entrar: a conta Google precisa ter o e-mail confirmado."
     elsif !user.can_sign_in?
-      redirect_to new_session_path, alert: "Não deu para entrar com essa conta. Fale com o suporte."
+      redirect_to root_path, alert: "Não deu para entrar com essa conta. Fale com o suporte."
     else
       return_to = start_session_for(user)
       redirect_to(user.handle ? (return_to || track_path) : edit_nickname_path, notice: "Bora! Você entrou com o Google.")
@@ -26,7 +26,7 @@ class GoogleSessionsController < ApplicationController
 
   # O Google não completou (a pessoa cancelou, ou o app não está configurado lá).
   def failure
-    redirect_to new_session_path, alert: "Não deu para entrar com o Google. Tente de novo."
+    redirect_to root_path, alert: "Não deu para entrar com o Google. Tente de novo."
   end
 
   private

@@ -69,7 +69,7 @@ class AdminTest < ActionDispatch::IntegrationTest
     delete sign_out_path
     mentor_session.each { |name, value| cookies[name] = value }
     get mentor_zine_path
-    assert_redirected_to new_session_path, "o cookie antigo do mentor não vale mais"
+    assert_redirected_to root_path, "o cookie antigo do mentor não vale mais"
   end
 
   test "administrador não pode ser removido pela tela de mentores" do

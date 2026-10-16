@@ -8,8 +8,8 @@ Tudo foi construído sobre a arquitetura existente: não há modelo novo de usu�
 
 | Funcionalidade | Rota | Onde fica o código |
 | --- | --- | --- |
-| Cadastro (só Google) | `/cadastro` | `AccountsController#new` |
-| Login | `/entrar` | `SessionsController` (senha, contas antigas) |
+| Entrada (logo + Google) | `/` (`/entrar` e `/cadastro` voltam para ela) | `PagesController#landing` |
+| Login com senha (contas antigas, sem link no app) | `/entrar/senha` | `SessionsController` |
 | Entrar com o Google | `POST /auth/google_oauth2` → `/auth/google_oauth2/callback` | OmniAuth + `GoogleSessionsController` |
 | Nickname#0000 | `/apelido` | `NicknamesController` |
 | Esqueci minha senha | `/recuperar-senha` | `PasswordResetsController` (só contas com senha) |
@@ -25,15 +25,15 @@ Migração nova: `db/migrate/20260927200000_add_password_digest_to_users.rb` (ro
 
 ### Regra
 
-Só a landing (`/`) e as telas de acesso (cadastro, login, recuperação de senha) são públicas. Qualquer outra rota redireciona para `/entrar`; depois do login, a pessoa volta para a página que tentou abrir.
+Só a tela da logo (`/`) e as telas de acesso das contas antigas (login com senha, recuperação de senha) são públicas. Qualquer outra rota volta para a logo; depois do login, a pessoa volta para a página que tentou abrir.
 
 O antigo **perfil anônimo** (usuário criado automaticamente por cookie) foi removido.
 
 ### Como funciona
 
-- **Entrar com o Google:** cadastro e login são o mesmo botão, "Continuar com o Google" (`shared/_google_button`, sempre por POST com token CSRF). O app pede só `openid email` e aceita apenas e-mail **confirmado** no Google. A conta é achada pelo `google_uid`; se não houver, pelo e-mail (uma conta antiga com o mesmo e-mail vira conta Google, mantendo trilha, vídeos e XP, e a senha antiga deixa de valer); se não houver nenhuma, é criada como aprendiz. Não existe cadastro como mentor: quem quer ser mentor pede pelo Perfil, e um administrador aprova.
+- **Entrar com o Google:** na tela da logo, "Continuar com o Google" (`shared/_google_button`) e "Já tenho conta" levam ao mesmo login do Google (sempre por POST com token CSRF): conta nova ou não, o Google diz quem é. O app pede só `openid email` e aceita apenas e-mail **confirmado** no Google. A conta é achada pelo `google_uid`; se não houver, pelo e-mail (uma conta antiga com o mesmo e-mail vira conta Google, mantendo trilha, vídeos e XP, e a senha antiga deixa de valer); se não houver nenhuma, é criada como aprendiz. Não existe cadastro como mentor: quem quer ser mentor pede pelo Perfil, e um administrador aprova.
 - **Nickname#0000:** logo depois do primeiro login pelo Google, a pessoa escolhe o nickname (3 a 20 letras, números, `_`, `.` ou `-`, sem parecer telefone). O número de 4 dígitos (0001 a 9999) pode ser escolhido ou sorteado; nicknames iguais são permitidos, o par nickname#número não (sem diferenciar maiúsculas). Enquanto não escolher, o app manda para `/apelido`. É o nickname#0000 que mentores e outros skatistas veem.
-- **Login com senha (contas antigas):** fica dentro de "Conta antiga" em `/entrar`. Contato inexistente e senha errada mostram a mesma mensagem, para não revelar quem tem conta. No Perfil, essas contas têm o botão para ligar ao Google.
+- **Login com senha (contas antigas):** fica em `/entrar/senha`, sem link no app (é para mentores e administradores até a versão web deles). Contato inexistente e senha errada mostram a mesma mensagem, para não revelar quem tem conta. No Perfil, essas contas têm o botão para ligar ao Google.
 - **Telefone:** aceito em qualquer formato — `(61) 99999-0000` e `61999990000` são o mesmo número (o modelo guarda só os dígitos).
 - **Esqueci minha senha:** reaproveita o `AccessCode` (código de 6 dígitos com bcrypt, validade de 10 min e limite de tentativas). A resposta é a mesma com ou sem conta. Ao criar a senha nova, a sessão é encerrada em todos os aparelhos. Conta ligada ao Google não recebe código (entra só pelo Google).
 - **Sessão:** cookie assinado e permanente com o `token` do usuário (`Authentication` concern). A sessão é reiniciada ao entrar e ao sair (proteção contra fixação de sessão). "Sair de todos os aparelhos" regenera o token.

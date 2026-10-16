@@ -52,7 +52,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
 
   test "e-mail não confirmado no Google não entra nem cria conta" do
     sign_in_with_google("sem.confirmar@example.com", verified: false)
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
     follow_redirect!
     assert_match "e-mail confirmado", response.body
     assert_equal 0, User.count
@@ -63,7 +63,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     post "/auth/google_oauth2"
     follow_redirect! # volta do Google
     follow_redirect! # /auth/failure
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
     follow_redirect!
     assert_match "Não deu para entrar com o Google", response.body
   ensure

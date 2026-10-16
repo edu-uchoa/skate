@@ -37,7 +37,7 @@ class MentorZineTest < ActionDispatch::IntegrationTest
 
   test "sem login vai para o login; aprendiz recebe página não encontrada" do
     get mentor_zine_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
 
     sign_in("aprendiz.um@example.com")
     get mentor_zine_path

@@ -3353,30 +3353,6 @@ a.guide-tab {
 .google-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
 .google-btn .google-g { width: 20px; height: 20px; flex-shrink: 0; }
 
-/* Login das contas antigas (e-mail ou telefone e senha), recolhido embaixo do Google. */
-.legacy-login {
-  display: flex;
-  flex-direction: column;
-  gap: 0; /* fechado, o conteúdo escondido ainda conta no gap do Chrome */
-  padding: 10px 12px;
-  border: 1px solid var(--surface-highest);
-  border-radius: var(--radius-md);
-  background: var(--surface-color);
-}
-
-.legacy-login summary {
-  min-height: 32px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-variant);
-}
-
-.legacy-login[open] { gap: 12px; }
-.legacy-login[open] summary { color: var(--text-on-surface); }
-
 /* Tela do nickname#0000 (nicknames/edit). */
 .nickname-fields {
   display: flex;

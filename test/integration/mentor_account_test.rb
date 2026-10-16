@@ -17,8 +17,8 @@ class MentorAccountTest < ActionDispatch::IntegrationTest
     assert User.find_by(email: "esperto@example.com").role_learner?
 
     delete sign_out_path
-    get new_account_path
-    assert_select "input[name=account_type]", 0, "o cadastro não tem mais a opção Conta Mentor"
+    get root_path
+    assert_select "input[name=account_type]", 0, "a entrada não tem a opção Conta Mentor"
   end
 
   test "promover e remover mentor pelo terminal" do

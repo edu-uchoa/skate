@@ -26,7 +26,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal 0, User.count, "visitante não deve gerar perfil anônimo"
 
-    [ new_session_path, new_account_path, new_password_reset_path ].each do |path|
+    [ new_session_path, new_password_reset_path ].each do |path| # login com senha das contas antigas
       get path
       assert_response :success, path
     end
@@ -34,17 +34,23 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     [ track_path, intro_path, install_path, onboarding_age_gate_path, store_path, spots_path,
       my_account_path, tasks_path, streak_path, chat_path, new_support_request_path ].each do |path|
       get path
-      assert_redirected_to new_session_path, path
+      assert_redirected_to root_path, path
     end
 
     delete sign_out_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 
-  test "o cadastro é só pelo Google: não há mais conta nova com senha" do
-    get new_account_path
-    assert_select "form[action='/auth/google_oauth2'][method=post]"
+  test "a entrada é só pela logo, com o Google: não há mais tela de cadastro nem de login" do
+    get "/cadastro"
+    assert_redirected_to root_path
+    get "/entrar"
+    assert_redirected_to root_path
+
+    get root_path
+    assert_select "form[action='/auth/google_oauth2'][method=post]", 2 # Continuar com o Google e Já tenho conta
     assert_select "input[type=password]", 0
+    assert_select "a[href=?]", new_session_path, 0, "o login com senha não tem link no app"
 
     post "/cadastro", params: { user: { contact: "novo@example.com", password: PASSWORD, password_confirmation: PASSWORD } }
     assert_response :not_found
@@ -76,7 +82,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
 
     get my_account_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
 
     sign_in("rider@example.com", password: "senhaerrada")
     assert_response :unprocessable_entity
@@ -95,7 +101,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     delete sign_out_path
 
     head my_account_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
 
     sign_in("head@example.com")
     assert_redirected_to my_account_path
@@ -111,7 +117,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     sign_up("in@example.com")
     get new_session_path
     assert_redirected_to track_path
-    get new_account_path
+    get root_path
     assert_redirected_to track_path
   end
 

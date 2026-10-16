@@ -16,11 +16,16 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "img.splash-logo[alt=FlipaAi]"
     assert_select ".splash-actions form[action='/auth/google_oauth2'] button", /Continuar com o Google/
-    assert_select ".splash-actions a[href=?]", new_session_path, text: "Já tenho conta"
+    assert_select ".splash-actions form[action='/auth/google_oauth2'] button", "Já tenho conta"
     assert_no_bottom_nav "logo"
+  end
 
-    get new_session_path
-    assert_no_bottom_nav "entrar"
+  test "rota protegida sem login volta para a logo" do
+    get track_path
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match "Entre com a sua conta Google para continuar.", response.body
+    assert_select "img.splash-logo"
   end
 
   test "conta nova vai do nickname direto às perguntas, sem instalação nem Loja, e o menu volta na trilha" do

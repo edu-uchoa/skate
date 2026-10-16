@@ -34,7 +34,7 @@ class ClipSecurityTest < ActionDispatch::IntegrationTest
 
   test "sem login o vídeo não abre" do
     get clip_path(@clip)
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 
   test "os links públicos do Active Storage não existem mais" do

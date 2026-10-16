@@ -28,7 +28,7 @@ class ZineTest < ActionDispatch::IntegrationTest
   test "a Zine exige login" do
     delete sign_out_path
     get zine_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 
   test "sem vídeos mostra o convite para gravar" do

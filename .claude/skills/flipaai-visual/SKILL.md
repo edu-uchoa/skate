@@ -102,6 +102,6 @@ escolhas da marca, não "padrões genéricos" a evitar:
 ## Antes de dar como pronto
 
 Confira no navegador com a skill **flipaai-responsivo**. Compare o print com uma tela
-vizinha já aprovada (ex.: `/entrar` para formulários, `/manobras/escolher-setup` para
+vizinha já aprovada (ex.: `/apelido` para formulários, `/manobras/escolher-setup` para
 drills): espaçamentos, botão amarelo com sombra, títulos em caixa-alta, nada encostado
 na borda nem escondido atrás do menu inferior.

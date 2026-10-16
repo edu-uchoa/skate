@@ -76,11 +76,14 @@ Rails.application.routes.draw do
   # Funcionalidades Front-end
   resource  :store,  only: :show, path: "loja"
 
-  # Conta obrigatória: entrar com o Google (o botão faz POST /auth/google_oauth2, que o
-  # OmniAuth leva ao Google). O login com e-mail/telefone e senha fica só para as contas
-  # antigas, até serem ligadas ao Google pelo Perfil.
-  resource  :account,        only: :new, path: "cadastro", path_names: { new: "" }
-  resource  :session,        only: %i[new create], path: "entrar", path_names: { new: "" }
+  # Conta obrigatória: entrar com o Google pela tela da logo (/). Os botões fazem POST
+  # /auth/google_oauth2, que o OmniAuth leva ao Google. As telas antigas de cadastro e
+  # de login voltam para a logo.
+  get "cadastro", to: redirect("/")
+  get "entrar",   to: redirect("/")
+  # Login com senha das contas antigas (mentores e administradores, até a versão web
+  # deles): /entrar/senha, sem link no app.
+  resource :session,        only: %i[new create], path: "entrar", path_names: { new: "senha" }
   get "auth/google_oauth2/callback", to: "google_sessions#create", as: :google_callback
   get "auth/failure",                to: "google_sessions#failure", as: :google_failure
   resource  :nickname,       only: %i[edit update], path: "apelido", path_names: { edit: "" }

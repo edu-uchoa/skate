@@ -1,6 +1,7 @@
 <% content_for :section, "Início" %>
-<%# Primeira tela do app: a logo e as duas portas de entrada. Quem já entrou nem vê
-    esta tela (PagesController#landing manda para a trilha). %>
+<%# Primeira tela do app e a única porta de entrada: a logo e o login pelo Google.
+    Conta nova e conta que já existe entram pelo mesmo caminho; o Google diz quem é.
+    Quem já entrou nem vê esta tela (PagesController#landing manda para a trilha). %>
 
 <section class="splash">
   <div class="splash-brand">
@@ -10,10 +11,13 @@
 
   <div class="splash-actions">
     <%= render "shared/google_button" %>
-    <%= link_to "Já tenho conta", new_session_path, id: "landing-sign-in", class: "auth-secondary-btn splash-secondary" %>
+    <% if Rails.configuration.x.flipaai.google_client_id.present? %>
+      <%= button_to "Já tenho conta", "/auth/google_oauth2", method: :post, id: "landing-sign-in",
+            class: "auth-secondary-btn splash-secondary", form: { class: "google-form", data: { turbo: false } } %>
+    <% end %>
     <p class="privacy-note">
       <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 15px;">lock</span>
-      Grátis. Seus vídeos ficam privados.
+      Grátis. O FlipaAi não vê sua senha do Google.
     </p>
   </div>
 </section>

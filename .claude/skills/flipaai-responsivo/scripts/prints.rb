@@ -44,7 +44,7 @@ def navegador(largura, altura, celular)
 end
 
 def entrar(d, base, email, senha)
-  d.navigate.to "#{base}/entrar"
+  d.navigate.to "#{base}/entrar/senha" # login com senha das contas de teste
   d.find_element(name: "session[contact]").send_keys(email)
   d.find_element(name: "session[password]").send_keys(senha)
   d.find_element(name: "session[password]").submit

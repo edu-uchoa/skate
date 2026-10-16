@@ -43,7 +43,7 @@ module Authentication
     return if signed_in?
     # HEAD é um GET sem corpo: tratar os dois igual (evita o alerta "HTTP verb confusion" do Brakeman).
     session[:return_to_after_authenticating] = request.fullpath if request.get? || request.head?
-    redirect_to new_session_path, alert: "Entre ou crie sua conta para continuar."
+    redirect_to root_path, alert: "Entre com a sua conta Google para continuar."
   end
 
   def redirect_signed_in_user
