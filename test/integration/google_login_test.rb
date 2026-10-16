@@ -20,10 +20,10 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Escolha seu nickname"
     assert_select "input[name='nickname[tag]'][placeholder]"
 
-    choose "Rato.de_Pista"
+    choose "Rato.de_Pista-01"
     assert_redirected_to install_path
     user.reload
-    assert_equal "Rato.de_Pista", user.nickname
+    assert_equal "Rato.de_Pista-01", user.nickname
     assert_match(/\A\d{4}\z/, user.nickname_tag)
     assert_not_equal "0000", user.nickname_tag
 
@@ -149,6 +149,9 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
       assert_response :unprocessable_entity
       assert_match message, response.body
     end
+
+    choose "nick@legal"
+    assert_match "sem espaço", response.body
 
     choose "valido", tag: "0000"
     assert_match "de 0001 a 9999", response.body

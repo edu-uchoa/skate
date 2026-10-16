@@ -45,7 +45,7 @@ class User < ApplicationRecord
   # Nickname#0000: como a pessoa aparece para os outros usuários e para os mentores.
   # O nickname pode repetir; os 4 números depois do "#" separam os iguais.
   NICKNAME_LENGTH = 3..20
-  NICKNAME_FORMAT = /\A[\p{L}\p{N}_.]+\z/ # letras (com acento), números, "_" e "."
+  NICKNAME_FORMAT = /\A[\p{L}\p{N}_.-]+\z/ # letras (com acento), números, "_", "." e "-"
   NICKNAME_TAG    = /\A\d{4}\z/
 
   normalizes :nickname, with: ->(value) { value.to_s.strip.presence }
@@ -256,7 +256,7 @@ class User < ApplicationRecord
     elsif !NICKNAME_LENGTH.cover?(nickname.length)
       errors.add(:base, "O nickname precisa ter de #{NICKNAME_LENGTH.min} a #{NICKNAME_LENGTH.max} caracteres.")
     elsif !nickname.match?(NICKNAME_FORMAT)
-      errors.add(:base, "Use só letras, números, \"_\" e \".\" no nickname (sem espaço).")
+      errors.add(:base, "Use só letras, números, \"_\", \".\" e \"-\" no nickname (sem espaço).")
     elsif nickname.scan(/\d/).size >= 8
       errors.add(:base, "Por segurança, o nickname não pode parecer um telefone.")
     elsif nickname_tag.blank?
