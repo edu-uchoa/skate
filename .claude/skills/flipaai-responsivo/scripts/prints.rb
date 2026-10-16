@@ -15,7 +15,10 @@ TAMANHOS = {
   "celular" => [ 390, 844, true ],   # iPhone comum
   "baixo"   => [ 390, 600, true ],   # celular com tela baixa / teclado aberto
   "longo"   => [ 390, 2400, true ],  # página inteira de uma vez (conteúdo longo)
-  "desktop" => [ 1280, 760, false ]  # computador: o app aparece na moldura de 414px
+  "tablet"  => [ 768, 1024, true ],  # iPad Mini em pé: coluna de 640px
+  "deitado" => [ 1024, 768, true ],  # tablet deitado: coluna de 760px
+  "desktop" => [ 1280, 760, false ], # computador: tela cheia, coluna de 760px
+  "largo"   => [ 1920, 1080, false ] # monitor grande
 }.freeze
 
 opts = { base: "http://localhost:3001", senha: "senha1234", saida: "prints", tamanhos: %w[celular desktop] }
@@ -24,7 +27,7 @@ OptionParser.new do |o|
   o.on("--senha SENHA") { |v| opts[:senha] = v }
   o.on("--saida PASTA") { |v| opts[:saida] = v }
   o.on("--base URL") { |v| opts[:base] = v }
-  o.on("--tamanhos LISTA", "celular,baixo,longo,desktop") { |v| opts[:tamanhos] = v.split(",") }
+  o.on("--tamanhos LISTA", "celular,baixo,longo,tablet,deitado,desktop,largo") { |v| opts[:tamanhos] = v.split(",") }
 end.parse!
 # No Git Bash, "/trilha" chega como "C:/Program Files/Git/trilha": desfaz isso e aceita "trilha".
 def normalizar(caminho)

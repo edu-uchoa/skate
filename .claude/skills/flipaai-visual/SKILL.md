@@ -5,7 +5,8 @@ description: 'Identidade visual do app FlipaAi (skate) e como montar telas bonit
 
 # Visual FlipaAi
 
-O app imita um celular (moldura de até 414px no computador, tela cheia no celular),
+O app é feito para o celular e ocupa a tela toda em qualquer aparelho (no tablet e no
+computador o conteúdo fica numa coluna central de 640 a 760px, veja flipaai-responsivo),
 fundo quase preto, amarelo como cor de ação e laranja como destaque, títulos em
 caixa-alta com fonte Outfit e textos em Inter. Tom de conversa de skatista brasileiro,
 direto e animado.

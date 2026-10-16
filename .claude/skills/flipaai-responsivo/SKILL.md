@@ -5,11 +5,17 @@ description: Como garantir que as telas do app FlipaAi funcionam e ficam bem no 
 
 # Responsivo de verdade
 
-O app é usado principalmente no celular. No computador ele aparece numa moldura de
-414×896px (`.phone-container`, a partir de 641px de largura). Uma tela só está pronta
-depois de vista em pelo menos **celular** e **computador**, e formulários depois de
-**enviados** no navegador: o Turbo esconde problemas que os testes de integração não
-pegam (já aconteceu com Ajuda e Retorno).
+O app é usado principalmente no celular, mas ocupa a tela inteira em qualquer aparelho
+(não existe mais a moldura de celular). O conteúdo fica numa coluna que cresce com a
+tela: borda a borda no celular, **640px** a partir de 641px de largura (tablet em pé) e
+**760px** a partir de 1024px (tablet deitado e computador). Tudo sai de duas variáveis no
+começo do `custom_styles.css`: `--app-column` e `--screen-pad`. O topo, os avisos e o
+menu de baixo se alinham à coluna com `--column-gutter`; a área que rola continua com
+a largura toda (barra de rolagem na borda da janela).
+
+Uma tela só está pronta depois de vista em pelo menos **celular**, **tablet** e
+**computador**, e formulários depois de **enviados** no navegador: o Turbo esconde
+problemas que os testes de integração não pegam (já aconteceu com Ajuda e Retorno).
 
 ## Regras de layout
 
@@ -22,6 +28,10 @@ pegam (já aconteceu com Ajuda e Retorno).
   no fluxo da página a `position: absolute` por cima do conteúdo.
 - Toque: alvos de pelo menos ~40px; nada que dependa de `:hover`.
 - Teste em tela baixa (390×600): é onde as coisas se sobrepõem.
+- Largura: nada de `width` fixa em px maior que ~360px; use `max-width` + `width: 100%`.
+  Telas de formulário (`auth-screen`) e a Zine já têm largura máxima própria e ficam
+  centralizadas na coluna. Grades podem ganhar colunas em telas largas
+  (`@media (min-width: 641px)`), nunca perder conteúdo.
 
 ## iPhone / Safari
 
@@ -73,8 +83,12 @@ rascunho (scratchpad) da sessão, não no repositório.
    `bin/rails runner .claude/skills/flipaai-responsivo/scripts/usuario_teste.rb criar`
    (`novo` para telas de Idade/Diagnóstico).
 3. **Prints**:
-   `bundle exec ruby .claude/skills/flipaai-responsivo/scripts/prints.rb --email teste.prints@flipaai.dev --saida <scratchpad>/prints --tamanhos celular,baixo,desktop /trilha /manobras/escolher-setup`
-   A saída mostra o status de cada página e avisa se a tela de erro do Rails apareceu.
+   `bundle exec ruby .claude/skills/flipaai-responsivo/scripts/prints.rb --email teste.prints@flipaai.dev --saida <scratchpad>/prints --tamanhos celular,baixo,tablet,desktop /trilha /manobras/escolher-setup`
+   Tamanhos: celular (390×844), baixo (390×600), longo, tablet (768×1024), deitado
+   (1024×768), desktop (1280×760) e largo (1920×1080). A saída mostra o status de cada
+   página e avisa se a tela de erro do Rails apareceu. No Git Bash o `bundle` não acha o
+   Ruby: rode `ruby <script>` direto e passe a pasta de saída em formato Windows
+   (`cygpath -w`) e os caminhos sem a barra inicial (`trilha`, não `/trilha`).
 4. **Olhe os prints** com a ferramenta de leitura de imagens. Para comparar muitas telas:
    `bundle exec ruby .claude/skills/flipaai-responsivo/scripts/folha.rb <saida.png> <prints...>`.
 5. **Interação** (abas, botões, envio de formulário): escreva um roteiro Selenium curto

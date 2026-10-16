@@ -57,7 +57,22 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* Phone Wrapper (Responsive: Edge-to-edge on mobile, sleek frame on desktop) */
+/* O app ocupa a tela inteira em qualquer aparelho. No celular o conteúdo vai de borda
+   a borda; em tablet e computador ele fica numa coluna centralizada que cresce com a
+   resolução (--app-column), com o topo e o menu de baixo alinhados a ela. */
+:root {
+  --app-column: 100%;
+  --screen-pad: 14px;
+}
+
+@media (min-width: 641px) {
+  :root { --app-column: 640px; --screen-pad: 24px; }
+}
+
+@media (min-width: 1024px) {
+  :root { --app-column: 760px; --screen-pad: 28px; }
+}
+
 .phone-container {
   width: 100%;
   max-width: 100%;
@@ -70,19 +85,8 @@ body {
   flex-direction: column;
 }
 
-@media (min-width: 641px) {
-  body {
-    background-color: #050507;
-    padding: 16px;
-  }
-  .phone-container {
-    max-width: 414px;
-    max-height: 896px;
-    border: 4px solid #292a2d;
-    border-radius: 36px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95);
-  }
-}
+/* Espaço lateral que alinha topo, avisos e menu de baixo com a coluna do conteúdo. */
+.phone-container { --column-gutter: max(0px, calc((100% - var(--app-column)) / 2)); }
 
 /* Header Bar (Full Safe-Area Aware) */
 .phone-header-bar {
@@ -94,8 +98,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px), calc(var(--column-gutter) + var(--screen-pad)));
+  padding-right: max(16px, env(safe-area-inset-right, 0px), calc(var(--column-gutter) + var(--screen-pad)));
   border-bottom: 1px solid rgba(81, 69, 50, 0.3);
   z-index: 100;
   flex-shrink: 0;
@@ -993,8 +997,8 @@ body {
   justify-content: space-around;
   align-items: center;
   z-index: 100;
-  padding-left: max(4px, env(safe-area-inset-left, 0px));
-  padding-right: max(4px, env(safe-area-inset-right, 0px));
+  padding-left: max(4px, env(safe-area-inset-left, 0px), var(--column-gutter));
+  padding-right: max(4px, env(safe-area-inset-right, 0px), var(--column-gutter));
   position: relative;
   flex-shrink: 0;
 }
@@ -1314,7 +1318,7 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin: 14px 14px 0;
+  margin: 14px calc(var(--column-gutter) + var(--screen-pad)) 0;
   padding: 10px 12px;
   border: 1px solid rgba(255, 184, 0, 0.4);
   border-radius: var(--radius-md);
@@ -3487,3 +3491,10 @@ a.guide-tab {
 .admin-review-text dt { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-variant); }
 .admin-review-text dd { color: var(--text-on-surface); overflow-wrap: anywhere; }
 .admin-user .mentor-request-actions { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+
+/* Coluna do conteúdo (layout): borda a borda no celular, centralizada e mais larga em
+   tablet e computador. */
+.screen.app-column {
+  width: 100%;
+  padding: 14px calc(var(--column-gutter) + var(--screen-pad)); /* a rolagem fica na borda da janela */
+}

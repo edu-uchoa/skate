@@ -32,7 +32,7 @@
   <body class="bg-[#121316] text-[#e3e2e6]" style="font-family: 'Inter', sans-serif; background: #121316; color: #e3e2e6; margin: 0; overflow: hidden;">
     <div class="grain"></div>
 
-    <!-- Mobile Phone Simulator Container -->
+    <!-- App em tela cheia; em tablet e computador o conteúdo fica numa coluna central (--app-column) -->
     <div class="phone-container<%= " no-bottom-nav" unless show_bottom_nav? %>">
 
       <!-- Fixed Top Header -->
@@ -72,7 +72,7 @@
       <div class="phone-content" style="overflow-y: auto;">
         <%= render "shared/flash" %>
 
-        <div class="screen active" style="position: relative; display: flex; flex-direction: column; width: 100%; padding: 14px;">
+        <div class="screen active app-column" style="position: relative; display: flex; flex-direction: column;">
           <%= yield %>
         </div>
       </div>
