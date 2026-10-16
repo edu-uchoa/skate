@@ -4,6 +4,7 @@
 # arquivo no serviço configurado em config/storage.yml). Em seguida o skatista
 # registra o resultado e o envio coloca o vídeo na fila do mentor (AiReview pendente).
 class RecordingsController < ApplicationController
+  before_action :redirect_mentor_account
   before_action :require_age_gate
   before_action :require_diagnosis
   before_action :set_maneuvers

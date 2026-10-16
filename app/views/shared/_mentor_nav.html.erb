@@ -1,0 +1,41 @@
+<%# Menu de baixo da conta de mentor (MentorNavHelper). As funções da Zine do mentor
+    ficam no lugar de Trilha, Gravar e Picos: Todos, Na fila (o botão do meio) e
+    Ofensivas; o Chat fica no lugar da Zine. %>
+<% current = mentor_nav_current %>
+<% counts = mentor_nav_counts %>
+<nav class="phone-bottom-nav mentor-nav" aria-label="Área do mentor">
+  <%= link_to my_account_path, class: [ "nav-btn", ("active" if current == "perfil") ],
+              aria: { current: ("page" if current == "perfil") } do %>
+    <span class="material-symbols-outlined" style="font-size: 22px;">person</span>
+    <span class="nav-label">Perfil</span>
+  <% end %>
+  <%= link_to mentor_zine_path(aba: "todos"), class: [ "nav-btn", ("active" if current == "todos") ],
+              aria: { current: ("page" if current == "todos") } do %>
+    <span class="material-symbols-outlined" style="font-size: 22px;">video_library</span>
+    <span class="nav-label">Todos</span>
+  <% end %>
+  <div class="nav-fab-container">
+    <%= link_to mentor_zine_path(aba: "fila"), class: [ "nav-fab-btn", ("is-active" if current == "fila") ],
+                title: "Vídeos na fila", aria: { label: "Na fila", current: ("page" if current == "fila") } do %>
+      <span class="material-symbols-outlined" style="font-size: 26px; font-weight: 900;">schedule</span>
+      <%= mentor_nav_badge(counts[:queue], "vídeos esperando devolutiva") %>
+    <% end %>
+    <span class="nav-fab-label">Na fila</span>
+  </div>
+  <%= link_to mentor_streak_justifications_path, class: [ "nav-btn", ("active" if current == "ofensivas") ],
+              aria: { current: ("page" if current == "ofensivas") } do %>
+    <span class="nav-icon-wrap">
+      <span class="material-symbols-outlined" style="font-size: 22px;">local_fire_department</span>
+      <%= mentor_nav_badge(counts[:justifications], "paradas para avaliar") %>
+    </span>
+    <span class="nav-label">Ofensivas</span>
+  <% end %>
+  <%= link_to mentor_chats_path, class: [ "nav-btn", ("active" if current == "chat") ],
+              aria: { current: ("page" if current == "chat") } do %>
+    <span class="nav-icon-wrap">
+      <span class="material-symbols-outlined" style="font-size: 22px;">forum</span>
+      <%= mentor_nav_badge(counts[:chats], "conversas com mensagem nova") %>
+    </span>
+    <span class="nav-label">Chat</span>
+  <% end %>
+</nav>

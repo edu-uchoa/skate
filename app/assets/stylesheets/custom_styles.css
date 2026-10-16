@@ -3498,3 +3498,34 @@ a.guide-tab {
   width: 100%;
   padding: 14px calc(var(--column-gutter) + var(--screen-pad)); /* a rolagem fica na borda da janela */
 }
+
+/* Menu de baixo da conta de mentor (shared/_mentor_nav): número em cada ícone. */
+.nav-icon-wrap,
+.mentor-nav .nav-fab-btn {
+  position: relative;
+  display: inline-flex;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  border: 2px solid var(--bg-color);
+  background: var(--secondary-color);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.mentor-nav .nav-fab-btn .nav-badge { top: -4px; right: -6px; }
+.mentor-nav .nav-fab-btn.is-active { outline: 2px solid var(--primary-color); outline-offset: 3px; }

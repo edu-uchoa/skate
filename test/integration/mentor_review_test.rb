@@ -38,7 +38,7 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     sign_in(@mentor)
     get mentor_zine_path
 
-    assert_select ".guide-tab.is-active", /Na fila \(1\)/
+    assert_select ".mentor-nav .nav-fab-btn.is-active .nav-badge", "1" # Na fila (1)
     assert_select card(@session) do
       assert_select "form.review-form[action=?]", mentor_video_review_path(@session)
       assert_select "textarea[name='review[strengths]'][required]"
@@ -58,7 +58,8 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     assert_equal "completed", TrackProgression.new(@learner).status_for(@maneuver), "a devolutiva conclui a tarefa"
 
     follow_redirect!
-    assert_select ".guide-tab.is-active", /Na fila \(0\)/
+    assert_select ".mentor-nav .nav-fab-btn.is-active"
+    assert_select ".mentor-nav .nav-fab-btn .nav-badge", 0, "fila vazia: sem número"
     assert_select card(@session), 0, "saiu da fila"
 
     get mentor_zine_path(aba: "todos")

@@ -5,14 +5,20 @@
 <section class="zine-screen">
   <header class="auth-head">
     <span class="step-indicator">Área do mentor</span>
-    <h2 class="screen-title">Zine do mentor</h2>
-    <p class="screen-desc">
-      Vídeos enviados pelos aprendizes, separados por pessoa. Só mentores veem esta página,
-      e cada aprendiz só vê os próprios vídeos.
-    </p>
+    <% if @tab == "fila" %>
+      <h2 class="screen-title">Na fila</h2>
+      <p class="screen-desc">
+        Vídeos esperando a sua devolutiva, de quem espera há mais tempo. Escreva no próprio
+        cartão: depois de enviar, o vídeo vai para Todos.
+      </p>
+    <% else %>
+      <h2 class="screen-title">Todos os vídeos</h2>
+      <p class="screen-desc">
+        Tudo o que os aprendizes enviaram, separado por pessoa. Dá para revisar uma
+        devolutiva já enviada. Só mentores veem esta página.
+      </p>
+    <% end %>
   </header>
-
-  <%= render "mentor/tabs", current: @tab %>
 
   <% if @learners.empty? %>
     <div class="zine-empty">

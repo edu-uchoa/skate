@@ -11,8 +11,6 @@
     </p>
   </header>
 
-  <%= render "mentor/tabs", current: "pedidos" %>
-
   <h3 class="guide-card-label">Pedidos esperando (<%= @requests.size %>)</h3>
 
   <% if @requests.empty? %>

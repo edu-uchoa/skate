@@ -20,6 +20,9 @@ class NicknamesController < ApplicationController
   private
 
   # Conta nova segue direto para as perguntas (idade e diagnóstico); conta antiga
-  # que já fez o onboarding volta para a trilha.
-  def first_step_path = current_user.onboarded? ? track_path : onboarding_age_gate_path
+  # que já fez o onboarding volta para a trilha, e a de mentor vai para a fila.
+  def first_step_path
+    return home_path_for(current_user) if current_user.mentor_account? || current_user.onboarded?
+    onboarding_age_gate_path
+  end
 end

@@ -65,7 +65,7 @@ class MentorApplicationTest < ActionDispatch::IntegrationTest
     sign_up("mentor@example.com")
     User.find_by(email: "mentor@example.com").role_admin!
     get mentor_requests_path
-    assert_select ".guide-tab.is-active", /Mentores \(1\)/
+    assert_select "a.icon-btn[href=?] .nav-badge", mentor_requests_path, text: "1" # Mentores (1)
     assert_select "#" + ActionView::RecordIdentifier.dom_id(candidate, :mentor_request) do
       assert_select ".auth-card-value", "candidato@example.com"
       assert_match "dou aula na pista", response.body

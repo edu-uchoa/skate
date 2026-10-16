@@ -1,9 +1,10 @@
 module Mentor
   # Base da área do mentor: exige login (padrão do app) e conta de mentor ou de
   # administrador. Para os demais responde 404, sem revelar que a área existe.
+  # A navegação entre Na fila, Todos, Ofensivas e Chat fica no menu de baixo
+  # (shared/_mentor_nav), com os números de MentorNavHelper.
   class BaseController < ApplicationController
     before_action :require_mentor_access
-    before_action :load_tab_counts
 
     private
 
@@ -21,16 +22,6 @@ module Mentor
     end
 
     # Vídeos dos aprendizes (vídeos de mentores e administradores ficam de fora).
-    def learner_clips = TrainingSession.with_clip.joins(:user).merge(User.role_learner)
-
-    # Números das abas "Na fila", "Todos", "Ofensivas", "Chat" (conversas com mensagem
-    # nova) e (para administrador) "Mentores".
-    def load_tab_counts
-      @justification_count = StreakJustification.for_review(current_user).count
-      @video_count   = learner_clips.count
-      @queue_count   = learner_clips.awaiting_review.count
-      @chat_count    = Conversation.unread_by_mentors.count
-      @request_count = User.mentor_requests.count if current_user.admin_access?
-    end
+    def learner_clips = TrainingSession.of_learners
   end
 end

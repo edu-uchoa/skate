@@ -39,6 +39,8 @@ class TrainingSession < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
   # Treinos com vídeo: a coleção da aba Zine.
   scope :with_clip, -> { joins(:clip_attachment).with_attached_clip.includes(:maneuver, :ai_review) }
+  # Vídeos de aprendizes (os de mentores e administradores ficam fora da área do mentor).
+  scope :of_learners, -> { with_clip.joins(:user).merge(User.role_learner) }
   # Vídeos que ainda esperam a devolutiva de um mentor ("Na fila" da Zine do mentor).
   # Entram assim que o vídeo chega: o resultado que o aprendiz registra é só um dado a mais.
   scope :awaiting_review, -> { where.not(id: AiReview.status_completed.select(:training_session_id)) }

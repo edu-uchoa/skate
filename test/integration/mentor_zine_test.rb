@@ -50,7 +50,8 @@ class MentorZineTest < ActionDispatch::IntegrationTest
     get zine_path
     assert_redirected_to mentor_zine_path, "mentor não usa a Zine de aprendiz"
     follow_redirect!
-    assert_select ".phone-bottom-nav a.nav-btn.active[href=?]", mentor_zine_path
+    assert_select ".mentor-nav .nav-fab-btn.is-active[href=?]", mentor_zine_path(aba: "fila")
+    [ track_path, spots_path, new_recording_path ].each { |path| assert_select ".phone-bottom-nav a[href=?]", path, 0 }
     assert_select ".phone-bottom-nav a[href=?]", zine_path, count: 0
     delete sign_out_path
 
@@ -74,10 +75,10 @@ class MentorZineTest < ActionDispatch::IntegrationTest
     end
     assert_select "#" + ActionView::RecordIdentifier.dom_id(@adult, :mentor), count: 0, message: "devolutiva pronta não fica na fila"
     assert_select "#" + ActionView::RecordIdentifier.dom_id(@mentor_clip, :mentor), count: 0, message: "vídeo de mentor não é de aprendiz"
-    assert_select ".guide-tab.is-active", /Na fila \(1\)/
+    assert_select ".mentor-nav .nav-fab-btn.is-active .nav-badge", "1" # Na fila (1)
     assert_match "Fez com medo", response.body
     assert_no_match "aprendiz.um@example.com", response.body
-    assert_select "a[href=?]", mentor_zine_path
+    assert_select "a[href=?]", mentor_zine_path(aba: "fila")
   end
 
   test "a aba todos separa os vídeos por aprendiz" do
@@ -88,7 +89,7 @@ class MentorZineTest < ActionDispatch::IntegrationTest
     assert_select "#" + ActionView::RecordIdentifier.dom_id(@adult, :mentor) do
       assert_select ".zine-status", /Devolutiva enviada em/
     end
-    assert_select ".guide-tab.is-active", /Todos \(2\)/
+    assert_select ".mentor-nav a.nav-btn.active[href=?]", mentor_zine_path(aba: "todos")
   end
 
   test "avisa quando o vídeo passou do prazo de 48h" do

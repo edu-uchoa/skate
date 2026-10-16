@@ -3,6 +3,7 @@
 # (spots_map_controller.js); a localização só centraliza o mapa no navegador e
 # nunca é enviada ao servidor.
 class SpotsController < ApplicationController
+  before_action :redirect_mentor_account
   def index
     Meetup.purge_expired!
     @meetup = suggested_meetup

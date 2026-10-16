@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
 
     if (user = User.authenticate_by_contact(contact, params.dig(:session, :password)))
       return_to = start_session_for(user)
-      redirect_to return_to || track_path, notice: "Que bom te ver de volta!"
+      redirect_to return_to || home_path_for(user), notice: "Que bom te ver de volta!"
     else
       flash.now[:alert] = "E-mail/telefone ou senha incorretos."
       render :new, status: :unprocessable_entity

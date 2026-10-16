@@ -47,7 +47,15 @@ module Authentication
   end
 
   def redirect_signed_in_user
-    redirect_to track_path if signed_in?
+    redirect_to home_path_for(current_user) if signed_in?
+  end
+
+  # Para onde a pessoa vai depois de entrar: aprendiz na trilha, conta de mentor na fila.
+  def home_path_for(user) = user.mentor_account? ? mentor_zine_path : track_path
+
+  # Trilha, Picos e Gravar são só do aprendiz: a conta de mentor vai para a fila.
+  def redirect_mentor_account
+    redirect_to mentor_zine_path if current_user.mentor_account?
   end
 
   # Troca de identidade: a sessão antiga é descartada (evita fixação de sessão).

@@ -8,8 +8,6 @@
     <p class="screen-desc">Uma conversa com cada aprendiz. Todos os mentores veem e respondem as mesmas conversas.</p>
   </header>
 
-  <%= render "mentor/tabs", current: "chat" %>
-
   <% if @learners.empty? %>
     <div class="zine-empty">
       <span class="material-symbols-outlined auth-icon">forum</span>

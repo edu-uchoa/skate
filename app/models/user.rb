@@ -236,6 +236,11 @@ class User < ApplicationRecord
   # Pode entrar na área do mentor (ver vídeos de aprendizes e responder).
   def mentor_access? = role_mentor? || admin_access?
 
+  # Conta de trabalho de mentor (mentor aprovado ou administrador): usa o app só pela
+  # área do mentor, sem Trilha, Picos e Gravar. O super admin, que também treina como
+  # aprendiz, continua com o app de aprendiz e entra na área do mentor pelo topo.
+  def mentor_account? = role_mentor? || role_admin?
+
   # by: o administrador que aprovou (nil quando foi pelo terminal).
   def approve_mentor!(by: nil)
     update!(role: :mentor, mentor_requested_at: nil, mentor_approved_by: by, mentor_approved_at: Time.current)

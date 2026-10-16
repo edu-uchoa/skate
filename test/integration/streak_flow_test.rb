@@ -113,7 +113,7 @@ class StreakFlowTest < ActionDispatch::IntegrationTest
       delete sign_out_path
       sign_in(@mentor)
       get mentor_streak_justifications_path
-      assert_select ".mentor-tabs .guide-tab.is-active", /Ofensivas \(1\)/
+      assert_select ".mentor-nav a.nav-btn.active[href=?] .nav-badge", mentor_streak_justifications_path, text: "1" # Ofensivas (1)
       assert_select "#" + ActionView::RecordIdentifier.dom_id(justification), text: /Torci o tornozelo/
       assert_no_match @learner.contact, response.body, "o mentor vê o contato mascarado"
 

@@ -31,7 +31,7 @@ class ChatTest < ActionDispatch::IntegrationTest
 
     sign_in(@mentor)
     get mentor_chats_path
-    assert_select ".guide-tab.is-active", /Chat \(1\)/
+    assert_select ".mentor-nav a.nav-btn.active[href=?] .nav-badge", mentor_chats_path, text: "1" # Chat (1)
     assert_select "a.chat-list-item.is-unread[href=?]", mentor_chat_path(@learner) do
       assert_select "strong", /ap•••@example.com/
       assert_select ".guide-tag", "Menor"
@@ -44,7 +44,7 @@ class ChatTest < ActionDispatch::IntegrationTest
     say "Fica de pé em cima dele: os pés têm que caber nos parafusos.", to: mentor_chat_messages_path(@learner)
     assert_response :success
     get mentor_chats_path
-    assert_select ".guide-tab.is-active", /Chat \(0\)/, "abrir a conversa marca como lida"
+    assert_select ".mentor-nav a[href=?] .nav-badge", mentor_chats_path, count: 0 # abrir a conversa marca como lida
     delete sign_out_path
 
     # Outro mentor vê a mesma conversa: ela é da equipe (o que a equipe escreveu fica à direita).

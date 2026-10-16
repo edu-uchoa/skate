@@ -42,7 +42,7 @@ class AdminTest < ActionDispatch::IntegrationTest
 
     get mentor_zine_path
     assert_response :success
-    assert_select "a[href=?]", mentor_requests_path, text: /Mentores/
+    assert_select "a.icon-btn[href=?][title=Mentores]", mentor_requests_path
 
     patch mentor_request_path(@candidate)
     @candidate.reload

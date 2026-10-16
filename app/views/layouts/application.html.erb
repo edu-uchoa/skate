@@ -48,7 +48,15 @@
               <span class="material-symbols-outlined" style="font-size: 22px;">shield_person</span>
             <% end %>
           <% end %>
-          <% if signed_in? && current_user.mentor_access? %>
+          <%# Administrador (conta de mentor): os pedidos de mentor. O mentor navega pelo menu de baixo. %>
+          <% if signed_in? && current_user.role_admin? %>
+            <%= link_to mentor_requests_path, class: "icon-btn nav-icon-wrap", title: "Mentores", aria: { label: "Mentores" } do %>
+              <span class="material-symbols-outlined" style="font-size: 22px;">admin_panel_settings</span>
+              <%= mentor_nav_badge(mentor_nav_counts[:requests], "pedidos de mentor") %>
+            <% end %>
+          <% end %>
+          <%# Super admin (que também é aprendiz): atalho para a área do mentor. %>
+          <% if signed_in? && current_user.mentor_access? && !current_user.mentor_account? %>
             <%= link_to mentor_zine_path, class: "icon-btn", title: "Zine do mentor", aria: { label: "Zine do mentor" } do %>
               <span class="material-symbols-outlined" style="font-size: 22px;">school</span>
             <% end %>
@@ -77,8 +85,10 @@
         </div>
       </div>
 
-      <!-- Bottom Navigation -->
-      <% if show_bottom_nav? %>
+      <!-- Bottom Navigation: a de mentor (Todos, Na fila, Ofensivas, Chat) ou a de aprendiz -->
+      <% if show_bottom_nav? && mentor_nav? %>
+        <%= render "shared/mentor_nav" %>
+      <% elsif show_bottom_nav? %>
       <nav class="phone-bottom-nav">
         <a href="<%= my_account_path %>" class="nav-btn <%= 'active' if controller_name == "accounts" && action_name == "show" %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">person</span>

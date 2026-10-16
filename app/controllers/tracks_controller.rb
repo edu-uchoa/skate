@@ -1,5 +1,6 @@
 # Mapa da Trilha: a tela central do app.
 class TracksController < ApplicationController
+  before_action :redirect_mentor_account
   before_action :require_age_gate
   before_action :require_diagnosis
 

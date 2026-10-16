@@ -48,7 +48,7 @@ class PasswordResetsController < ApplicationController
     @user.sign_out_everywhere!
     session.delete(:password_reset_contact)
     start_session_for(@user)
-    redirect_to track_path, notice: "Senha atualizada. Você já está dentro!"
+    redirect_to home_path_for(@user), notice: "Senha atualizada. Você já está dentro!"
   end
 
   def resend
