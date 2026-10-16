@@ -48,7 +48,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
 
     get root_path
-    assert_select "form[action='/auth/google_oauth2'][method=post]", 2 # Continuar com o Google e Já tenho conta
+    assert_select "form[action='/auth/google_oauth2'][method=post]", 2 # Começar agora! e Já tenho conta
     assert_select "input[type=password]", 0
     assert_select "a[href=?]", new_session_path, 0, "o login com senha não tem link no app"
 

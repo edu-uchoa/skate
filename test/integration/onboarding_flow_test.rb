@@ -15,9 +15,20 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     get root_path
     assert_response :success
     assert_select "img.splash-logo[alt=FlipaAi]"
-    assert_select ".splash-actions form[action='/auth/google_oauth2'] button", /Continuar com o Google/
+    assert_select ".splash-actions form[action='/auth/google_oauth2'] button#landing-start", /Começar agora!/
     assert_select ".splash-actions form[action='/auth/google_oauth2'] button", "Já tenho conta"
     assert_no_bottom_nav "logo"
+  end
+
+  test "sem o Google configurado no servidor, o Começar agora! aparece desligado e com o aviso" do
+    original = Rails.configuration.x.flipaai.google_client_id
+    Rails.configuration.x.flipaai.google_client_id = nil
+    get root_path
+    assert_select "button.splash-start[disabled]", /Começar agora!/
+    assert_select "form[action='/auth/google_oauth2']", 0
+    assert_match "ainda não está configurado", response.body
+  ensure
+    Rails.configuration.x.flipaai.google_client_id = original
   end
 
   test "rota protegida sem login volta para a logo" do

@@ -3429,3 +3429,18 @@ a.guide-tab {
   min-height: 48px;
   text-decoration: none;
 }
+
+/* "Começar agora!" na tela da logo: o botão principal, com o texto no meio. */
+.splash-start {
+  min-height: 56px;
+  justify-content: center;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.splash-start:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}

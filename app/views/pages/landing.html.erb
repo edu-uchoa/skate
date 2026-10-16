@@ -1,7 +1,9 @@
 <% content_for :section, "Início" %>
 <%# Primeira tela do app e a única porta de entrada: a logo e o login pelo Google.
-    Conta nova e conta que já existe entram pelo mesmo caminho; o Google diz quem é.
+    "Começar agora!" e "Já tenho conta" levam ao mesmo login do Google (o Google diz
+    se a conta é nova); depois segue o fluxo de sempre: nickname, idade, perguntas.
     Quem já entrou nem vê esta tela (PagesController#landing manda para a trilha). %>
+<% google_ready = Rails.configuration.x.flipaai.google_client_id.present? %>
 
 <section class="splash">
   <div class="splash-brand">
@@ -10,11 +12,23 @@
   </div>
 
   <div class="splash-actions">
-    <%= render "shared/google_button" %>
-    <% if Rails.configuration.x.flipaai.google_client_id.present? %>
+    <% if google_ready %>
+      <%= button_to "/auth/google_oauth2", method: :post, id: "landing-start", class: "tactile-btn-primary splash-start",
+            form: { class: "google-form", data: { turbo: false } } do %>
+        <span>Começar agora!</span>
+        <span class="material-symbols-outlined btn-arrow" aria-hidden="true">arrow_forward</span>
+      <% end %>
       <%= button_to "Já tenho conta", "/auth/google_oauth2", method: :post, id: "landing-sign-in",
             class: "auth-secondary-btn splash-secondary", form: { class: "google-form", data: { turbo: false } } %>
+    <% else %>
+      <%# Servidor sem GOOGLE_CLIENT_ID: o botão aparece, mas não leva a um erro do Google. %>
+      <button type="button" class="tactile-btn-primary splash-start" disabled>
+        <span>Começar agora!</span>
+        <span class="material-symbols-outlined btn-arrow" aria-hidden="true">arrow_forward</span>
+      </button>
+      <%= render "shared/google_button" %>
     <% end %>
+
     <p class="privacy-note">
       <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 15px;">lock</span>
       Grátis. O FlipaAi não vê sua senha do Google.
