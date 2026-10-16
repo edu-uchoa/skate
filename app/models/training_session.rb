@@ -86,15 +86,27 @@ class TrainingSession < ApplicationRecord
     @clip_problem = e.reason
   end
 
-  # Quem pode assistir ao vídeo: o dono e, se o dono é aprendiz, mentores e administradores.
+  # Quem pode assistir ao vídeo: o dono; se o dono é aprendiz, mentores e
+  # administradores; e o super administrador, qualquer vídeo (para moderar).
   def clip_visible_to?(viewer)
     return false if viewer.nil?
-    user_id == viewer.id || (viewer.mentor_access? && user.role_learner?)
+    user_id == viewer.id || viewer.super_admin? || (viewer.mentor_access? && user.role_learner?)
   end
 
-  # Quem pode apagar o vídeo: o dono e o administrador (mentor não apaga).
+  # Quem pode apagar o vídeo: o dono e a administração (mentor não apaga).
   def clip_deletable_by?(viewer)
-    clip_visible_to?(viewer) && (user_id == viewer.id || viewer.role_admin?)
+    clip_visible_to?(viewer) && (user_id == viewer.id || viewer.admin_access?)
+  end
+
+  # Apaga o vídeo. O progresso na trilha e uma devolutiva já recebida continuam; a
+  # devolutiva ainda não escrita sai, e o rolê ainda não validado pelo mentor deixa de
+  # valer para a ofensiva.
+  def remove_clip!
+    transaction do
+      ai_review.destroy! if ai_review&.awaiting_mentor?
+      skate_session.destroy! if skate_session && !skate_session.validated?
+      clip.purge
+    end
   end
 
   # Andamento do vídeo até a devolutiva:

@@ -1,0 +1,49 @@
+<% content_for :section, "Painel" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Super administrador</span>
+    <h2 class="screen-title">Devolutivas</h2>
+    <p class="screen-desc">
+      Os comentários dos mentores nos vídeos. Apagar tira o texto do aprendiz e devolve o
+      vídeo para a fila do mentor, para outra pessoa responder.
+    </p>
+  </header>
+
+  <%= render "admin/tabs", current: "devolutivas" %>
+
+  <h3 class="guide-card-label">Mais novas (<%= @reviews.size %>)</h3>
+
+  <% if @reviews.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">rate_review</span>
+      <p>Nenhuma devolutiva enviada ainda.</p>
+    </div>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @reviews.each do |review| %>
+        <% session = review.training_session %>
+        <li class="auth-card admin-review" id="<%= dom_id(review, :admin) %>">
+          <span class="auth-card-label"><%= session.maneuver.label %> · <%= admin_time(review.completed_at) %></span>
+          <span class="auth-card-value">Para <%= admin_user_name(session.user) %></span>
+          <span class="auth-hint">
+            Por <%= review.reviewer ? admin_user_name(review.reviewer) : "conta removida" %>
+            <%= "· revisada em #{admin_time(review.revised_at)}" if review.revised_at %>
+          </span>
+
+          <dl class="admin-review-text">
+            <% [ [ "Destaque", review.headline ], [ "O que fez bem", review.strengths ],
+                 [ "Onde errou", review.mistake ], [ "Próximo foco", review.next_focus ] ].each do |label, text| %>
+              <% next if text.blank? %>
+              <dt><%= label %></dt>
+              <dd><%= text %></dd>
+            <% end %>
+          </dl>
+
+          <%= button_to "Apagar devolutiva", admin_review_path(review), method: :delete, class: "auth-secondary-btn danger",
+                form: { data: { turbo_confirm: "Apagar esta devolutiva? O aprendiz deixa de ver o texto e o vídeo volta para a fila do mentor." } } %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

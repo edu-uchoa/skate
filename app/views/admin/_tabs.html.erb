@@ -1,0 +1,15 @@
+<%# Abas do painel do super administrador. current: "painel", "usuarios", "videos" ou "devolutivas". %>
+<% tabs = [
+     [ "painel",      "space_dashboard", "Painel",      admin_root_path ],
+     [ "usuarios",    "group",           "Usuários",    admin_users_path ],
+     [ "videos",      "video_library",   "Vídeos",      admin_videos_path ],
+     [ "devolutivas", "rate_review",     "Devolutivas", admin_reviews_path ]
+   ] %>
+<nav class="guide-tabs mentor-tabs" style="grid-template-columns: repeat(<%= tabs.size %>, 1fr);" aria-label="Abas do painel">
+  <% tabs.each do |key, icon, label, path| %>
+    <%= link_to path, class: [ "guide-tab", ("is-active" if current == key) ],
+                aria: { current: (current == key ? "page" : nil) } do %>
+      <span class="material-symbols-outlined"><%= icon %></span> <%= label %>
+    <% end %>
+  <% end %>
+</nav>

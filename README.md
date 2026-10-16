@@ -187,6 +187,18 @@ Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google s
 
 O Google so aceita voltar para `localhost` ou para um dominio com `https`. Pelo IP da rede no celular (`http://192.168...`) o login do Google nao funciona: no celular, teste pelo endereco do Render.
 
+### Super administrador (dono do app)
+
+O super administrador entra no painel `/painel` (icone de escudo no topo), que so ele ve: remove contas (com videos, progresso e chat), tira o acesso de mentores e administradores, apaga videos e apaga devolutivas. Cada remocao fica no log do servidor.
+
+Nao existe botao nem comando para virar super admin: e a conta **Google** cujo e-mail esta na variavel `SUPER_ADMIN_EMAILS` do servidor (mais de um e-mail: separe por virgula). Login com senha nao da esse acesso.
+
+1. Render: **Environment** do servico (ou o grupo `Google-keys`) > adicione `SUPER_ADMIN_EMAILS` com o seu e-mail do Google e salve. Se o Render nao reiniciar sozinho, use **Manual Deploy > Restart service**.
+2. No computador (PowerShell): `setx SUPER_ADMIN_EMAILS "seu-email@gmail.com"`, feche o VS Code inteiro, abra de novo e ligue o servidor.
+3. Entre no app com essa conta Google. O escudo aparece no topo e leva ao painel.
+
+Para tirar o acesso, apague o e-mail da variavel e reinicie o servidor. Como a regra mora na variavel, ela continua valendo mesmo se o banco do Render for apagado.
+
 ### Google Maps (mapa de picos)
 
 O mapa de `/picos` usa a Maps JavaScript API do Google. Sem a chave, a pagina funciona, mas mostra o aviso "O mapa do Google nao carregou" no lugar do mapa.

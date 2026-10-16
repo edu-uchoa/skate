@@ -1,0 +1,66 @@
+<% content_for :section, "Painel" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Super administrador</span>
+    <h2 class="screen-title">Usuários</h2>
+    <p class="screen-desc">
+      Remover a conta apaga tudo dela: vídeos, progresso na trilha, ofensiva e chat.
+      Tirar o acesso faz um mentor ou administrador voltar a ser aprendiz.
+    </p>
+  </header>
+
+  <%= render "admin/tabs", current: "usuarios" %>
+
+  <%= form_with url: admin_users_path, method: :get, class: "admin-search", role: "search" do |f| %>
+    <%= f.label :q, "Buscar conta", class: "sr-only" %>
+    <%= f.search_field :q, value: @query, class: "auth-input", placeholder: "nickname#0000, nickname ou e-mail",
+          autocapitalize: "none", spellcheck: false %>
+    <%= f.button type: :submit, class: "auth-secondary-btn", aria: { label: "Buscar" } do %>
+      <span class="material-symbols-outlined" aria-hidden="true">search</span>
+    <% end %>
+  <% end %>
+
+  <h3 class="guide-card-label">
+    <%= @query.present? ? "Resultado para “#{@query}” (#{@users.size})" : "Contas mais novas (#{@users.size})" %>
+  </h3>
+
+  <% if @users.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">person_search</span>
+      <p>Nenhuma conta encontrada.</p>
+    </div>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @users.each do |user| %>
+        <% name = admin_user_name(user) %>
+        <li class="auth-card admin-user" id="<%= dom_id(user, :admin) %>">
+          <span class="auth-card-label">
+            <%= admin_role_label(user) %>
+            <%= tag.span("Menor", class: "guide-tag is-must") if user.needs_supervision? %>
+          </span>
+          <span class="auth-card-value"><%= name %></span>
+          <span class="auth-hint">
+            <%= [ (user.contact if user.handle),
+                  (user.google? ? "Google" : "senha"),
+                  "desde #{user.created_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y")}",
+                  pluralize(@video_counts.fetch(user.id, 0), "vídeo", plural: "vídeos") ].compact.join(" · ") %>
+          </span>
+
+          <% unless user.super_admin? %>
+            <div class="mentor-request-actions">
+              <% unless user.role_learner? %>
+                <%= button_to "Tirar acesso de #{admin_role_label(user).downcase}", demote_admin_user_path(user, q: @query.presence),
+                      method: :patch, class: "auth-secondary-btn",
+                      form: { data: { turbo_confirm: "Tirar o acesso de #{name}? A conta volta a ser de aprendiz e as sessões dela são encerradas." } } %>
+              <% end %>
+              <%= button_to "Remover conta", admin_user_path(user, q: @query.presence), method: :delete,
+                    class: "auth-secondary-btn danger",
+                    form: { data: { turbo_confirm: "Remover a conta #{name}? Vídeos, progresso e chat são apagados e não dá para desfazer." } } %>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

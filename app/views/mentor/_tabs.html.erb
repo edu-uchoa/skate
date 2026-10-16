@@ -5,7 +5,7 @@
      [ "ofensivas", "local_fire_department", "Ofensivas (#{@justification_count})", mentor_streak_justifications_path ],
      [ "chat",      "forum",                 "Chat (#{@chat_count})",               mentor_chats_path ]
    ] %>
-<% tabs << [ "pedidos", "admin_panel_settings", "Mentores (#{@request_count})", mentor_requests_path ] if current_user.role_admin? %>
+<% tabs << [ "pedidos", "admin_panel_settings", "Mentores (#{@request_count})", mentor_requests_path ] if current_user.admin_access? %>
 <nav class="guide-tabs mentor-tabs" style="grid-template-columns: repeat(<%= tabs.size %>, 1fr);" aria-label="Abas da área do mentor">
   <% tabs.each do |key, icon, label, path| %>
     <%= link_to path, class: [ "guide-tab", ("is-active" if current == key) ],

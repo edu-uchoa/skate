@@ -35,6 +35,17 @@ class AiReview < ApplicationRecord
     update!(revised_at: Time.current)
   end
 
+  # Super administrador apagou a devolutiva (o comentário do mentor no vídeo): o texto
+  # some para o aprendiz e o vídeo volta para a fila do mentor. A tarefa que a
+  # devolutiva concluiu continua concluída.
+  def retract!
+    transaction do
+      update!(status: :pending, headline: nil, strengths: nil, mistake: nil, next_focus: nil,
+              raw_response: nil, reviewer: nil, completed_at: nil, revised_at: nil)
+      training_session.update!(status: :submitted) if training_session.status_analyzed?
+    end
+  end
+
   def apply!(result)
     update!(
       status: :completed,

@@ -16,6 +16,9 @@ Rails.application.configure do
   # vêm do Google Cloud (veja o README) e ficam em variáveis de ambiente, nunca no código.
   config.x.flipaai.google_client_id     = ENV["GOOGLE_CLIENT_ID"]
   config.x.flipaai.google_client_secret = ENV["GOOGLE_CLIENT_SECRET"]
+  # Super administrador (dono do app): as contas Google com estes e-mails, separados por
+  # vírgula. Fica só no servidor (Render > Environment): ninguém vira super admin pelo app.
+  config.x.flipaai.super_admin_emails = ENV.fetch("SUPER_ADMIN_EMAILS", "").split(",").map { it.strip.downcase }.compact_blank
   # Análise automática do vídeo (IA ou reconhecimento corporal). Desligada: hoje o
   # vídeo fica na fila do mentor. Só ligue depois de implementar Ai::FallAnalyzer#call.
   config.x.flipaai.automatic_review = false

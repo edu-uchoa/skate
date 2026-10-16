@@ -26,6 +26,8 @@ class User < ApplicationRecord
   # remover mentores, e só é criado pelo terminal (lib/tasks/admin.rake).
   enum :role, { learner: 0, mentor: 1, admin: 2 }, prefix: true
   belongs_to :mentor_approved_by, class_name: "User", optional: true
+  has_many :approved_mentors, class_name: "User", foreign_key: :mentor_approved_by_id,
+                              inverse_of: :mentor_approved_by, dependent: :nullify # mentores que aprovou
 
   MENTOR_MINIMUM_AGE = 18
   MENTOR_NOTE_LENGTH = 500
@@ -147,6 +149,22 @@ class User < ApplicationRecord
   def google? = google_uid.present?
 
   # Um dos 4 números ainda livres para esse nickname, sorteado (nil se acabaram).
+  # Busca do painel do super administrador: "nick#0420" acha a conta exata; outro texto
+  # procura no nickname, no e-mail e (se tiver números) no telefone.
+  def self.search(query)
+    query = query.to_s.strip
+    return all if query.empty?
+
+    if (exact = query.match(/\A(.+)#(\d{4})\z/))
+      return where(nickname_key: exact[1].downcase, nickname_tag: exact[2])
+    end
+
+    text = "%#{sanitize_sql_like(query.downcase)}%"
+    found = where("users.nickname_key LIKE :text OR users.email LIKE :text", text: text)
+    digits = query.gsub(/\D/, "")
+    digits.empty? ? found : found.or(where("users.phone LIKE ?", "%#{sanitize_sql_like(digits)}%"))
+  end
+
   def self.free_nickname_tag(nickname, except: nil)
     taken = where(nickname_key: nickname.to_s.strip.downcase).where.not(id: except).pluck(:nickname_tag)
     ((1..9999).map { |number| format("%04d", number) } - taken).sample
@@ -204,8 +222,19 @@ class User < ApplicationRecord
     update(mentor_requested_at: Time.current)
   end
 
+  # Super administrador: o dono do app, que entra no painel restrito (/painel) e pode
+  # remover contas, vídeos e devolutivas. Não é um papel guardado no banco: é a conta
+  # Google cujo e-mail está em SUPER_ADMIN_EMAILS, no servidor. Ninguém vira super
+  # admin pelo app, e o login com senha (contas antigas) não dá esse acesso.
+  def super_admin?
+    google? && email.present? && Rails.configuration.x.flipaai.super_admin_emails.include?(email)
+  end
+
+  # Funções de administrador (aprovar e remover mentores, apagar vídeos de aprendizes).
+  def admin_access? = role_admin? || super_admin?
+
   # Pode entrar na área do mentor (ver vídeos de aprendizes e responder).
-  def mentor_access? = role_mentor? || role_admin?
+  def mentor_access? = role_mentor? || admin_access?
 
   # by: o administrador que aprovou (nil quando foi pelo terminal).
   def approve_mentor!(by: nil)

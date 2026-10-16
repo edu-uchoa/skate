@@ -3444,3 +3444,46 @@ a.guide-tab {
   box-shadow: none;
   transform: none;
 }
+
+/* Painel do super administrador (admin/*). */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+}
+
+.admin-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--text-on-surface);
+}
+
+.admin-stat .material-symbols-outlined { color: var(--primary-color); font-size: 22px; }
+.admin-stat strong { font-family: var(--font-display); font-size: 26px; font-weight: 900; line-height: 1; }
+
+.admin-search {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-search .auth-input { flex: 1; min-width: 0; }
+.admin-search .auth-secondary-btn { width: auto; min-width: 48px; display: flex; align-items: center; justify-content: center; }
+
+.admin-video summary { cursor: pointer; width: fit-content; }
+.admin-video[open] { display: flex; flex-direction: column; gap: 8px; }
+.admin-video-player { width: 100%; max-height: 420px; border-radius: var(--radius-sm); background: #000; }
+
+.admin-review-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.admin-review-text dt { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-variant); }
+.admin-review-text dd { color: var(--text-on-surface); overflow-wrap: anywhere; }
+.admin-user .mentor-request-actions { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }

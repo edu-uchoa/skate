@@ -13,7 +13,7 @@ module Mentor
 
     # Aprovar e remover mentores: só administrador.
     def require_admin
-      not_found unless current_user.role_admin?
+      not_found unless current_user.admin_access?
     end
 
     def not_found
@@ -30,7 +30,7 @@ module Mentor
       @video_count   = learner_clips.count
       @queue_count   = learner_clips.awaiting_review.count
       @chat_count    = Conversation.unread_by_mentors.count
-      @request_count = User.mentor_requests.count if current_user.role_admin?
+      @request_count = User.mentor_requests.count if current_user.admin_access?
     end
   end
 end

@@ -52,6 +52,17 @@ Rails.application.routes.draw do
     end
   end
 
+  # Painel do super administrador (o dono do app): contas, vídeos e devolutivas. Só
+  # entra a conta Google com e-mail em SUPER_ADMIN_EMAILS; para os outros é 404.
+  namespace :admin, path: "painel" do
+    root "dashboards#show"
+    resources :users,   only: %i[index destroy], path: "usuarios" do
+      patch :demote, on: :member, path: "tirar-acesso" # mentor ou administrador volta a aprendiz
+    end
+    resources :videos,  only: %i[index destroy]
+    resources :reviews, only: %i[index destroy], path: "devolutivas"
+  end
+
   # Chat do aprendiz com a equipe de mentores.
   resource :chat, only: :show, path: "chat" do
     resources :messages, only: :create, path: "mensagens"

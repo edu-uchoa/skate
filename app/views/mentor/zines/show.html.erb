@@ -98,7 +98,7 @@
                     </details>
                   <% end %>
 
-                  <% if current_user.role_admin? %>
+                  <% if current_user.admin_access? %>
                     <%= render "clips/delete_button", training_session: training_session %>
                   <% end %>
                 </div>

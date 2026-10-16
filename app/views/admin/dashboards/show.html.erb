@@ -1,0 +1,37 @@
+<% content_for :section, "Painel" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Super administrador</span>
+    <h2 class="screen-title">Painel</h2>
+    <p class="screen-desc">
+      Só você vê esta página. Daqui dá para remover contas, tirar o acesso de mentores,
+      apagar vídeos e apagar devolutivas. Tudo o que você remover fica registrado no log
+      do servidor e não tem como desfazer.
+    </p>
+  </header>
+
+  <%= render "admin/tabs", current: "painel" %>
+
+  <ul class="admin-stats">
+    <% [ [ "group", "Aprendizes", @counts[:learners], admin_users_path ],
+         [ "school", "Mentores", @counts[:mentors], admin_users_path ],
+         [ "admin_panel_settings", "Administradores", @counts[:admins], admin_users_path ],
+         [ "video_library", "Vídeos", @counts[:videos], admin_videos_path ],
+         [ "schedule", "Na fila do mentor", @counts[:queue], mentor_zine_path(aba: "fila") ],
+         [ "rate_review", "Devolutivas", @counts[:reviews], admin_reviews_path ] ].each do |icon, label, count, path| %>
+      <li>
+        <%= link_to path, class: "auth-card admin-stat" do %>
+          <span class="material-symbols-outlined" aria-hidden="true"><%= icon %></span>
+          <strong><%= count %></strong>
+          <span class="auth-card-label"><%= label %></span>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <p class="auth-hint">
+    Aprovar novos mentores continua na
+    <%= link_to "área do mentor, aba Mentores", mentor_requests_path, class: "auth-link" %>.
+  </p>
+</section>

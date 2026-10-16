@@ -37,12 +37,7 @@ class ClipsController < ApplicationController
     training_session = TrainingSession.with_clip.find(params[:id])
     return head(:not_found) unless training_session.clip_deletable_by?(current_user)
 
-    training_session.transaction do
-      training_session.ai_review.destroy! if training_session.ai_review&.awaiting_mentor?
-      # Sem o vídeo, o rolê ainda não validado pelo mentor deixa de valer para a ofensiva.
-      training_session.skate_session.destroy! if training_session.skate_session && !training_session.skate_session.validated?
-      training_session.clip.purge
-    end
+    training_session.remove_clip!
 
     if training_session.user_id == current_user.id
       redirect_to zine_path, notice: "Vídeo apagado. Ninguém mais consegue ver."

@@ -31,6 +31,13 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - Toda tela de mentor herda de `Mentor::BaseController` (404 para quem não é mentor).
   O administrador tem todas as funções de mentor.
 - Apagar vídeo: só o dono e o administrador (`TrainingSession#clip_deletable_by?`).
+  Use sempre `TrainingSession#remove_clip!` (tira da fila e da ofensiva junto).
+- **Super administrador** (o dono do app): `User#super_admin?` é a conta **Google** cujo
+  e-mail está em `SUPER_ADMIN_EMAILS` (ENV no servidor). Não é papel do banco e não se
+  ganha pelo app; login com senha não dá esse acesso. Só ele entra em `/painel`
+  (`Admin::BaseController`, 404 para os outros): remove contas, tira acesso de mentor,
+  apaga vídeos e devolutivas, e cada remoção vai para o log (`audit`). Confira
+  `admin_access?` (administrador ou super admin) em vez de `role_admin?` em regras novas.
 - Justificativas de parada da ofensiva (`StreakJustification`) podem ter dado de saúde:
   só mentores leem, com o contato mascarado, e ninguém avalia a própria. A sessão da
   ofensiva (`SkateSession`) guarda só o dia, nunca o lugar do rolê.
