@@ -5,6 +5,8 @@ class AiReviewsController < ApplicationController
   def show
     @training_session = current_user.training_sessions.find(params[:training_session_id])
     @ai_review = @training_session.ai_review
-    redirect_to track_path, alert: "Esse treino não tem análise de vídeo." if @ai_review.blank?
+    return redirect_to(track_path, alert: "Esse treino não tem análise de vídeo.") if @ai_review.blank?
+
+    @ai_review.mark_seen! # o aprendiz viu a devolutiva: some o número do ícone Zine
   end
 end

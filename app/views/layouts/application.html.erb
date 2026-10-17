@@ -52,7 +52,7 @@
           <% if signed_in? && current_user.role_admin? %>
             <%= link_to mentor_requests_path, class: "icon-btn nav-icon-wrap", title: "Mentores", aria: { label: "Mentores" } do %>
               <span class="material-symbols-outlined" style="font-size: 22px;">admin_panel_settings</span>
-              <%= mentor_nav_badge(mentor_nav_counts[:requests], "pedidos de mentor") %>
+              <%= nav_badge(mentor_nav_counts[:requests], "pedidos de mentor") %>
             <% end %>
           <% end %>
           <%# Super admin (que também é aprendiz): atalho para a área do mentor. %>
@@ -115,8 +115,12 @@
             <span class="nav-label">Zine</span>
           </a>
         <% else %>
+          <%# O número aparece quando chega uma devolutiva que o aprendiz ainda não abriu. %>
           <a href="<%= zine_path %>" class="nav-btn <%= 'active' if current_page?(zine_path) %>">
-            <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
+            <span class="nav-icon-wrap">
+              <span class="material-symbols-outlined" style="font-size: 22px;">auto_stories</span>
+              <%= nav_badge(new_reviews_count, new_reviews_count == 1 ? "devolutiva nova" : "devolutivas novas") %>
+            </span>
             <span class="nav-label">Zine</span>
           </a>
         <% end %>

@@ -27,10 +27,4 @@ module MentorNavHelper
     when "accounts"                     then ("perfil" if action_name == "show")
     end
   end
-
-  # Bolinha com o número (some quando é zero).
-  def mentor_nav_badge(count, label)
-    return if count.to_i.zero?
-    tag.span(count > 99 ? "99+" : count, class: "nav-badge", aria: { label: "#{count} #{label}" })
-  end
 end

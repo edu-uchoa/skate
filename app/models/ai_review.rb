@@ -7,7 +7,21 @@ class AiReview < ApplicationRecord
 
   TEXT_LENGTH = 600
 
+  # Devolutivas que o aprendiz ainda não abriu (ou que o mentor revisou depois que ele
+  # abriu): viram o número no ícone Zine e a marca "Nova" no cartão do vídeo.
+  scope :unseen, -> { status_completed.where("ai_reviews.seen_at IS NULL OR ai_reviews.revised_at > ai_reviews.seen_at") }
+
   def finished? = status_completed? || status_failed?
+
+  def unseen? = status_completed? && (seen_at.nil? || (revised_at.present? && revised_at > seen_at))
+
+  # "Nova" (nunca aberta) ou "Atualizada" (o mentor revisou depois que o aprendiz abriu).
+  def unseen_label = seen_at ? "Atualizada" : "Nova"
+
+  # O aprendiz abriu a devolutiva: o aviso some.
+  def mark_seen!
+    update_column(:seen_at, Time.current) if unseen?
+  end
 
   def awaiting_mentor? = status_pending? || status_processing?
 
@@ -41,7 +55,7 @@ class AiReview < ApplicationRecord
   def retract!
     transaction do
       update!(status: :pending, headline: nil, strengths: nil, mistake: nil, next_focus: nil,
-              raw_response: nil, reviewer: nil, completed_at: nil, revised_at: nil)
+              raw_response: nil, reviewer: nil, completed_at: nil, revised_at: nil, seen_at: nil)
       training_session.update!(status: :submitted) if training_session.status_analyzed?
     end
   end

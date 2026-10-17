@@ -3606,3 +3606,17 @@ a.guide-tab {
 .legal-accept input { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; accent-color: var(--primary-color); }
 .splash-legal { margin-top: -4px; }
 .splash-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; min-height: 24px; display: inline-flex; align-items: center; }
+
+/* Zine do aprendiz: devolutiva que chegou e ainda não foi aberta. */
+.zine-new {
+  margin-right: auto; /* fica colada ao nome da manobra */
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--secondary-color);
+  color: #000;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

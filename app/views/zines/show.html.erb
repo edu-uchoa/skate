@@ -45,6 +45,9 @@
           <div class="zine-body">
             <div class="zine-title-row">
               <h3><%= training_session.maneuver.name %></h3>
+              <% if training_session.ai_review&.unseen? %>
+                <span class="zine-new"><%= training_session.ai_review.unseen_label %></span>
+              <% end %>
               <span class="zine-code"><%= training_session.maneuver.code %></span>
             </div>
             <p class="auth-hint"><%= zine_clip_details(training_session) %></p>

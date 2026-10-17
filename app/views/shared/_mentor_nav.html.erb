@@ -18,7 +18,7 @@
     <%= link_to mentor_zine_path(aba: "fila"), class: [ "nav-fab-btn", ("is-active" if current == "fila") ],
                 title: "Vídeos na fila", aria: { label: "Na fila", current: ("page" if current == "fila") } do %>
       <span class="material-symbols-outlined" style="font-size: 26px; font-weight: 900;">schedule</span>
-      <%= mentor_nav_badge(counts[:queue], "vídeos esperando devolutiva") %>
+      <%= nav_badge(counts[:queue], "vídeos esperando devolutiva") %>
     <% end %>
     <span class="nav-fab-label">Na fila</span>
   </div>
@@ -26,7 +26,7 @@
               aria: { current: ("page" if current == "ofensivas") } do %>
     <span class="nav-icon-wrap">
       <span class="material-symbols-outlined" style="font-size: 22px;">local_fire_department</span>
-      <%= mentor_nav_badge(counts[:justifications], "paradas para avaliar") %>
+      <%= nav_badge(counts[:justifications], "paradas para avaliar") %>
     </span>
     <span class="nav-label">Ofensivas</span>
   <% end %>
@@ -34,7 +34,7 @@
               aria: { current: ("page" if current == "chat") } do %>
     <span class="nav-icon-wrap">
       <span class="material-symbols-outlined" style="font-size: 22px;">forum</span>
-      <%= mentor_nav_badge(counts[:chats], "conversas com mensagem nova") %>
+      <%= nav_badge(counts[:chats], "conversas com mensagem nova") %>
     </span>
     <span class="nav-label">Chat</span>
   <% end %>
