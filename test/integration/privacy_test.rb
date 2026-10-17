@@ -30,8 +30,8 @@ class PrivacyTest < ActionDispatch::IntegrationTest
     get privacy_path
     assert_response :success
     assert_select "h2", "Política de Privacidade"
-    assert_match Rails.configuration.x.flipaai.privacy_controller, response.body
-    assert_select "a[href^='mailto:#{Rails.configuration.x.flipaai.privacy_email}']"
+    assert_match Legal.controller, response.body
+    assert_select "a[href^='mailto:#{Legal.email}']"
 
     get terms_path
     assert_response :success

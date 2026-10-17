@@ -14,7 +14,7 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 **Dado pessoal novo (LGPD)**
 - Começou a guardar um dado novo, a mandar algo para outra empresa ou a mostrar um dado a
   outras pessoas? Atualize `pages/privacy.html.erb` (o que guardamos, quem vê, empresas) e a
-  data em `config.x.flipaai.legal_updated_on`.
+  data em `Legal::UPDATED_ON`.
 - Inclua o dado em "Meus dados" (`DataExport`), sem segredos (token, senha, códigos).
 - Garanta que "Apagar minha conta" leva o dado junto (`dependent:` no `User` e teste em
   `test/integration/privacy_test.rb`).

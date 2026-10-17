@@ -16,11 +16,6 @@ Rails.application.configure do
   # vêm do Google Cloud (veja o README) e ficam em variáveis de ambiente, nunca no código.
   config.x.flipaai.google_client_id     = ENV["GOOGLE_CLIENT_ID"]
   config.x.flipaai.google_client_secret = ENV["GOOGLE_CLIENT_SECRET"]
-  # LGPD: quem responde pelos dados (controlador) e o e-mail para pedidos de acesso,
-  # correção e exclusão. Aparecem na Política de Privacidade e nos Termos de Uso.
-  config.x.flipaai.privacy_controller = ENV.fetch("PRIVACY_CONTROLLER", "Caio Lyra")
-  config.x.flipaai.privacy_email      = ENV.fetch("PRIVACY_EMAIL", "caiolyrapeixoto@gmail.com")
-  config.x.flipaai.legal_updated_on   = Date.new(2026, 10, 17) # data da versão atual dos textos
   # Super administrador (dono do app): as contas Google com estes e-mails, separados por
   # vírgula. Fica só no servidor (Render > Environment): ninguém vira super admin pelo app.
   config.x.flipaai.super_admin_emails = ENV.fetch("SUPER_ADMIN_EMAILS", "").split(",").map { it.strip.downcase }.compact_blank

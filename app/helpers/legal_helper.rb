@@ -1,9 +1,9 @@
-# Dados dos textos da LGPD (config/initializers/flipaai.rb): quem responde pelos dados,
-# o e-mail para pedidos e a data da versão atual.
+# Dados dos textos da LGPD (Legal): quem responde pelos dados, o e-mail para pedidos
+# e a data da versão atual.
 module LegalHelper
-  def legal_controller = Rails.configuration.x.flipaai.privacy_controller
-  def legal_email      = Rails.configuration.x.flipaai.privacy_email
-  def legal_updated_on = Rails.configuration.x.flipaai.legal_updated_on.strftime("%d/%m/%Y")
+  def legal_controller = Legal.controller
+  def legal_email      = Legal.email
+  def legal_updated_on = Legal::UPDATED_ON.strftime("%d/%m/%Y")
 
   def legal_email_link(subject = "Privacidade no FlipaAi")
     mail_to legal_email, legal_email, subject: subject, class: "auth-link"

@@ -53,6 +53,10 @@ commit e que qualquer mudança possa ser desfeita sozinha.
    o servidor avisando o usuário. No Windows, `bin/rails restart` **derruba** o Puma
    em vez de reiniciar, e `bin/dev` não funciona (o foreman não inicia os processos):
    pare pelo PID de `tmp/pids/server.pid` e suba de novo com `bin/rails server`.
+   O mesmo vale para `config/initializers/*`. Prefira não pôr em initializer o que muda
+   junto com telas (textos, datas): `config.x.flipaai` só é lido
+   quando o servidor liga, e o servidor antigo quebra com `nil` (aconteceu com Picos e com a
+   Política de Privacidade). Constante num arquivo de `app/` recarrega sozinha.
 
 ## 4. Commit (um por mudança)
 
