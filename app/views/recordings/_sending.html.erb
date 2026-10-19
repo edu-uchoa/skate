@@ -1,0 +1,45 @@
+<%# Envio do vídeo (upload_sender_controller + lib/upload_queue): o anel enche conforme o
+    vídeo sobe; sem internet, o vídeo fica guardado (criptografado) neste aparelho e vai
+    sozinho quando a conexão voltar. Usado na tela Gravar (depois de tocar em Enviar) e em
+    /gravar/envio (aviso do topo, quando sobrou vídeo para enviar). %>
+<section class="send-screen" aria-live="polite"
+         data-controller="upload-sender"
+         data-upload-sender-owner-value="<%= upload_owner_key %>"
+         data-upload-sender-url-value="<%= recording_path %>"
+         data-upload-sender-autostart-value="<%= autostart %>"
+         data-upload-sender-state-value="checking"
+         data-action="recorder:queued@window->upload-sender#start online@window->upload-sender#start offline@window->upload-sender#wentOffline"
+         <%= "hidden" unless autostart %>>
+
+  <div class="send-ring" data-upload-sender-target="ring" role="progressbar" aria-label="Envio do vídeo"
+       aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <circle class="send-ring-track" cx="60" cy="60" r="52" />
+      <circle class="send-ring-fill" cx="60" cy="60" r="52" pathLength="100" data-upload-sender-target="ringFill" />
+    </svg>
+    <span class="send-ring-center">
+      <span class="material-symbols-outlined send-ring-icon" data-upload-sender-target="icon">cloud_upload</span>
+      <strong data-upload-sender-target="percent"></strong>
+    </span>
+  </div>
+
+  <span class="step-indicator" data-upload-sender-target="counter"></span>
+  <h2 class="screen-title" data-upload-sender-target="title">Preparando o envio…</h2>
+  <p class="screen-desc" data-upload-sender-target="message"></p>
+
+  <ul class="auth-errors" role="alert" data-upload-sender-target="errors" hidden></ul>
+
+  <div class="send-actions">
+    <%= link_to "Contar como foi o treino", zine_path, class: "tactile-btn-primary send-next",
+          data: { upload_sender_target: "next" }, hidden: true %>
+    <button type="button" class="auth-secondary-btn" data-upload-sender-target="retry" data-action="upload-sender#start" hidden>
+      Tentar de novo
+    </button>
+    <%= link_to "Gravar outro vídeo", new_recording_path, class: "secondary-link-btn", data: { upload_sender_target: "again" }, hidden: true %>
+  </div>
+
+  <p class="auth-note">
+    <span class="material-symbols-outlined" aria-hidden="true" style="font-size: 15px;">lock</span>
+    Enquanto espera, o vídeo fica guardado só neste aparelho, criptografado, e sai daqui assim que chega.
+  </p>
+</section>

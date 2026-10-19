@@ -26,8 +26,11 @@
     Depois, se quiser voltar, é só entrar com o Google de novo: começa do zero.
   </p>
 
+  <%# Ao apagar, também tira deste aparelho os vídeos que ainda esperavam envio. %>
   <%= form_with url: account_deletion_path, method: :delete, class: "auth-form",
-                data: { turbo_confirm: "Apagar a sua conta e tudo dela agora? Não dá para desfazer." } do |f| %>
+                data: { turbo_confirm: "Apagar a sua conta e tudo dela agora? Não dá para desfazer.",
+                        controller: "pending-upload", pending_upload_owner_value: upload_owner_key,
+                        action: "turbo:submit-start->pending-upload#clearAll" } do |f| %>
     <div class="auth-field">
       <%= f.label :confirmation, "Para confirmar, digite APAGAR", class: "auth-label" %>
       <%= f.text_field :confirmation, class: "auth-input", required: true, autocomplete: "off",

@@ -30,7 +30,9 @@ Rails.application.routes.draw do
   end
 
   resources :schedules, only: %i[new create], path: "agenda"
-  resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" }
+  resource  :recording, only: %i[new create], path: "gravar", path_names: { new: "" } do
+    get :sending, path: "envio" # vídeos guardados no aparelho esperando envio
+  end
   resource  :zine,      only: :show, path: "zine"
 
   # Vídeos dos treinos, só com login e permissão (ClipsController).

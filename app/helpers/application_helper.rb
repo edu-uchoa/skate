@@ -5,6 +5,12 @@ module ApplicationHelper
     tag.span(count > 99 ? "99+" : count, class: "nav-badge", aria: { label: "#{count} #{label}" })
   end
 
+  # Dono dos vídeos guardados no aparelho (lib/upload_queue.js): um código da conta que
+  # não revela quem é, para outra pessoa no mesmo celular não ver nem enviar o vídeo.
+  def upload_owner_key
+    OpenSSL::HMAC.hexdigest("SHA256", Rails.application.secret_key_base, "upload-owner:#{current_user.id}").first(32)
+  end
+
   # Aprendiz: devolutivas que o mentor mandou e ele ainda não abriu (número no ícone Zine).
   def new_reviews_count
     @new_reviews_count ||= AiReview.unseen.joins(:training_session).where(training_sessions: { user_id: current_user.id }).count

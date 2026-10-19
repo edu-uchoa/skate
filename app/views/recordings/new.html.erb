@@ -5,7 +5,8 @@
          data-controller="recorder"
          data-recorder-max-seconds-value="<%= max_seconds %>"
          data-recorder-max-bytes-value="<%= TrainingSession.max_clip_bytes %>"
-         data-recorder-types-value="<%= TrainingSession::CLIP_CONTENT_TYPES.to_json %>">
+         data-recorder-types-value="<%= TrainingSession::CLIP_CONTENT_TYPES.to_json %>"
+         data-recorder-owner-value="<%= upload_owner_key %>">
 
   <header class="auth-head">
     <span class="step-indicator">Devolutiva do mentor em até 48h</span>
@@ -111,9 +112,9 @@
     <%= f.hidden_field :duration_seconds, data: { recorder_target: "duration" } %>
     <%= f.hidden_field :source, data: { recorder_target: "source" } %>
 
+    <%# Enquanto o vídeo é guardado para enviar (o anel de envio vem na tela seguinte). %>
     <div class="rec-progress" data-recorder-target="progress" hidden>
-      <div class="rec-progress-rail"><div class="rec-progress-fill" data-recorder-target="progressBar"></div></div>
-      <p class="auth-hint" data-recorder-target="progressLabel">Enviando… 0%</p>
+      <p class="auth-hint" data-recorder-target="progressLabel">Guardando o vídeo para enviar…</p>
     </div>
 
     <%= f.button type: :submit, class: "tactile-btn-primary", data: { recorder_target: "submit" } do %>
@@ -121,4 +122,6 @@
       <span class="material-symbols-outlined btn-arrow">cloud_upload</span>
     <% end %>
   <% end %>
+
+  <%= render "recordings/sending", autostart: false %>
 </section>

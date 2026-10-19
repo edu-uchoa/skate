@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { enqueue } from "lib/upload_queue"
 
 // Tela "Gravar": grava pela câmera (MediaRecorder) ou escolhe um arquivo,
 // mostra a pré-visualização, valida tamanho/duração/formato e envia via
@@ -13,9 +14,9 @@ export default class extends Controller {
   static targets = [
     "form", "chooser", "camera", "live", "timer", "recordButton", "recordLabel",
     "preview", "previewVideo", "meta", "fileInput", "captureInput",
-    "duration", "source", "check", "progress", "progressBar", "progressLabel", "errors", "submit", "warning"
+    "duration", "source", "check", "progress", "progressLabel", "errors", "submit", "warning"
   ]
-  static values = { maxSeconds: Number, maxBytes: Number, types: Array }
+  static values = { maxSeconds: Number, maxBytes: Number, types: Array, owner: String }
 
   connect() {
     this.clip = null
@@ -196,51 +197,40 @@ export default class extends Controller {
 
   // --- Envio (multipart) com progresso --------------------------------------
 
-  upload(event) {
+  // Enviar: o vídeo entra na fila deste aparelho (lib/upload_queue, criptografado) e a
+  // tela de envio (recordings/_sending) manda, com o anel de progresso. Sem internet, ele
+  // fica guardado e vai sozinho quando a conexão voltar.
+  async upload(event) {
     event.preventDefault()
     if (!this.clip || this.uploading) return
-
-    const data = new FormData(this.formTarget)
-    data.set("recording[clip]", this.clip.file, this.clip.file.name)
-
-    const xhr = new XMLHttpRequest()
-    xhr.open("POST", this.formTarget.action)
-    xhr.setRequestHeader("Accept", "application/json")
-    xhr.setRequestHeader("X-CSRF-Token", document.querySelector("meta[name='csrf-token']")?.content || "")
-    xhr.upload.onprogress = (e) => { if (e.lengthComputable) this.renderProgress(e.loaded / e.total) }
-    xhr.onload = () => this.uploaded(xhr)
-    xhr.onerror = () => this.failed(["Falha de conexão. Verifique a internet e tente de novo."])
 
     this.uploading = true
     this.clearErrors()
     this.refresh()
     this.progressTarget.hidden = false
-    this.renderProgress(0)
-    xhr.send(data)
-  }
+    this.progressLabelTarget.textContent = "Guardando o vídeo para enviar…"
 
-  uploaded(xhr) {
-    const body = parseJSON(xhr.responseText)
+    // Os campos do formulário, sem o arquivo e sem o token (que vai no cabeçalho, na hora).
+    const fields = [ ...new FormData(this.formTarget).entries() ]
+      .filter(([ name, value ]) => typeof value === "string" && name !== "authenticity_token" && name !== "recording[clip]")
 
-    if (xhr.status === 201 && body.redirect_url) {
-      this.progressLabelTarget.textContent = "Vídeo salvo!"
-      window.Turbo ? window.Turbo.visit(body.redirect_url) : window.location.assign(body.redirect_url)
-    } else {
-      this.failed(body.errors || [`Não foi possível enviar (erro ${xhr.status}). Tente de novo.`])
+    try {
+      await enqueue({ owner: this.ownerValue, file: this.clip.file, fields })
+    } catch (_error) {
+      this.uploading = false
+      this.progressTarget.hidden = true
+      this.refresh()
+      return this.showErrors([ "Não deu para preparar o envio deste vídeo. Tente de novo." ])
     }
-  }
 
-  failed(problems) {
-    this.uploading = false
-    this.progressTarget.hidden = true
-    this.showErrors(problems)
-    this.refresh()
-  }
-
-  renderProgress(ratio) {
-    const percent = Math.round(ratio * 100)
-    this.progressBarTarget.style.width = `${percent}%`
-    this.progressLabelTarget.textContent = percent < 100 ? `Enviando… ${percent}%` : "Salvando vídeo…"
+    this.stopStream()
+    this.revokePreview()
+    // Some a tela Gravar; fica só a tela de envio, que começa ao ouvir "recorder:queued".
+    for (const child of this.element.children) {
+      if (!child.matches("[data-controller~='upload-sender']")) child.hidden = true
+    }
+    this.dispatch("queued")
+    window.scrollTo({ top: 0 })
   }
 
   // --- Helpers de tela ------------------------------------------------------
@@ -309,10 +299,6 @@ function cameraErrorMessage(error) {
     case "NotReadableError": return "A câmera está em uso por outro app. Feche-o e tente de novo."
     default:                return "Não foi possível abrir a câmera. Use \"Fazer upload de vídeo\"."
   }
-}
-
-function parseJSON(text) {
-  try { return JSON.parse(text) } catch { return {} }
 }
 
 function formatSeconds(seconds) {

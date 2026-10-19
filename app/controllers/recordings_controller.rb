@@ -20,10 +20,13 @@ class RecordingsController < ApplicationController
     @training_session = build_training_session
 
     if @training_session.save(context: :recording)
-      flash[:notice] = "Vídeo salvo e já na fila do mentor. Conte como foi o treino."
       respond_to do |format|
+        # Pela tela de envio (anel de progresso): ela mesma mostra o "enviado com sucesso".
         format.json { render json: { redirect_url: result_training_session_path(@training_session) }, status: :created }
-        format.html { redirect_to result_training_session_path(@training_session) }
+        format.html do
+          redirect_to result_training_session_path(@training_session),
+                      notice: "Vídeo salvo e já na fila do mentor. Conte como foi o treino."
+        end
       end
     else
       respond_to do |format|
@@ -32,6 +35,10 @@ class RecordingsController < ApplicationController
       end
     end
   end
+
+  # Tela de envio dos vídeos que ficaram guardados neste aparelho (sem internet na hora).
+  # A lista fica só no celular (lib/upload_queue.js): o servidor não sabe de nada até chegar.
+  def sending; end
 
   private
 

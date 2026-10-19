@@ -105,6 +105,11 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
   assistiu). As rotas públicas do Active Storage estão desligadas; não religue nem use
   `url_for(clip)`/`rails_blob_path`, que davam link sem login e sem prazo.
 - Testes de vídeo precisam do ffmpeg e do ffprobe instalados (o CI instala).
+- Envio pela fila do aparelho (`app/javascript/lib/upload_queue.js`): o vídeo esperando internet
+  fica no IndexedDB **criptografado** (AES-GCM, chave não exportável), amarrado à conta por
+  `upload_owner_key` (HMAC, não revela o id) e sai do aparelho assim que o servidor responde 201.
+  Nome de arquivo sempre genérico; o token CSRF vai no cabeçalho na hora do envio, nunca
+  guardado. Não guarde vídeo em localStorage nem no service worker.
 - Cada vídeo é apagado 1 mês depois do envio (`TrainingSession::CLIP_RETENTION`, conta de
   `clip_uploaded_at`, nunca da data do arquivo: a versão em 720p troca o arquivo). A Política
   de Privacidade promete isso; se mudar o prazo, mude o texto e a data em `Legal::UPDATED_ON`.

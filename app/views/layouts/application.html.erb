@@ -79,6 +79,15 @@
       <!-- Main Screens Content Viewport -->
       <div class="phone-content" style="overflow-y: auto;">
         <%= render "shared/flash" %>
+        <%# Sobrou vídeo guardado neste aparelho esperando internet: leva à tela de envio. %>
+        <% if signed_in? && !current_user.mentor_account? %>
+          <%= link_to sending_recording_path, class: "pending-upload", hidden: true,
+                data: { controller: "pending-upload", pending_upload_owner_value: upload_owner_key } do %>
+            <span class="material-symbols-outlined" aria-hidden="true">cloud_upload</span>
+            <span data-pending-upload-target="label"></span>
+            <strong>Enviar agora</strong>
+          <% end %>
+        <% end %>
 
         <div class="screen active app-column" style="position: relative; display: flex; flex-direction: column;">
           <%= yield %>

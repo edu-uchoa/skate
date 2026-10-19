@@ -3632,3 +3632,85 @@ a.guide-tab {
 
 .zine-expiry .material-symbols-outlined { font-size: 16px; }
 .zine-expiry.is-soon { color: var(--secondary-color); font-weight: 700; }
+
+/* Tela de envio do vídeo (recordings/_sending): anel que enche com o upload. */
+.send-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 0 8px;
+  text-align: center;
+}
+
+.send-screen[hidden] { display: none; }
+
+.send-ring {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  flex-shrink: 0;
+}
+
+.send-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.send-ring circle { fill: none; stroke-width: 10; }
+.send-ring-track { stroke: var(--surface-highest); }
+
+.send-ring-fill {
+  stroke: var(--primary-color);
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.25s ease-out, stroke 0.2s ease;
+}
+
+.send-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.send-ring-icon { font-size: 34px; color: var(--primary-color); }
+.send-ring-center strong { font-family: var(--font-display); font-size: 26px; font-weight: 900; color: var(--text-on-surface); }
+
+.send-screen[data-upload-sender-state-value="offline"] .send-ring-icon,
+.send-screen[data-upload-sender-state-value="error"] .send-ring-icon { color: var(--secondary-color); }
+.send-screen[data-upload-sender-state-value="done"] .send-ring-fill,
+.send-screen[data-upload-sender-state-value="empty"] .send-ring-fill { stroke: var(--tertiary-color); }
+.send-screen[data-upload-sender-state-value="done"] .send-ring-icon,
+.send-screen[data-upload-sender-state-value="empty"] .send-ring-icon { color: var(--tertiary-color); font-size: 56px; }
+.send-screen[data-upload-sender-state-value="offline"] .send-ring-fill { stroke: var(--secondary-color); }
+
+.send-actions {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.send-next { justify-content: center; gap: 8px; }
+.send-actions [hidden] { display: none; }
+
+/* Aviso do topo: vídeo guardado no aparelho esperando envio. */
+.pending-upload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px calc(var(--column-gutter) + var(--screen-pad)) 0;
+  padding: 10px 12px;
+  border: 1px solid var(--secondary-color);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  color: var(--text-on-surface);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.pending-upload[hidden] { display: none; }
+.pending-upload .material-symbols-outlined { color: var(--secondary-color); }
+.pending-upload strong { margin-left: auto; color: var(--primary-color); white-space: nowrap; }
