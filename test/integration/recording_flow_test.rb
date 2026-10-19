@@ -121,12 +121,20 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     Rails.configuration.x.flipaai.automatic_review = false
   end
 
-  test "rejeita vídeo longo, formato inválido, sem vídeo e sem checklist" do
-    assert_no_difference -> { TrainingSession.count } do
-      upload(duration: "40")
-      assert_response :unprocessable_entity
-      assert_match "15 segundos", response.parsed_body["errors"].join
+  test "vídeo mais longo que o sugerido entra inteiro e vai para a recompressão em 720p" do
+    assert_enqueued_with(job: TranscodeClipJob) do
+      upload(duration: "95")
+    end
+    assert_response :created
+    assert_equal 95.0, TrainingSession.last.clip_duration
 
+    get new_recording_path
+    assert_match "Tente não enviar vídeos maiores que 40 segundos", response.body
+    assert_no_match(/até \d+ MB/, response.body)
+  end
+
+  test "rejeita formato inválido, sem vídeo e sem checklist" do
+    assert_no_difference -> { TrainingSession.count } do
       upload(file: "disfarcado.mp4")
       assert_match "Formato de vídeo não suportado", response.parsed_body["errors"].join
 

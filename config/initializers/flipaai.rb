@@ -2,8 +2,12 @@ Rails.application.configure do
   config.x.flipaai = ActiveSupport::OrderedOptions.new
   config.x.flipaai.support_whatsapp = ENV.fetch("FLIPAAI_SUPPORT_WHATSAPP", "5561999999999")
   config.x.flipaai.minimum_age      = 13
-  config.x.flipaai.max_clip_seconds = 15
-  config.x.flipaai.max_clip_bytes   = 40.megabytes
+  # Vídeos: a câmera do app para sozinha em max_clip_seconds e a tela sugere não
+  # passar disso, mas vídeo mais longo da galeria entra inteiro. max_clip_bytes é só
+  # um teto de segurança (um arquivo gigante travaria o servidor): tudo é guardado em
+  # 720p (TranscodeClipJob), então o que fica no armazenamento é pequeno.
+  config.x.flipaai.max_clip_seconds = 40
+  config.x.flipaai.max_clip_bytes   = 500.megabytes
   # ffmpeg limpa a localização (GPS) dos vídeos antes de guardar (ClipSanitizer).
   config.x.flipaai.ffmpeg_path      = ENV.fetch("FFMPEG_PATH", "ffmpeg")
   # Mapa de Picos (Google Maps). A chave vai para o navegador (é assim no Google

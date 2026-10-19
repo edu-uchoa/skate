@@ -1,6 +1,5 @@
 <% content_for :section, "Gravar" %>
 <% max_seconds = TrainingSession.max_clip_seconds %>
-<% max_mb      = TrainingSession.max_clip_bytes / 1.megabyte %>
 
 <section class="rec-screen"
          data-controller="recorder"
@@ -12,7 +11,7 @@
     <span class="step-indicator">Devolutiva do mentor em até 48h</span>
     <h2 class="screen-title">Grave sua manobra</h2>
     <p class="screen-desc">
-      Até <%= max_seconds %>s de vídeo. Posicione o celular de lado, pegando o corpo inteiro e o skate.
+      Tente não enviar vídeos maiores que <%= max_seconds %> segundos. Posicione o celular de lado, pegando o corpo inteiro e o skate.
     </p>
   </header>
 
@@ -52,7 +51,7 @@
         <span class="material-symbols-outlined rec-option-icon">upload</span>
         <span class="rec-option-text">
           <strong>Fazer upload de vídeo</strong>
-          <small>MP4, MOV ou WebM · até <%= max_mb %> MB</small>
+          <small>MP4, MOV ou WebM · de preferência até <%= max_seconds %>s</small>
         </span>
       </button>
 
@@ -84,6 +83,10 @@
         <video data-recorder-target="previewVideo" controls playsinline></video>
       </div>
       <p class="auth-hint" data-recorder-target="meta"></p>
+      <p class="zine-status warn" data-recorder-target="warning" hidden>
+        <span class="material-symbols-outlined" aria-hidden="true">timer</span>
+        Tente não enviar vídeos maiores que <%= max_seconds %> segundos: o mentor consegue ver melhor um trecho curto. Este vai inteiro mesmo assim.
+      </p>
       <button type="button" class="auth-secondary-btn" data-action="recorder#discard">
         Descartar e escolher outro
       </button>

@@ -13,7 +13,7 @@ export default class extends Controller {
   static targets = [
     "form", "chooser", "camera", "live", "timer", "recordButton", "recordLabel",
     "preview", "previewVideo", "meta", "fileInput", "captureInput",
-    "duration", "source", "check", "progress", "progressBar", "progressLabel", "errors", "submit"
+    "duration", "source", "check", "progress", "progressBar", "progressLabel", "errors", "submit", "warning"
   ]
   static values = { maxSeconds: Number, maxBytes: Number, types: Array }
 
@@ -158,6 +158,8 @@ export default class extends Controller {
     this.metaTarget.textContent = parts.join(" · ")
     this.durationTarget.value = duration ? duration.toFixed(2) : ""
     this.sourceTarget.value = source
+    // Mais longo que o sugerido: só avisa, o vídeo entra inteiro.
+    this.warningTarget.hidden = !(duration && duration > this.maxSecondsValue + 1)
 
     this.show("preview")
     this.refresh()
@@ -183,9 +185,6 @@ export default class extends Controller {
     }
     if (file.size > this.maxBytesValue) {
       problems.push(`O vídeo tem ${formatMegabytes(file.size)}; o máximo é ${formatMegabytes(this.maxBytesValue)}.`)
-    }
-    if (duration && duration > this.maxSecondsValue + 1) {
-      problems.push(`O vídeo tem ${Math.round(duration)}s; o máximo é ${this.maxSecondsValue}s. Corte ou grave de novo.`)
     }
     return problems
   }

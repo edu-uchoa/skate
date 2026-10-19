@@ -5,7 +5,7 @@ class TrainingSession < ApplicationRecord
   has_one :ai_review, dependent: :destroy
   has_many :clip_accesses, dependent: :delete_all # quem (além do dono) assistiu ao vídeo
   has_one :skate_session, dependent: :nullify      # se este vídeo comprovou um rolê (ofensiva)
-  has_one_attached :clip   # vídeo de até ~15s da análise de queda
+  has_one_attached :clip   # vídeo do treino; guardado em 720p (TranscodeClipJob)
 
   enum :status, {
     scheduled: 0,    # compromisso marcado
@@ -23,7 +23,7 @@ class TrainingSession < ApplicationRecord
 
   CLIP_PROBLEMS = {
     format:      "Formato de vídeo não suportado. Envie MP4, MOV ou WebM.",
-    size:        "O vídeo passa de %{mb} MB. Grave um trecho menor.",
+    size:        "O vídeo passa de %{mb} MB, o máximo que dá para receber. Corte um trecho e envie de novo.",
     unreadable:  "Não conseguimos ler este vídeo. Grave de novo ou escolha outro arquivo.",
     unavailable: "Não conseguimos proteger este vídeo agora. Tente de novo em alguns minutos."
   }.freeze
@@ -32,7 +32,9 @@ class TrainingSession < ApplicationRecord
   validate :validate_clip, if: -> { clip.attached? && attachment_changes.key?("clip") }
   # Vídeo gravado no horário de um rolê marcado no mapa: vale como sessão da ofensiva.
   before_save -> { self.recorded_at_meetup = user.meetups.provable_at(Time.current).exists? },
-              if: -> { attachment_changes.key?("clip") && clip.attached? }
+              if: -> { attachment_changes.key?("clip") && clip.attached? && !@replacing_clip }
+  # Vídeo novo: recomprime para 720p em segundo plano, sem o envio esperar.
+  after_commit :schedule_transcode, if: -> { @clip_uploaded }
   validate -> { errors.add(:base, clip_problem(@clip_problem)) }, if: -> { @clip_problem }
   validate :validate_recording, on: :recording
 
@@ -84,6 +86,7 @@ class TrainingSession < ApplicationRecord
     return super if attachable.nil? || attachable == ""
 
     super(ClipSanitizer.new(attachable, max_bytes: self.class.max_clip_bytes).call)
+    @clip_uploaded = true unless @replacing_clip
   rescue ClipSanitizer::Error => e
     @clip_problem = e.reason
   end
@@ -109,6 +112,19 @@ class TrainingSession < ApplicationRecord
       skate_session.destroy! if skate_session && !skate_session.validated?
       clip.purge
     end
+  end
+
+  # Troca o arquivo pela versão recomprimida (TranscodeClipJob) sem contar como envio
+  # novo: o rolê da ofensiva e a fila do mentor continuam os mesmos.
+  def replace_clip_with(io, metadata:)
+    @replacing_clip = true
+    clip.attach(io: io, filename: "video.mp4", content_type: "video/mp4")
+    return false unless clip.attached?
+
+    clip.blob.custom_metadata = metadata
+    clip.blob.save!
+  ensure
+    @replacing_clip = false
   end
 
   # Andamento do vídeo até a devolutiva:
@@ -160,10 +176,11 @@ class TrainingSession < ApplicationRecord
 
     errors.add(:base, clip_problem(:format)) unless CLIP_CONTENT_TYPES.include?(blob.content_type)
     errors.add(:base, clip_problem(:size)) if blob.byte_size > self.class.max_clip_bytes
+    # A duração não tem limite: a tela só sugere até max_clip_seconds (40s).
+  end
 
-    # Margem de 1s: a duração medida no navegador varia um pouco entre aparelhos.
-    if clip_duration && clip_duration > self.class.max_clip_seconds + 1
-      errors.add(:base, "O vídeo passa de #{self.class.max_clip_seconds} segundos. Corte ou grave de novo.")
-    end
+  def schedule_transcode
+    @clip_uploaded = false
+    TranscodeClipJob.perform_later(self) if clip.attached?
   end
 end

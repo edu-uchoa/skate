@@ -72,6 +72,13 @@ COPY --chown=rails:rails --from=build /rails /rails
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Vídeos do FlipaAi: o Thruster corta em 30s quem demora para enviar ou receber; um
+# vídeo grande pelo 4G leva mais que isso. E as tarefas em segundo plano (720p dos
+# vídeos, limpezas) rodam dentro do Puma, sem precisar de outro servidor.
+ENV HTTP_READ_TIMEOUT="300" \
+    HTTP_WRITE_TIMEOUT="300" \
+    SOLID_QUEUE_IN_PUMA="1"
+
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
 CMD ["./bin/thrust", "./bin/rails", "server"]
