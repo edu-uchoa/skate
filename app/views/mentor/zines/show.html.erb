@@ -62,6 +62,10 @@
                     <span class="zine-code"><%= training_session.maneuver.code %></span>
                   </div>
                   <p class="auth-hint"><%= zine_clip_details(training_session) %></p>
+                  <p class="zine-expiry <%= "is-soon" if clip_expiring_soon?(training_session) %>">
+                    <span class="material-symbols-outlined" aria-hidden="true">auto_delete</span>
+                    <%= clip_expiry_label(training_session) %>
+                  </p>
 
                   <% if outcome_label(training_session) %>
                     <p class="mentor-outcome">Resultado declarado: <strong><%= outcome_label(training_session) %></strong></p>

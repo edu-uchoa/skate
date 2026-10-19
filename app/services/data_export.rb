@@ -59,6 +59,7 @@ class DataExport
         status: session.status, resultado: session.outcome, anotacoes: session.notes, lugar: session.location_name,
         enviado_em: session.submitted_at,
         video: (@clip_url.call(session) if session.clip.attached?),
+        video_sera_apagado_em: (session.clip_expires_at if session.clip.attached?),
         devolutiva: (review.slice(:headline, :strengths, :mistake, :next_focus, :completed_at, :revised_at) if review&.status_completed?),
         quem_assistiu: session.clip_accesses.map { |access| { em: access.created_at, mentor: access.viewer&.handle || "mentor" } }
       }

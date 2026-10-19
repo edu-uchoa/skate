@@ -9,6 +9,7 @@ module Mentor
 
     def show
       @tab = TABS.include?(params[:aba]) ? params[:aba] : "fila"
+      TrainingSession.purge_expired_clips! # vídeo que passou de 1 mês sai da fila
 
       sessions = learner_clips.includes(user: :diagnosis)
       @learners =

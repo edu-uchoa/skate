@@ -6,6 +6,7 @@ class ZinesController < ApplicationController
   before_action :require_age_gate
 
   def show
+    TrainingSession.purge_expired_clips! # vídeo que passou de 1 mês não aparece mais
     @training_sessions = current_user.training_sessions.with_clip.recent
     @analysis_running  = @training_sessions.any?(&:analysis_running?)
   end

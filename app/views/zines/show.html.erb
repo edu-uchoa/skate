@@ -8,6 +8,7 @@
     <h2 class="screen-title">Zine</h2>
     <p class="screen-desc">
       Todo vídeo que você grava ou envia fica guardado aqui, com o andamento da devolutiva do mentor.
+      <strong>Cada vídeo é apagado sozinho 1 mês depois do envio</strong>; a devolutiva do mentor continua valendo.
       <% if @analysis_running %>A página se atualiza sozinha enquanto o mentor responde.<% end %>
     </p>
   </header>
@@ -51,6 +52,10 @@
               <span class="zine-code"><%= training_session.maneuver.code %></span>
             </div>
             <p class="auth-hint"><%= zine_clip_details(training_session) %></p>
+            <p class="zine-expiry <%= "is-soon" if clip_expiring_soon?(training_session) %>">
+              <span class="material-symbols-outlined" aria-hidden="true">auto_delete</span>
+              <%= clip_expiry_label(training_session) %>
+            </p>
 
             <p class="zine-status <%= stage[:tone] %>">
               <span class="material-symbols-outlined <%= 'zine-spin' if training_session.analysis_stage == :processing %>"><%= stage[:icon] %></span>

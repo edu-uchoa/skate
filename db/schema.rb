@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -244,6 +244,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
   end
 
   create_table "training_sessions", force: :cascade do |t|
+    t.datetime "clip_uploaded_at"
     t.datetime "created_at", null: false
     t.boolean "gear_checked", default: false, null: false
     t.boolean "ground_clear", default: false, null: false
@@ -261,6 +262,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
     t.datetime "submitted_at"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["clip_uploaded_at"], name: "index_training_sessions_on_clip_uploaded_at"
     t.index ["maneuver_id"], name: "index_training_sessions_on_maneuver_id"
     t.index ["scheduled_on"], name: "index_training_sessions_on_scheduled_on"
     t.index ["user_id", "status"], name: "index_training_sessions_on_user_id_and_status"

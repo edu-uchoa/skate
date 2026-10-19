@@ -93,7 +93,7 @@ class MentorZineTest < ActionDispatch::IntegrationTest
   end
 
   test "avisa quando o vídeo passou do prazo de 48h" do
-    @teen_clip.clip.blob.update_columns(created_at: 3.days.ago) # o prazo conta desde que o vídeo chegou
+    @teen_clip.update_columns(clip_uploaded_at: 3.days.ago) # o prazo conta desde que o vídeo chegou
     sign_in("mentor@example.com")
     get mentor_zine_path
 

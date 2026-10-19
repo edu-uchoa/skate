@@ -12,6 +12,11 @@ class ClipsController < ApplicationController
   def show
     @training_session = TrainingSession.with_clip.find(params[:id])
     return head(:not_found) unless @training_session.clip_visible_to?(current_user)
+    # Passou de 1 mês: apaga agora, mesmo que a limpeza automática ainda não tenha rodado.
+    if @training_session.clip_expired?
+      @training_session.remove_clip!
+      return head(:not_found)
+    end
 
     record_access
     blob = @training_session.clip.blob

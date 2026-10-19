@@ -23,12 +23,13 @@
     <ol class="mentor-learners">
       <% @videos.each do |video| %>
         <li class="auth-card" id="<%= dom_id(video, :admin) %>">
-          <span class="auth-card-label"><%= video.maneuver.label %> · <%= admin_time(video.clip.blob.created_at) %></span>
+          <span class="auth-card-label"><%= video.maneuver.label %> · <%= admin_time(video.waiting_since) %></span>
           <span class="auth-card-value"><%= admin_user_name(video.user) %></span>
           <span class="auth-hint">
             <%= admin_role_label(video.user) %> ·
             <%= video.ai_review&.status_completed? ? "com devolutiva" : "esperando o mentor" %>
           </span>
+          <span class="zine-expiry"><span class="material-symbols-outlined" aria-hidden="true">auto_delete</span><%= clip_expiry_label(video) %></span>
 
           <details class="admin-video">
             <summary class="auth-link">Assistir</summary>

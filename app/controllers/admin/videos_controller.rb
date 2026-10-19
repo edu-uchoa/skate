@@ -3,7 +3,8 @@ module Admin
   # para o mais antigo, para assistir e apagar.
   class VideosController < BaseController
     def index
-      @videos = TrainingSession.with_clip.includes(:user).order(id: :desc).limit(LIMIT)
+      TrainingSession.purge_expired_clips!
+      @videos =TrainingSession.with_clip.includes(:user).order(id: :desc).limit(LIMIT)
     end
 
     def destroy

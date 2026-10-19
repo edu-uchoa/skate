@@ -47,6 +47,19 @@ class TrainingSession < ApplicationRecord
   # Entram assim que o vídeo chega: o resultado que o aprendiz registra é só um dado a mais.
   scope :awaiting_review, -> { where.not(id: AiReview.status_completed.select(:training_session_id)) }
 
+  # Cada vídeo fica guardado por 1 mês, contado de quando a pessoa enviou; depois é
+  # apagado sozinho (PurgeExpiredClipsJob). A devolutiva já recebida continua.
+  CLIP_RETENTION = 1.month
+  scope :clip_expired, -> { joins(:clip_attachment).where(clip_uploaded_at: ..CLIP_RETENTION.ago) }
+
+  # Apaga os vídeos que passaram do prazo. Devolve quantos apagou.
+  def self.purge_expired_clips!
+    clip_expired.find_each.count do |training_session|
+      training_session.remove_clip!
+      Rails.logger.info("[FlipaAi] vídeo do treino #{training_session.id} apagado: passou de 1 mês")
+    end
+  end
+
   CHECKLIST = %i[gear_checked ground_clear space_safe].freeze
 
   def checklist_complete?
@@ -86,7 +99,10 @@ class TrainingSession < ApplicationRecord
     return super if attachable.nil? || attachable == ""
 
     super(ClipSanitizer.new(attachable, max_bytes: self.class.max_clip_bytes).call)
-    @clip_uploaded = true unless @replacing_clip
+    return if @replacing_clip
+
+    @clip_uploaded = true
+    self.clip_uploaded_at = Time.current # o prazo de 1 mês conta daqui
   rescue ClipSanitizer::Error => e
     @clip_problem = e.reason
   end
@@ -142,7 +158,12 @@ class TrainingSession < ApplicationRecord
   def awaiting_review? = clip.attached? && !ai_review&.status_completed?
 
   # Desde quando o vídeo espera o mentor (o prazo de 48h conta a partir daqui).
-  def waiting_since = clip.blob.created_at
+  def waiting_since = clip_uploaded_at || clip.blob.created_at
+
+  # Quando o vídeo será apagado (exatamente 1 mês depois do envio).
+  def clip_expires_at = waiting_since + CLIP_RETENTION
+
+  def clip_expired? = clip_expires_at <= Time.current
 
   def self.max_clip_seconds = Rails.configuration.x.flipaai.max_clip_seconds
   def self.max_clip_bytes   = Rails.configuration.x.flipaai.max_clip_bytes
@@ -161,7 +182,7 @@ class TrainingSession < ApplicationRecord
     return unless clip.attached? && recorded_at_meetup? && skate_session.nil?
 
     # Se o mentor já respondeu, a sessão já nasce validada.
-    create_skate_session!(user: user, skated_on: clip.blob.created_at.in_time_zone(user.time_zone).to_date,
+    create_skate_session!(user: user, skated_on: waiting_since.in_time_zone(user.time_zone).to_date,
                           validated_at: (Time.current if ai_review&.status_completed?))
   end
 

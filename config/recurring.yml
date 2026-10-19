@@ -17,3 +17,7 @@ production:
   purge_expired_meetups:
     class: PurgeExpiredMeetupsJob
     schedule: every hour at minute 5
+  # Vídeos que passaram de 1 mês desde o envio (PurgeExpiredClipsJob).
+  purge_expired_clips:
+    class: PurgeExpiredClipsJob
+    schedule: every 10 minutes

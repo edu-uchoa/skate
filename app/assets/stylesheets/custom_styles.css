@@ -3620,3 +3620,15 @@ a.guide-tab {
   text-transform: uppercase;
   white-space: nowrap;
 }
+
+/* Prazo do vídeo (apagado sozinho 1 mês depois do envio). */
+.zine-expiry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-variant);
+}
+
+.zine-expiry .material-symbols-outlined { font-size: 16px; }
+.zine-expiry.is-soon { color: var(--secondary-color); font-weight: 700; }
