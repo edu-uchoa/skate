@@ -103,7 +103,8 @@
            ground_clear: "Chão plano e sem pedrinhas",
            space_safe:   "Ambiente seguro e livre de perigos" }.each do |attribute, label| %>
         <label class="rec-check">
-          <%= f.check_box attribute, data: { recorder_target: "check", action: "recorder#refresh" } %>
+          <%# Vindo do checklist pré-sessão, os itens já chegam marcados (?checklist=ok). %>
+          <%= f.check_box attribute, checked: params[:checklist] == "ok", data: { recorder_target: "check", action: "recorder#refresh" } %>
           <span><%= label %></span>
         </label>
       <% end %>

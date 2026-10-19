@@ -3714,3 +3714,31 @@ a.guide-tab {
 .pending-upload[hidden] { display: none; }
 .pending-upload .material-symbols-outlined { color: var(--secondary-color); }
 .pending-upload strong { margin-left: auto; color: var(--primary-color); white-space: nowrap; }
+
+/* Checklist pré-sessão (training_sessions/new): o marcado vem do checkbox (:has). */
+.check-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.check-item .check-box-square { border-radius: 6px; color: transparent; }
+.check-item .check-box-square .material-symbols-outlined { font-size: 16px; }
+.check-item .check-text { font-size: 12px; font-weight: 700; color: var(--text-on-surface); }
+
+.check-item:has(.check-input:checked) { border-color: #30D158; background: #18231c; }
+.check-item:has(.check-input:checked) .check-box-square { background: #30D158; border-color: #30D158; color: #000; }
+.check-item:has(.check-input:focus-visible) { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+.check-hint { text-align: center; }
+.check-hint[hidden] { display: none; }
+
+/* Botão principal desligado (ex.: checklist incompleto): fica claro que não dá para tocar. */
+.tactile-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none !important;
+  transform: none;
+}

@@ -15,6 +15,15 @@ class TrainingSessionsController < ApplicationController
     )
     @training_session.assign_attributes(checklist_params)
 
+    unless @training_session.checklist_complete?
+      @training_session.errors.add(:base, "Marque os três itens do checklist de segurança para começar.")
+      return render :new, status: :unprocessable_entity
+    end
+
+    # "Gravar o vídeo do treino": vai para a tela Gravar com a manobra e o checklist já
+    # marcados. O treino nasce lá, junto com o vídeo.
+    return redirect_to new_recording_path(maneuver_slug: @maneuver.slug, checklist: "ok") if params[:gravar].present?
+
     if @training_session.save && @training_session.start!
       redirect_to result_training_session_path(@training_session)
     else
