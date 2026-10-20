@@ -121,6 +121,14 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     Rails.configuration.x.flipaai.automatic_review = false
   end
 
+  test "a câmera do app tem o botão de trocar entre traseira e frontal" do
+    get new_recording_path
+    assert_select "[data-recorder-target=camera]" do
+      assert_select "button.rec-switch-btn[data-action='recorder#switchCamera'][hidden][aria-label]" # aparece só com 2 câmeras
+      assert_select "[data-recorder-target=notice][hidden]"
+    end
+  end
+
   test "vídeo mais longo que o sugerido entra inteiro e vai para a recompressão em 720p" do
     assert_enqueued_with(job: TranscodeClipJob) do
       upload(duration: "95")

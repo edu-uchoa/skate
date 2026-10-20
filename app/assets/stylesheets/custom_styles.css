@@ -3742,3 +3742,30 @@ a.guide-tab {
   box-shadow: none !important;
   transform: none;
 }
+
+/* Gravar: trocar entre câmera traseira e frontal. */
+.rec-switch-btn {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.rec-switch-btn[hidden] { display: none; }
+.rec-switch-btn .material-symbols-outlined { font-size: 28px; }
+.rec-switch-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.rec-switch-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+
+/* A câmera frontal aparece espelhada na tela (o vídeo gravado fica normal). */
+.rec-video-frame video.is-mirrored { transform: scaleX(-1); }

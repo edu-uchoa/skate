@@ -13,7 +13,7 @@ const TYPES_BY_EXTENSION = { mp4: "video/mp4", m4v: "video/mp4", mov: "video/qui
 export default class extends Controller {
   static targets = [
     "form", "chooser", "camera", "live", "timer", "recordButton", "recordLabel",
-    "preview", "previewVideo", "meta", "fileInput", "captureInput",
+    "preview", "previewVideo", "meta", "fileInput", "captureInput", "switchButton", "notice",
     "duration", "source", "check", "progress", "progressLabel", "errors", "submit", "warning"
   ]
   static values = { maxSeconds: Number, maxBytes: Number, types: Array, owner: String }
@@ -33,6 +33,7 @@ export default class extends Controller {
 
   async openCamera() {
     this.clearErrors()
+    if (this.hasNoticeTarget) this.noticeTarget.hidden = true
 
     // Sem API de gravação (ex.: acesso por http fora de localhost): câmera nativa.
     if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
@@ -40,27 +41,108 @@ export default class extends Controller {
       return
     }
 
+    this.facing ||= "environment" // começa pela traseira; a pessoa pode trocar
     try {
-      this.stream = await this.requestStream(true)
+      await this.openStream(this.facing)
     } catch (error) {
-      this.showErrors([cameraErrorMessage(error)])
-      return
+      // A câmera escolhida não abriu (quebrada ou em uso): tenta a outra antes de desistir.
+      if (error.name === "NotAllowedError") return this.showErrors([cameraErrorMessage(error)])
+      try {
+        await this.openStream(otherFacing(this.facing))
+        this.showNotice(`A câmera ${facingName(otherFacing(this.facing))} não abriu, então abrimos a ${facingName(this.facing)}.`)
+      } catch (_fallbackError) {
+        return this.showErrors([cameraErrorMessage(error)])
+      }
     }
 
-    this.liveTarget.srcObject = this.stream
     this.renderTimer(0)
     this.show("camera")
+    this.refreshSwitch()
   }
 
-  // Tenta com microfone; se não houver, grava só o vídeo.
-  async requestStream(withAudio) {
-    const video = { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+  // Liga a câmera pedida (frente ou trás) e mostra na tela.
+  async openStream(facing) {
+    this.stopStream()
+    this.stream = await this.requestStream(true, facing)
+    this.facing = facing
+    this.liveTarget.srcObject = this.stream
+    this.liveTarget.play?.()?.catch(() => {}) // o iPhone às vezes não volta a tocar sozinho depois da troca
+    // A frontal aparece espelhada na tela, como um espelho (o vídeo gravado não espelha).
+    this.liveTarget.classList.toggle("is-mirrored", facing === "user")
+  }
+
+  // Tenta com microfone; se não houver, grava só o vídeo. Pede exatamente a câmera
+  // escolhida; se o aparelho não entende "exata", pede a mais parecida.
+  async requestStream(withAudio, facing = "environment", exact = true) {
+    const video = { facingMode: exact ? { exact: facing } : facing, width: { ideal: 1280 }, height: { ideal: 720 } }
     try {
       return await navigator.mediaDevices.getUserMedia({ video, audio: withAudio })
     } catch (error) {
-      if (withAudio && error.name !== "NotAllowedError") return this.requestStream(false)
+      if (exact && ["OverconstrainedError", "NotFoundError"].includes(error.name)) {
+        return this.requestStream(withAudio, facing, false)
+      }
+      if (withAudio && error.name !== "NotAllowedError") return this.requestStream(false, facing, exact)
       throw error
     }
+  }
+
+  // Trocar câmera (frente/trás). Não troca no meio da gravação: o vídeo quebraria.
+  async switchCamera() {
+    if (this.recorder?.state === "recording" || this.switching) return
+    this.switching = true
+    this.clearErrors()
+    const previous = this.facing
+    const previousDevice = this.currentDeviceId()
+    try {
+      await this.openStream(otherFacing(previous))
+      // Aparelho que não diz qual câmera é frente ou trás (alguns Android, computador):
+      // veio a mesma câmera, então passa para a próxima da lista.
+      if (previousDevice && this.currentDeviceId() === previousDevice) await this.openNextDevice(previousDevice)
+    } catch (_error) {
+      // A outra câmera não funciona: volta para a que estava.
+      try { await this.openStream(previous) } catch (_again) { /* fica sem imagem; Cancelar e tentar de novo */ }
+      this.showErrors([`A câmera ${facingName(otherFacing(previous))} não abriu neste aparelho. Continue com a ${facingName(previous)}.`])
+    } finally {
+      this.switching = false
+      this.refreshSwitch()
+    }
+  }
+
+  currentDeviceId() {
+    return this.stream?.getVideoTracks()[0]?.getSettings?.().deviceId || null
+  }
+
+  // Abre a câmera seguinte da lista do aparelho (pelo id), mantendo o microfone.
+  async openNextDevice(currentId) {
+    const cameras = (await navigator.mediaDevices.enumerateDevices()).filter((device) => device.kind === "videoinput")
+    if (cameras.length < 2) return
+    const index = cameras.findIndex((camera) => camera.deviceId === currentId)
+    const next = cameras[(index + 1) % cameras.length]
+    const video = { deviceId: { exact: next.deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } }
+
+    this.stopStream()
+    try {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video, audio: true })
+    } catch (_error) {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video, audio: false })
+    }
+    this.liveTarget.srcObject = this.stream
+    this.liveTarget.play?.()?.catch(() => {})
+  }
+
+  // O botão de trocar só aparece com mais de uma câmera, e fica desligado gravando.
+  async refreshSwitch() {
+    if (!this.hasSwitchButtonTarget) return
+    let devices = []
+    try {
+      devices = (await navigator.mediaDevices.enumerateDevices?.()) || []
+    } catch (_error) {
+      devices = [] // navegador sem lista de câmeras: sem o botão de trocar
+    }
+    const cameras = devices.filter((device) => device.kind === "videoinput").length
+    this.switchButtonTarget.hidden = cameras < 2
+    this.switchButtonTarget.disabled = this.recorder?.state === "recording"
+    this.switchButtonTarget.setAttribute("aria-label", `Trocar para a câmera ${facingName(otherFacing(this.facing))}`)
   }
 
   closeCamera() {
@@ -90,6 +172,7 @@ export default class extends Controller {
     }, 200)
 
     this.recordButtonTarget.classList.add("recording")
+    this.refreshSwitch()
     this.recordLabelTarget.textContent = "Parar"
   }
 
@@ -104,6 +187,7 @@ export default class extends Controller {
 
   finishRecording() {
     this.recordButtonTarget.classList.remove("recording")
+    this.refreshSwitch()
     this.recordLabelTarget.textContent = "Gravar"
     if (!this.keepRecording) return
 
@@ -246,6 +330,13 @@ export default class extends Controller {
     this.timerTarget.textContent = `00:${pad(seconds)} / 00:${pad(this.maxSecondsValue)}`
   }
 
+  // Aviso que não é erro (ex.: abriu a outra câmera porque a primeira falhou).
+  showNotice(message) {
+    if (!this.hasNoticeTarget) return
+    this.noticeTarget.textContent = message
+    this.noticeTarget.hidden = false
+  }
+
   showErrors(messages) {
     this.errorsTarget.replaceChildren(...messages.map((message) => {
       const item = document.createElement("li")
@@ -291,6 +382,9 @@ function readDuration(file) {
     video.src = url
   })
 }
+
+const otherFacing = (facing) => (facing === "user" ? "environment" : "user")
+const facingName = (facing) => (facing === "user" ? "frontal" : "traseira")
 
 function cameraErrorMessage(error) {
   switch (error?.name) {
