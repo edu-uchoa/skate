@@ -17,9 +17,13 @@ module ApplicationHelper
   end
   # Menu de baixo: só depois do onboarding, a partir da trilha. Antes disso (logo,
   # login, nickname, idade, perguntas e plano) a pessoa segue pelos botões da tela.
+  # A conta de mentor (que não faz as perguntas) sempre tem o menu. O super admin
+  # também é aprendiz: segue a regra do aprendiz, e fora isso só tem o menu dentro das
+  # áreas de mentor e do painel.
   def show_bottom_nav?
     return false if !signed_in? || controller_path.start_with?("onboarding/")
-    current_user.onboarded? || current_user.mentor_access?
+    return true if current_user.onboarded? || current_user.mentor_account?
+    current_user.mentor_access? && controller_path.start_with?("mentor/", "admin/")
   end
 
   # Vídeo de treino: sempre pelo endereço protegido (/videos/:id) e sem os botões de

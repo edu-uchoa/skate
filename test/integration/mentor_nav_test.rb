@@ -65,4 +65,20 @@ class MentorNavTest < ActionDispatch::IntegrationTest
   ensure
     Rails.configuration.x.flipaai.super_admin_emails = original
   end
+
+  test "o super admin que ainda não fez as perguntas não vê o menu de baixo, como todo aprendiz" do
+    original = Rails.configuration.x.flipaai.super_admin_emails
+    Rails.configuration.x.flipaai.super_admin_emails = [ "dono@example.com" ]
+    sign_up_with_google("dono@example.com", nickname: "dono")
+
+    [ edit_nickname_path, my_account_path ].each do |path|
+      get path
+      assert_select ".phone-bottom-nav", 0, path
+    end
+
+    get admin_root_path
+    assert_select ".phone-bottom-nav", 1, "no painel o menu continua"
+  ensure
+    Rails.configuration.x.flipaai.super_admin_emails = original
+  end
 end
