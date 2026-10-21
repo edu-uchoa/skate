@@ -15,12 +15,12 @@ module ApplicationHelper
   def new_reviews_count
     @new_reviews_count ||= AiReview.unseen.joins(:training_session).where(training_sessions: { user_id: current_user.id }).count
   end
-  # Menu de baixo: só depois do onboarding, a partir da trilha. Antes disso (logo,
-  # login, nickname, idade, perguntas e plano) a pessoa segue pelos botões da tela.
-  # A conta de mentor (que não faz as perguntas) sempre tem o menu. O super admin
-  # também é aprendiz: segue a regra do aprendiz, e fora isso só tem o menu dentro das
-  # áreas de mentor e do painel.
-  def show_bottom_nav?
+  # Menus do app (o de cima e o de baixo): só depois do onboarding, a partir da trilha.
+  # Antes disso (logo, login, nickname, idade, perguntas e plano) a pessoa segue pelos
+  # botões da tela, sem distração. A conta de mentor (que não faz as perguntas) sempre
+  # tem os menus. O super admin também é aprendiz: segue a regra do aprendiz, e fora
+  # isso só tem os menus dentro das áreas de mentor e do painel.
+  def show_app_menus?
     return false if !signed_in? || controller_path.start_with?("onboarding/")
     return true if current_user.onboarded? || current_user.mentor_account?
     current_user.mentor_access? && controller_path.start_with?("mentor/", "admin/")

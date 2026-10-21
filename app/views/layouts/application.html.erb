@@ -33,9 +33,10 @@
     <div class="grain"></div>
 
     <!-- App em tela cheia; em tablet e computador o conteúdo fica numa coluna central (--app-column) -->
-    <div class="phone-container<%= " no-bottom-nav" unless show_bottom_nav? %>">
+    <div class="phone-container<%= " no-app-menus" unless show_app_menus? %>">
 
-      <!-- Fixed Top Header -->
+      <!-- Menu de cima: some junto com o de baixo antes da trilha (show_app_menus?) -->
+      <% if show_app_menus? %>
       <header class="phone-header-bar">
         <div class="header-left">
           <button class="icon-btn" onclick="alert('Menu (em breve)')" title="Abrir Menu de Navegação">
@@ -75,6 +76,7 @@
           </button>
         </div>
       </header>
+      <% end %>
 
       <!-- Main Screens Content Viewport -->
       <div class="phone-content" style="overflow-y: auto;">
@@ -95,9 +97,9 @@
       </div>
 
       <!-- Bottom Navigation: a de mentor (Todos, Na fila, Ofensivas, Chat) ou a de aprendiz -->
-      <% if show_bottom_nav? && mentor_nav? %>
+      <% if show_app_menus? && mentor_nav? %>
         <%= render "shared/mentor_nav" %>
-      <% elsif show_bottom_nav? %>
+      <% elsif show_app_menus? %>
       <nav class="phone-bottom-nav">
         <a href="<%= my_account_path %>" class="nav-btn <%= 'active' if controller_name == "accounts" && action_name == "show" %>">
           <span class="material-symbols-outlined" style="font-size: 22px;">person</span>

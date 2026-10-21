@@ -1,7 +1,7 @@
 require "test_helper"
 
 # Do primeiro toque no app até a trilha: logo → Google → nickname → idade →
-# perguntas → plano → trilha. O menu de baixo só aparece na trilha.
+# perguntas → plano → trilha. Os menus (de cima e de baixo) só aparecem na trilha.
 class OnboardingFlowTest < ActionDispatch::IntegrationTest
   setup do
     learning_module = LearningModule.create!(code: "0", name: "BASE", position: 0)
@@ -9,7 +9,11 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
                      position: 0, kind: :drill, description: "Monte o seu skate.")
   end
 
-  def assert_no_bottom_nav(where) = assert_select(".phone-bottom-nav", 0, "#{where}: sem o menu de baixo")
+  # Antes da trilha, nem o menu de cima nem o de baixo.
+  def assert_no_menus(where)
+    assert_select ".phone-bottom-nav", 0, "#{where}: sem o menu de baixo"
+    assert_select ".phone-header-bar", 0, "#{where}: sem o menu de cima"
+  end
 
   test "a primeira tela é a logo com entrar pelo Google ou já tenho conta" do
     get root_path
@@ -17,7 +21,7 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_select "img.splash-logo[alt=FlipaAi]"
     assert_select ".splash-actions form[action='/auth/google_oauth2'] button#landing-start", /Começar agora!/
     assert_select ".splash-actions form[action='/auth/google_oauth2'] button", "Já tenho conta"
-    assert_no_bottom_nav "logo"
+    assert_no_menus "logo"
   end
 
   test "sem o Google configurado no servidor, o Começar agora! aparece desligado e com o aviso" do
@@ -43,13 +47,13 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     sign_in_with_google("nova@example.com")
     follow_redirect!
     assert_equal edit_nickname_path, path
-    assert_no_bottom_nav "nickname"
+    assert_no_menus "nickname"
 
     patch nickname_path, params: { nickname: { nickname: "novata", tag: "" } }
     assert_redirected_to onboarding_age_gate_path
     follow_redirect!
     assert_match "Pronto! No FlipaAi você é novata#", response.body
-    assert_no_bottom_nav "idade"
+    assert_no_menus "idade"
 
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 } }
     assert_response :unprocessable_entity, "sem aceitar os termos não segue"
@@ -58,18 +62,19 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 }, accept_terms: "1" }
     assert_redirected_to onboarding_diagnosis_path
     follow_redirect!
-    assert_no_bottom_nav "perguntas"
+    assert_no_menus "perguntas"
 
     patch onboarding_diagnosis_path(step: "level"), params: { diagnosis: { level: "never_ridden" } }
     patch onboarding_diagnosis_path(step: "blockers"), params: { diagnosis: { blockers: [ "fear_of_falling" ] } }
     patch onboarding_diagnosis_path(step: "setup"), params: { diagnosis: { setup: "store_board" } }
     assert_redirected_to summary_onboarding_diagnosis_path
     follow_redirect!
-    assert_no_bottom_nav "plano"
+    assert_no_menus "plano"
 
     get track_path
     assert_response :success
     assert_select ".phone-bottom-nav a.nav-btn.active[href=?]", track_path
+    assert_select ".phone-header-bar", 1, "na trilha o menu de cima volta"
     assert_no_match "14 DIAS", response.body
   end
 
