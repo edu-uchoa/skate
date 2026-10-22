@@ -7,6 +7,12 @@
 # original nunca chega ao armazenamento. A rotação do vídeo (em pé ou deitado) é
 # mantida. O arquivo também perde o nome original, que pode ter o nome da pessoa.
 #
+# Com um trecho (cut), copia só ele: o resto do vídeo também nunca é guardado. O corte
+# sem recomprimir começa no quadro-chave anterior ao ponto escolhido. No MP4/MOV, os
+# quadros antes do ponto ficam escondidos (o vídeo começa no lugar certo) e somem na
+# recompressão (TranscodeClipJob). No WebM, o vídeo pode começar até um quadro-chave
+# antes; a câmera do app grava um por segundo.
+#
 # Precisa do ffmpeg instalado (veja o README). Sem ele, o vídeo é recusado: é
 # melhor não receber do que guardar com a localização.
 class ClipSanitizer
@@ -33,9 +39,11 @@ class ClipSanitizer
   def self.ffmpeg = Rails.configuration.x.flipaai.ffmpeg_path
 
   # attachable: o arquivo enviado pelo navegador ou { io:, filename:, content_type: }.
-  def initialize(attachable, max_bytes: nil)
+  # cut: o trecho a guardar, em segundos (ex.: 3.5..18.0); sem ele, o vídeo inteiro.
+  def initialize(attachable, max_bytes: nil, cut: nil)
     @attachable = attachable
     @max_bytes  = max_bytes
+    @cut        = cut
   end
 
   # Devolve o vídeo limpo, no formato que o Active Storage aceita no attach.
@@ -63,7 +71,7 @@ class ClipSanitizer
 
   private
 
-  attr_reader :attachable, :max_bytes
+  attr_reader :attachable, :max_bytes, :cut
 
   def io = attachable.is_a?(Hash) ? attachable[:io] : attachable
   def declared_filename     = attachable.is_a?(Hash) ? attachable[:filename].to_s : attachable.try(:original_filename).to_s
@@ -81,9 +89,13 @@ class ClipSanitizer
     @copy.path
   end
 
+  def seconds(value) = format("%.3f", value)
+
   def run(input, output, muxer)
     command = [
-      self.class.ffmpeg, "-nostdin", "-hide_banner", "-v", "error", "-y", "-i", input,
+      self.class.ffmpeg, "-nostdin", "-hide_banner", "-v", "error", "-y",
+      *([ "-ss", seconds(cut.begin) ] if cut&.begin&.positive?), "-i", input, # começo do trecho
+      *([ "-t", seconds(cut.end - cut.begin) ] if cut),                        # quanto dura
       "-map", "0:v:0", "-map", "0:a:0?",            # só a imagem e o som (sem trilhas de dados)
       "-c", "copy",                                  # sem recomprimir
       "-map_metadata", "-1", "-map_chapters", "-1",  # nenhum metadado: GPS, data, aparelho, título

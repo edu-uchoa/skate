@@ -2,8 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 import { enqueue } from "lib/upload_queue"
 
 // Tela "Gravar": grava pela câmera (MediaRecorder) ou escolhe um arquivo,
-// mostra a pré-visualização, valida tamanho/duração/formato e envia via
-// FormData (multipart) com barra de progresso.
+// mostra a pré-visualização com a barra de corte (clip_trim_controller), valida
+// tamanho/formato e envia via FormData (multipart) com barra de progresso.
 //
 // Ordem de preferência na gravação: MP4 (Safari/iOS) e depois WebM (Chrome/Android).
 const RECORDING_TYPES = ["video/mp4", "video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm"]
@@ -14,9 +14,10 @@ export default class extends Controller {
   static targets = [
     "form", "chooser", "camera", "live", "timer", "recordButton", "recordLabel",
     "preview", "previewVideo", "meta", "fileInput", "captureInput", "switchButton", "notice",
-    "duration", "source", "check", "progress", "progressLabel", "errors", "submit", "warning"
+    "duration", "source", "check", "progress", "progressLabel", "errors", "submit"
   ]
   static values = { maxSeconds: Number, maxBytes: Number, types: Array, owner: String }
+  static outlets = ["clip-trim"]
 
   connect() {
     this.clip = null
@@ -158,7 +159,9 @@ export default class extends Controller {
   startRecording() {
     const mimeType = RECORDING_TYPES.find((type) => MediaRecorder.isTypeSupported(type))
     this.chunks = []
-    this.recorder = new MediaRecorder(this.stream, mimeType ? { mimeType } : undefined)
+    // Um quadro-chave por segundo: o corte no servidor (ClipSanitizer) começa perto do
+    // ponto escolhido também no WebM. Navegador que não conhece a opção só ignora.
+    this.recorder = new MediaRecorder(this.stream, { ...(mimeType && { mimeType }), videoKeyFrameIntervalDuration: 1000 })
     this.recorder.ondataavailable = (event) => { if (event.data.size > 0) this.chunks.push(event.data) }
     this.recorder.onstop = () => this.finishRecording()
     this.keepRecording = true
@@ -243,14 +246,15 @@ export default class extends Controller {
     this.metaTarget.textContent = parts.join(" · ")
     this.durationTarget.value = duration ? duration.toFixed(2) : ""
     this.sourceTarget.value = source
-    // Mais longo que o sugerido: só avisa, o vídeo entra inteiro.
-    this.warningTarget.hidden = !(duration && duration > this.maxSecondsValue + 1)
 
     this.show("preview")
+    // A barra de corte: a pessoa escolhe o trecho (até 20s) que vai para o mentor.
+    if (this.hasClipTrimOutlet) this.clipTrimOutlet.load(duration)
     this.refresh()
   }
 
   discard() {
+    if (this.hasClipTrimOutlet) this.clipTrimOutlet.reset()
     this.clip = null
     this.revokePreview()
     this.previewVideoTarget.removeAttribute("src")
@@ -308,6 +312,7 @@ export default class extends Controller {
     }
 
     this.stopStream()
+    this.previewVideoTarget.pause()
     this.revokePreview()
     // Some a tela Gravar; fica só a tela de envio, que começa ao ouvir "recorder:queued".
     for (const child of this.element.children) {

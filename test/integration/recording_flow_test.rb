@@ -129,16 +129,65 @@ class RecordingFlowTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "vídeo mais longo que o sugerido entra inteiro e vai para a recompressão em 720p" do
+  # Vídeo de teste com a duração pedida (imagem pequena e som sintéticos, gerados pelo ffmpeg).
+  def long_video(seconds)
+    file = Tempfile.new([ "longo", ".mp4" ], binmode: true)
+    file.close
+    system(ClipSanitizer.ffmpeg, "-v", "error", "-y", "-f", "lavfi", "-i", "testsrc=size=96x64:rate=10:duration=#{seconds}",
+           "-f", "lavfi", "-i", "sine=duration=#{seconds}", "-c:v", "libx264", "-g", "10", "-c:a", "aac", "-shortest",
+           file.path, exception: true)
+    Rack::Test::UploadedFile.new(file.path, "video/mp4", true)
+  end
+
+  # O corte sem recomprimir acerta o começo, mas pode passar uns quadros no fim
+  # (a ordem dos quadros do H.264): até meio segundo a mais.
+  def assert_stored_seconds(expected, training_session)
+    seconds = training_session.clip.blob.open do |file|
+      IO.popen([ "ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file.path ], &:read).to_f
+    end
+    assert_includes (expected - 0.05)..(expected + 0.5), seconds, "o vídeo guardado tem #{seconds}s"
+  end
+
+  def post_long_video(seconds, **fields)
+    post recording_path, headers: { "Accept" => "application/json" },
+                         params: { recording: { clip: long_video(seconds), maneuver_slug: @maneuver.slug, source: "camera", **CHECKLIST, **fields } }
+  end
+
+  test "a tela Gravar tem a barra de corte de até 20s, com as orientações" do
+    get new_recording_path
+    assert_select "[data-recorder-clip-trim-outlet='#rec-preview']"
+    assert_select "#rec-preview[data-controller=clip-trim][data-clip-trim-max-seconds-value='20']" do
+      assert_select "video[data-clip-trim-target=video][controls][playsinline]" # sem a barra, ainda dá para assistir
+      assert_select ".rec-trim[hidden] .rec-trim-handle[role=slider][tabindex='0']", 2
+      assert_select ".rec-trim-tips li", 3
+      assert_select "input[type=hidden][name='recording[cut_from]']"
+      assert_select "input[type=hidden][name='recording[cut_to]']"
+      assert_select "input[type=hidden][name='recording[duration_seconds]']"
+    end
+    assert_match "Arraste as bordas amarelas até o começo e o fim da sua tentativa.", response.body
+    assert_match "Depois você corta só o trecho da tentativa, com até 20 segundos.", response.body
+    assert_no_match "Tente não enviar", response.body
+  end
+
+  test "só o trecho escolhido na barra de corte é guardado" do
     assert_enqueued_with(job: TranscodeClipJob) do
-      upload(duration: "95")
+      post_long_video(30, duration_seconds: "30", cut_from: "5.5", cut_to: "15.5")
     end
     assert_response :created
-    assert_equal 95.0, TrainingSession.last.clip_duration
 
-    get new_recording_path
-    assert_match "Tente não enviar vídeos maiores que 40 segundos", response.body
-    assert_no_match(/até \d+ MB/, response.body)
+    session = TrainingSession.last
+    assert_stored_seconds 10, session
+    assert_equal({ "duration_seconds" => 10.0, "cut_from_seconds" => 5.5, "source" => "camera" }, session.clip.blob.custom_metadata)
+  end
+
+  test "sem trecho escolhido, ou com um trecho maior que 20s, ficam só 20 segundos" do
+    post_long_video(30, duration_seconds: "30")
+    assert_stored_seconds 20, TrainingSession.last
+    assert_equal 20.0, TrainingSession.last.clip_duration
+
+    post_long_video(30, duration_seconds: "30", cut_from: "2", cut_to: "29") # trecho forjado fora da tela
+    assert_stored_seconds 20, TrainingSession.last
+    assert_equal 2.0, TrainingSession.last.clip.blob.custom_metadata["cut_from_seconds"]
   end
 
   test "rejeita formato inválido, sem vídeo e sem checklist" do

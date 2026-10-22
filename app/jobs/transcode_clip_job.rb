@@ -11,7 +11,9 @@ class TranscodeClipJob < ApplicationJob
 
     blob.open do |file|
       transcoder = ClipTranscoder.new(file.path)
-      next mark_done(blob) unless transcoder.needed?
+      # Cortado depois do começo: recomprime mesmo pequeno, para sumirem os quadros que o
+      # corte sem recomprimir deixou escondidos antes do trecho (ClipSanitizer).
+      next mark_done(blob) unless transcoder.needed? || blob.custom_metadata["cut_from_seconds"].to_f.positive?
 
       Tempfile.create([ "clip-720p", ".mp4" ], binmode: true) do |output|
         transcoder.call(output.path)

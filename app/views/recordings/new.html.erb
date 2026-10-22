@@ -1,18 +1,20 @@
 <% content_for :section, "Gravar" %>
 <% max_seconds = TrainingSession.max_clip_seconds %>
+<% cut_seconds = TrainingSession::CLIP_CUT_SECONDS %>
 
 <section class="rec-screen"
          data-controller="recorder"
          data-recorder-max-seconds-value="<%= max_seconds %>"
          data-recorder-max-bytes-value="<%= TrainingSession.max_clip_bytes %>"
          data-recorder-types-value="<%= TrainingSession::CLIP_CONTENT_TYPES.to_json %>"
-         data-recorder-owner-value="<%= upload_owner_key %>">
+         data-recorder-owner-value="<%= upload_owner_key %>"
+         data-recorder-clip-trim-outlet="#rec-preview">
 
   <header class="auth-head">
     <span class="step-indicator">Devolutiva do mentor em até 48h</span>
     <h2 class="screen-title">Grave sua manobra</h2>
     <p class="screen-desc">
-      Tente não enviar vídeos maiores que <%= max_seconds %> segundos. Posicione o celular de lado, pegando o corpo inteiro e o skate.
+      Posicione o celular de lado, pegando o corpo inteiro e o skate. Depois você corta só o trecho da tentativa, com até <%= cut_seconds %> segundos.
     </p>
     <p class="zine-expiry">
       <span class="material-symbols-outlined" aria-hidden="true">auto_delete</span>
@@ -56,7 +58,7 @@
         <span class="material-symbols-outlined rec-option-icon">upload</span>
         <span class="rec-option-text">
           <strong>Fazer upload de vídeo</strong>
-          <small>MP4, MOV ou WebM · de preferência até <%= max_seconds %>s</small>
+          <small>MP4, MOV ou WebM · depois você corta até <%= cut_seconds %>s</small>
         </span>
       </button>
 
@@ -88,16 +90,59 @@
       </div>
     </div>
 
-    <%# 3. Pré-visualização antes do envio %>
-    <div class="rec-stage" data-recorder-target="preview" hidden>
+    <%# 3. Pré-visualização e barra de corte (clip_trim_controller) antes do envio %>
+    <div class="rec-stage" id="rec-preview" data-recorder-target="preview" hidden
+         data-controller="clip-trim" data-clip-trim-max-seconds-value="<%= cut_seconds %>">
       <div class="rec-video-frame">
-        <video data-recorder-target="previewVideo" controls playsinline></video>
+        <%# Os controles normais somem quando a barra de corte aparece (ela tem o play). %>
+        <video data-recorder-target="previewVideo" data-clip-trim-target="video" controls playsinline preload="auto"
+               data-action="click->clip-trim#togglePlay play->clip-trim#played pause->clip-trim#paused timeupdate->clip-trim#renderPlayhead"></video>
       </div>
       <p class="auth-hint" data-recorder-target="meta"></p>
-      <p class="zine-status warn" data-recorder-target="warning" hidden>
-        <span class="material-symbols-outlined" aria-hidden="true">timer</span>
-        Tente não enviar vídeos maiores que <%= max_seconds %> segundos: o mentor consegue ver melhor um trecho curto. Este vai inteiro mesmo assim.
+
+      <%# Só o trecho escolhido vai para o mentor (quem corta é o servidor: ClipSanitizer). %>
+      <div class="rec-trim" data-clip-trim-target="editor" role="group" aria-labelledby="rec-trim-title" hidden>
+        <div class="rec-trim-head">
+          <span class="auth-label" id="rec-trim-title">Corte o vídeo</span>
+          <span class="rec-trim-length">
+            <strong data-clip-trim-target="length"></strong> · máx. <%= cut_seconds %>s
+          </span>
+        </div>
+        <div class="rec-trim-bar">
+          <button type="button" class="rec-trim-play" data-clip-trim-target="playButton"
+                  data-action="clip-trim#togglePlay" aria-label="Tocar o trecho">
+            <span class="material-symbols-outlined" aria-hidden="true" data-clip-trim-target="playIcon">play_arrow</span>
+          </button>
+          <div class="rec-trim-track" data-clip-trim-target="track"
+               data-action="pointerdown->clip-trim#grab pointermove->clip-trim#drag pointerup->clip-trim#drop pointercancel->clip-trim#drop">
+            <div class="rec-trim-range" data-clip-trim-target="range">
+              <span class="rec-trim-handle is-start" role="slider" tabindex="0" aria-label="Começo do trecho"
+                    data-edge="start" data-clip-trim-target="startHandle" data-action="keydown->clip-trim#nudge"></span>
+              <span class="rec-trim-handle is-end" role="slider" tabindex="0" aria-label="Fim do trecho"
+                    data-edge="end" data-clip-trim-target="endHandle" data-action="keydown->clip-trim#nudge"></span>
+            </div>
+            <span class="rec-trim-playhead" data-clip-trim-target="playhead"></span>
+          </div>
+          <div class="rec-trim-times">
+            <span>Começa <strong data-clip-trim-target="from"></strong></span>
+            <span>Termina <strong data-clip-trim-target="to"></strong></span>
+          </div>
+        </div>
+        <ol class="rec-trim-tips">
+          <li>Arraste as bordas amarelas até o começo e o fim da sua tentativa.</li>
+          <li>Arraste o meio da barra para mover o trecho inteiro.</li>
+          <li>Dê o play para conferir: só esse trecho vai para o mentor.</li>
+        </ol>
+      </div>
+      <p class="zine-status warn" data-clip-trim-target="fallback" hidden>
+        <span class="material-symbols-outlined" aria-hidden="true">content_cut</span>
+        Não deu para ler o tamanho deste vídeo aqui, então vão os primeiros <%= cut_seconds %> segundos.
       </p>
+
+      <%= f.hidden_field :duration_seconds, data: { recorder_target: "duration", clip_trim_target: "duration" } %>
+      <%= f.hidden_field :cut_from, data: { clip_trim_target: "cutFrom" } %>
+      <%= f.hidden_field :cut_to, data: { clip_trim_target: "cutTo" } %>
+
       <button type="button" class="auth-secondary-btn" data-action="recorder#discard">
         Descartar e escolher outro
       </button>
@@ -116,7 +161,6 @@
       <% end %>
     </fieldset>
 
-    <%= f.hidden_field :duration_seconds, data: { recorder_target: "duration" } %>
     <%= f.hidden_field :source, data: { recorder_target: "source" } %>
 
     <%# Enquanto o vídeo é guardado para enviar (o anel de envio vem na tela seguinte). %>

@@ -21,6 +21,10 @@ class TrainingSession < ApplicationRecord
   # Formatos aceitos: MP4/MOV (upload e iPhone) e WebM (gravação no Chrome/Android).
   CLIP_CONTENT_TYPES = %w[video/mp4 video/quicktime video/webm video/x-m4v].freeze
 
+  # Barra de corte (tela Gravar): do vídeo enviado, só o trecho escolhido chega ao
+  # armazenamento, com no máximo CLIP_CUT_SECONDS. Sem trecho escolhido, ficam os primeiros.
+  CLIP_CUT_SECONDS = 20
+
   CLIP_PROBLEMS = {
     format:      "Formato de vídeo não suportado. Envie MP4, MOV ou WebM.",
     size:        "O vídeo passa de %{mb} MB, o máximo que dá para receber. Corte um trecho e envie de novo.",
@@ -91,14 +95,38 @@ class TrainingSession < ApplicationRecord
     self
   end
 
+  # O trecho do próximo vídeo (TrainingSession.clip_cut), escolhido na barra de corte.
+  attr_writer :clip_cut
+
+  # O trecho a guardar, em segundos do vídeo enviado, a partir do que a barra de corte
+  # mandou e da duração do vídeo. O que vier fora das regras vira o mais próximo válido:
+  # começa em 0 ou depois, termina antes do fim e dura no máximo CLIP_CUT_SECONDS.
+  def self.clip_cut(from, to, duration = nil)
+    duration = cut_seconds(duration)
+    duration = nil unless duration&.positive?
+    start    = cut_seconds(from) || 0.0
+    start    = 0.0 if duration && start >= duration
+    finish   = cut_seconds(to)
+    finish   = start + CLIP_CUT_SECONDS if finish.nil? || finish <= start
+    start.round(2)..[ finish, start + CLIP_CUT_SECONDS, duration ].compact.min.round(2)
+  end
+
+  def self.cut_seconds(value)
+    number = Float(value, exception: false)
+    number if number&.finite? && number >= 0
+  end
+  private_class_method :cut_seconds
+
   # Todo vídeo é limpo pelo ClipSanitizer antes de ser guardado: o original, com
   # a localização de onde foi gravado, nunca chega ao armazenamento. Vale para
   # clip=, clip.attach e os formulários. Se não der para limpar, o vídeo não entra.
+  # Vídeo novo também é cortado: fica só o trecho escolhido (ou os primeiros 20s).
   def clip=(attachable)
     @clip_problem = nil
     return super if attachable.nil? || attachable == ""
 
-    super(ClipSanitizer.new(attachable, max_bytes: self.class.max_clip_bytes).call)
+    cut = (@clip_cut || self.class.clip_cut(nil, nil)) unless @replacing_clip
+    super(ClipSanitizer.new(attachable, max_bytes: self.class.max_clip_bytes, cut: cut).call)
     return if @replacing_clip
 
     @clip_uploaded = true
@@ -197,7 +225,7 @@ class TrainingSession < ApplicationRecord
 
     errors.add(:base, clip_problem(:format)) unless CLIP_CONTENT_TYPES.include?(blob.content_type)
     errors.add(:base, clip_problem(:size)) if blob.byte_size > self.class.max_clip_bytes
-    # A duração não tem limite: a tela só sugere até max_clip_seconds (40s).
+    # A duração não precisa de validação: o ClipSanitizer já guarda só até CLIP_CUT_SECONDS.
   end
 
   def schedule_transcode

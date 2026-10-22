@@ -3773,3 +3773,179 @@ a.guide-tab {
 
 /* A câmera frontal aparece espelhada na tela (o vídeo gravado fica normal). */
 .rec-video-frame video.is-mirrored { transform: scaleX(-1); }
+
+/* Gravar: barra de corte (clip_trim_controller). O trecho escolhido tem borda amarela e
+   alças grossas nas pontas, por fora do trecho: dá para pegar mesmo num trecho curto. */
+.rec-trim {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: #1a1b20;
+}
+
+.rec-trim-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rec-trim-length {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-trim-length strong {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--primary-color);
+}
+
+.rec-trim-bar {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 6px;
+}
+
+.rec-trim-play {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary-color);
+  box-shadow: 0 3px 0 var(--primary-shadow);
+  color: black;
+  cursor: pointer;
+}
+
+.rec-trim-play .material-symbols-outlined { font-size: 28px; font-variation-settings: "FILL" 1; }
+.rec-trim-play:focus-visible,
+.rec-trim-handle:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* A barra, com uma marquinha por segundo (--trim-tick vem do JavaScript). As margens
+   deixam lugar para as alças quando o trecho encosta no começo ou no fim. */
+.rec-trim-track {
+  position: relative;
+  height: 48px;
+  margin: 0 16px;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px) 0 50% / var(--trim-tick, 10%) 40% repeat-x,
+    var(--surface-low);
+  touch-action: none; /* arrastar no celular não rola a página */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.rec-trim-range {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-top: 3px solid var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  background: rgba(255, 184, 0, 0.18);
+  cursor: grab;
+}
+
+.rec-trim-track.is-dragging .rec-trim-range { cursor: grabbing; }
+
+.rec-trim-handle {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-color);
+  cursor: ew-resize;
+}
+
+.rec-trim-handle.is-start { right: 100%; border-radius: 6px 0 0 6px; }
+.rec-trim-handle.is-end   { left: 100%;  border-radius: 0 6px 6px 0; }
+
+/* O risquinho da alça e uma área de toque de 44px, maior que a alça. */
+.rec-trim-handle::after {
+  content: "";
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.rec-trim-handle::before {
+  content: "";
+  position: absolute;
+  inset: -8px -14px;
+}
+
+/* Onde o vídeo está tocando. */
+.rec-trim-playhead {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 3px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+.rec-trim-times {
+  grid-column: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-trim-times strong { color: var(--text-on-surface); font-weight: 800; }
+
+.rec-trim-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  counter-reset: dica;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-variant);
+}
+
+.rec-trim-tips li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  counter-increment: dica;
+}
+
+.rec-trim-tips li::before {
+  content: counter(dica);
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-highest);
+  color: var(--primary-color);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 900;
+}

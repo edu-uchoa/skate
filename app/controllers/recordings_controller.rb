@@ -43,7 +43,7 @@ class RecordingsController < ApplicationController
   private
 
   def recording_params
-    params.fetch(:recording, {}).permit(:clip, :duration_seconds, :source, *TrainingSession::CHECKLIST)
+    params.fetch(:recording, {}).permit(:clip, :duration_seconds, :cut_from, :cut_to, :source, *TrainingSession::CHECKLIST)
   end
 
   def build_training_session
@@ -55,17 +55,23 @@ class RecordingsController < ApplicationController
     )
 
     if attrs[:clip].respond_to?(:original_filename)
-      session.clip.attach(attrs[:clip]) # sai limpo, sem localização (ClipSanitizer)
-      session.clip.blob.custom_metadata = clip_metadata(attrs) if session.clip.attached?
+      # Só o trecho da barra de corte (até 20s) é guardado, limpo e sem localização (ClipSanitizer).
+      cut = TrainingSession.clip_cut(attrs[:cut_from], attrs[:cut_to], attrs[:duration_seconds])
+      session.clip_cut = cut
+      session.clip.attach(attrs[:clip])
+      session.clip.blob.custom_metadata = clip_metadata(attrs, cut) if session.clip.attached?
     end
 
     session
   end
 
-  def clip_metadata(attrs)
+  # duration_seconds: quanto dura o que foi guardado (o trecho), quando o navegador
+  # informou a duração do vídeo. cut_from_seconds: onde o trecho começava no original.
+  def clip_metadata(attrs, cut)
     duration = attrs[:duration_seconds].to_f
     {
-      "duration_seconds" => (duration.positive? && duration.finite? ? duration.round(2) : nil),
+      "duration_seconds" => ((cut.end - cut.begin).round(2) if duration.positive? && duration.finite?),
+      "cut_from_seconds" => (cut.begin if cut.begin.positive?),
       "source"           => attrs[:source].presence_in(%w[camera upload]) || "upload"
     }.compact
   end

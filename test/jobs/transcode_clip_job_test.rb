@@ -67,6 +67,17 @@ class TranscodeClipJobTest < ActiveJob::TestCase
     assert blob.reload.custom_metadata["transcoded"]
   end
 
+  test "vídeo cortado depois do começo é recomprimido mesmo pequeno (somem os quadros escondidos)" do
+    session = session_with(File.open(file_fixture("manobra.mp4")))
+    blob = session.clip.blob
+    blob.update!(custom_metadata: blob.custom_metadata.merge("cut_from_seconds" => 0.4))
+
+    TranscodeClipJob.perform_now(session)
+    assert_not_equal blob, session.reload.clip.blob
+    assert_equal 0.4, session.clip.blob.custom_metadata["cut_from_seconds"]
+    assert session.clip.blob.custom_metadata["transcoded"]
+  end
+
   test "vídeo apagado antes da recompressão não volta" do
     session = session_with(generated_video(1920, 1080))
     session.remove_clip!

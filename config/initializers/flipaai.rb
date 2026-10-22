@@ -2,10 +2,10 @@ Rails.application.configure do
   config.x.flipaai = ActiveSupport::OrderedOptions.new
   config.x.flipaai.support_whatsapp = ENV.fetch("FLIPAAI_SUPPORT_WHATSAPP", "5561999999999")
   config.x.flipaai.minimum_age      = 13
-  # Vídeos: a câmera do app para sozinha em max_clip_seconds e a tela sugere não
-  # passar disso, mas vídeo mais longo da galeria entra inteiro. max_clip_bytes é só
-  # um teto de segurança (um arquivo gigante travaria o servidor): tudo é guardado em
-  # 720p (TranscodeClipJob), então o que fica no armazenamento é pequeno.
+  # Vídeos: a câmera do app para sozinha em max_clip_seconds; depois, na barra de corte,
+  # a pessoa escolhe o trecho (até TrainingSession::CLIP_CUT_SECONDS) que é guardado.
+  # max_clip_bytes é só um teto de segurança (um arquivo gigante travaria o servidor):
+  # o trecho é guardado em 720p (TranscodeClipJob), então o que fica é pequeno.
   config.x.flipaai.max_clip_seconds = 40
   config.x.flipaai.max_clip_bytes   = 500.megabytes
   # ffmpeg limpa a localização (GPS) dos vídeos antes de guardar (ClipSanitizer).

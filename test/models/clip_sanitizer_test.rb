@@ -23,6 +23,17 @@ class ClipSanitizerTest < ActiveSupport::TestCase
     end
   end
 
+  test "com um trecho, guarda só ele, ainda sem metadados e em pé" do
+    result = ClipSanitizer.new({ io: File.open(file_fixture("manobra_iphone.mov"), "rb"), filename: "x.mov",
+                                 content_type: "video/quicktime" }, cut: 0.4..1.0).call
+    duration = IO.popen([ "ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", result[:io].path ], &:read).to_f
+    metadata = video_metadata(result[:io].path)
+
+    assert_in_delta 0.6, duration, 0.05, "o vídeo de 1s começa em 0,4s"
+    assert_empty metadata[:tags].keys - CLEAN_VIDEO_TAGS
+    assert_equal 90, metadata[:rotation]
+  end
+
   test "recusa o que não é vídeo, vídeo corrompido e arquivo grande demais" do
     disguised = ClipSanitizer.new({ io: File.open(file_fixture("disfarcado.mp4"), "rb"), filename: "x.mp4", content_type: "video/mp4" })
     broken    = ClipSanitizer.new({ io: StringIO.new("\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom".b), filename: "x.mp4" })
