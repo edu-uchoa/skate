@@ -26,7 +26,10 @@ Rails.application.routes.draw do
       get   :result,  path: "resultado"
       patch :submit,  path: "enviar"
     end
-    resource :ai_review, only: :show, path: "devolutiva"
+    resource :ai_review, only: :show, path: "devolutiva" do
+      # O aprendiz avalia o mentor: de 1 a 10 rolamentos e uma mensagem opcional.
+      resource :rating, only: :create, path: "avaliacao", controller: "review_ratings"
+    end
   end
 
   resources :schedules, only: %i[new create], path: "agenda"
@@ -46,6 +49,7 @@ Rails.application.routes.draw do
     resource  :zine,     only: :show, path: "zine"
     resources :requests, only: %i[index update destroy], path: "pedidos"   # só administrador
     resources :mentors,  only: :destroy, path: "mentores"                   # só administrador
+    resource  :profile,  only: :update, path: "perfil" # resumo profissional que os aprendizes leem
     # Devolutiva escrita no cartão do vídeo: enviar (fila) e revisar (todos).
     resources :videos,   only: [], path: "videos" do
       resource :review,  only: %i[create update], path: "devolutiva"

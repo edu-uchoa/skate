@@ -3949,3 +3949,185 @@ a.guide-tab {
   font-size: 11px;
   font-weight: 900;
 }
+
+/* Texto só para leitor de tela (ex.: "8 rolamentos" num ícone). */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Rolamentos: a nota do aprendiz ao mentor (RolamentosHelper#rolamento_icon). */
+.rolamento {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--primary-color);
+}
+
+/* "◎ 8,7 · 12 alunos avaliaram" */
+.mentor-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.mentor-score strong {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--primary-color);
+}
+
+.mentor-name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  color: var(--text-on-surface);
+}
+
+.mentor-name small {
+  margin-left: 2px;
+  font-family: var(--font-body);
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--text-variant);
+}
+
+/* Escolha do mentor (telas Gravar e Resultado): cartões de escolha com o resumo. */
+.mentor-picker legend { margin-bottom: 4px; }
+.mentor-choice { align-items: flex-start; }
+.mentor-choice .choice-icon { margin-top: 2px; }
+.mentor-choice .choice-text { gap: 4px; }
+.mentor-choice .mentor-name { font-size: 14px; }
+.mentor-choice .mentor-bio { font-size: 11.5px; line-height: 1.4; }
+.mentor-choice .choice-mark { margin-top: 2px; }
+.result-mentor-picker { margin-top: 14px; }
+
+/* Na devolutiva e na espera: quem avaliou (ou vai avaliar) e a média. */
+.review-mentor {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: #1a1b20;
+}
+
+.review-mentor > .material-symbols-outlined { color: var(--primary-color); }
+
+.review-mentor-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 140px;
+}
+
+.review-mentor .mentor-name { font-size: 15px; }
+
+/* Avaliar o mentor: 10 rolamentos para tocar (acendem até o escolhido, só com CSS). */
+.review-rating { margin-top: 4px; }
+
+.review-rating-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-rating-form .auth-card-label small {
+  font-weight: 600;
+  text-transform: none;
+  color: var(--text-variant);
+}
+
+.rolamentos-input {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  border: none;
+}
+
+.rolamentos-input input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rolamentos-input label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 40px;
+  border-radius: 6px;
+  color: var(--surface-highest);
+  cursor: pointer;
+  transition: color 0.1s ease, transform 0.1s ease;
+}
+
+.rolamentos-input .rolamento {
+  width: 26px;
+  height: 26px;
+  color: inherit;
+}
+
+.rolamentos-input label:has(~ input:checked),
+.rolamentos-input input:checked + label { color: var(--primary-color); }
+.rolamentos-input input:checked + label { transform: scale(1.12); }
+.rolamentos-input input:focus-visible + label { outline: 2px solid var(--primary-color); outline-offset: 1px; }
+
+.rolamentos-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: var(--text-variant);
+}
+
+.rolamentos-given {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.rolamentos-given .rolamento { width: 20px; height: 20px; color: var(--surface-highest); }
+.rolamentos-given .rolamento.is-on { color: var(--primary-color); }
+.rolamentos-given strong { margin-left: 6px; font-family: var(--font-display); color: var(--primary-color); }
+
+.review-rating-comment {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+/* Perfil da conta de mentor: nome, média, resumo e o que os alunos disseram. */
+.mentor-profile, .review-rating { gap: 8px; }
+.mentor-profile .mentor-name { font-size: 18px; }
+.mentor-profile .auth-form { gap: 8px; }
+
+.mentor-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.mentor-feedback li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-on-surface);
+}
+
+.mentor-feedback small { color: var(--text-variant); }

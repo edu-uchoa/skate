@@ -161,6 +161,8 @@
       <% end %>
     </fieldset>
 
+    <%= render "shared/mentor_picker", f: f, recorder: true %>
+
     <%= f.hidden_field :source, data: { recorder_target: "source" } %>
 
     <%# Enquanto o vídeo é guardado para enviar (o anel de envio vem na tela seguinte). %>

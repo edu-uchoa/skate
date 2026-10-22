@@ -1,0 +1,28 @@
+<%# Quem avalia o vídeo: o aprendiz escolhe um dos mentores (do mais bem avaliado para o
+    menos), lendo o resumo profissional e a média de rolamentos de cada um.
+    Locais: f (o formulário) e recorder (true na tela Gravar: o Enviar espera a escolha). %>
+<% recorder = local_assigns.fetch(:recorder, false) %>
+<% if @mentors.any? %>
+  <fieldset class="choice-list mentor-picker" id="mentor-picker">
+    <legend class="auth-label">Quem vai avaliar seu vídeo?</legend>
+    <p class="auth-hint">
+      Escolha o mentor. A média vai de 1 a 10 rolamentos e vem das notas que os alunos dão nas devolutivas.
+    </p>
+    <% @mentors.each do |mentor| %>
+      <label class="choice-card mentor-choice">
+        <%= f.radio_button :mentor_id, mentor.id, checked: mentor.id == @chosen_mentor_id,
+              data: (recorder ? { recorder_target: "mentor", action: "recorder#refresh" } : {}) %>
+        <span class="material-symbols-outlined choice-icon" aria-hidden="true">school</span>
+        <span class="choice-text">
+          <strong class="mentor-name"><%= mentor_name(mentor) %></strong>
+          <%= mentor_score(@mentor_scores[mentor.id]) %>
+          <small class="mentor-bio"><%= mentor.mentor_bio || "Ainda sem resumo profissional." %></small>
+        </span>
+        <span class="choice-mark"></span>
+      </label>
+    <% end %>
+    <p class="auth-hint">
+      O mentor escolhido recebe o vídeo primeiro. Sem resposta em <%= TrainingSession::REVIEW_HOURS %>h, outro mentor pode responder.
+    </p>
+  </fieldset>
+<% end %>

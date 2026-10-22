@@ -19,6 +19,8 @@ class User < ApplicationRecord
   has_many :streak_justifications, dependent: :delete_all # paradas justificadas, avaliadas por mentor
   has_one  :conversation, foreign_key: :learner_id, inverse_of: :learner, dependent: :destroy # chat com os mentores
   has_many :messages, foreign_key: :author_id, inverse_of: :author, dependent: :nullify      # o que escreveu no chat
+  has_many :chosen_sessions, class_name: "TrainingSession", foreign_key: :mentor_id,
+                             inverse_of: :mentor, dependent: :nullify # vídeos em que um aprendiz o escolheu para avaliar
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um
@@ -31,8 +33,14 @@ class User < ApplicationRecord
 
   MENTOR_MINIMUM_AGE = 18
   MENTOR_NOTE_LENGTH = 500
+  MENTOR_BIO_LENGTH  = 300
 
   scope :mentor_requests, -> { role_learner.where.not(mentor_requested_at: nil).order(:mentor_requested_at) }
+
+  # Resumo profissional do mentor: aparece para os aprendizes na hora de escolher quem
+  # avalia o vídeo. Sem contato de fora do app (há aprendizes menores de idade).
+  normalizes :mentor_bio, with: ->(value) { value.to_s.strip.presence }
+  validate :validate_mentor_bio, if: :will_save_change_to_mentor_bio?
 
   normalizes :email, with: ->(value) { value.to_s.strip.downcase.presence }
   normalizes :phone, with: ->(value) { value.to_s.gsub(/\D/, "").presence }
@@ -241,6 +249,17 @@ class User < ApplicationRecord
   # aprendiz, continua com o app de aprendiz e entra na área do mentor pelo topo.
   def mentor_account? = role_mentor? || role_admin?
 
+  # Mentores que o aprendiz pode escolher para avaliar o vídeo: mentores e
+  # administradores, menos o super administrador (o dono do app).
+  def self.available_mentors
+    where(role: %i[mentor admin]).order(:nickname_key, :id).reject(&:super_admin?)
+  end
+
+  # O mentor escolhido, se ele ainda está na lista; senão nil (o vídeo vai para qualquer mentor).
+  def self.available_mentor(id)
+    available_mentors.find { |mentor| mentor.id == id.to_i } if id.present?
+  end
+
   # by: o administrador que aprovou (nil quando foi pelo terminal).
   def approve_mentor!(by: nil)
     update!(role: :mentor, mentor_requested_at: nil, mentor_approved_by: by, mentor_approved_at: Time.current)
@@ -249,14 +268,26 @@ class User < ApplicationRecord
   def reject_mentor! = update!(mentor_requested_at: nil, mentor_request_note: nil)
 
   # Tira o acesso aos vídeos na hora: volta a aprendiz e derruba as sessões abertas.
+  # Os vídeos em que ele era o escolhido passam para qualquer mentor.
   def revoke_mentor!
     transaction do
       update!(role: :learner, mentor_approved_by: nil, mentor_approved_at: nil)
+      chosen_sessions.update_all(mentor_id: nil)
       sign_out_everywhere!
     end
   end
 
   private
+
+  def validate_mentor_bio
+    return if mentor_bio.nil?
+
+    if mentor_bio.length > MENTOR_BIO_LENGTH
+      errors.add(:base, "O resumo passa de #{MENTOR_BIO_LENGTH} caracteres. Deixe mais curto.")
+    elsif Message::CONTACT_PATTERNS.any? { |pattern| mentor_bio.match?(pattern) }
+      errors.add(:base, "Por segurança, o resumo não pode ter telefone, e-mail, links ou @ de redes sociais.")
+    end
+  end
 
   def mentor_request_problem
     if birth_year.blank? || !birth_year.between?(1900, Date.current.year)

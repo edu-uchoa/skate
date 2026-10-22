@@ -76,6 +76,21 @@
                       <span class="material-symbols-outlined"><%= overdue?(training_session) ? "alarm" : "schedule" %></span>
                       <%= waiting_label(training_session) %>
                     </p>
+                    <%# O mentor que o aprendiz escolheu: só ele responde, até passar o prazo. %>
+                    <% if (chosen = training_session.mentor) %>
+                      <p class="zine-status <%= chosen == current_user ? "ok" : "warn" %>">
+                        <span class="material-symbols-outlined">school</span>
+                        <span>
+                          <% if chosen == current_user %>
+                            O aprendiz escolheu você para avaliar este vídeo.
+                          <% elsif training_session.open_to?(current_user) %>
+                            Escolheu <%= mentor_name(chosen) %>, sem resposta em <%= TrainingSession::REVIEW_HOURS %>h: qualquer mentor pode responder.
+                          <% else %>
+                            Escolheu <%= mentor_name(chosen) %> para avaliar. Sem resposta em <%= TrainingSession::REVIEW_HOURS %>h, o vídeo vai para a sua fila.
+                          <% end %>
+                        </span>
+                      </p>
+                    <% end %>
                     <% if training_session.recorded_at_meetup? %>
                       <p class="zine-status info">
                         <span class="material-symbols-outlined">local_fire_department</span>
@@ -86,7 +101,7 @@
                     <%# Na fila, a devolutiva é escrita aqui mesmo; em Todos, leva até a fila. %>
                     <% if @tab == "fila" %>
                       <%= render "mentor/reviews/form", training_session: training_session, review: review %>
-                    <% else %>
+                    <% elsif training_session.open_to?(current_user) %>
                       <%= link_to mentor_zine_path(aba: "fila", anchor: dom_id(training_session, :mentor)), class: "auth-link review-go" do %>
                         <span class="material-symbols-outlined">rate_review</span> Responder na fila
                       <% end %>

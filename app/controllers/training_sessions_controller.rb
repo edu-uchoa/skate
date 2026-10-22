@@ -1,4 +1,6 @@
 class TrainingSessionsController < ApplicationController
+  include MentorChoice
+
   before_action :require_age_gate
   before_action :set_training_session, only: %i[show update start result submit]
 
@@ -50,11 +52,17 @@ class TrainingSessionsController < ApplicationController
     end
   end
 
-  # Tela "Registro do resultado".
-  def result; end
+  # Tela "Registro do resultado". Sem vídeo ainda, dá para mandar um daqui, escolhendo
+  # o mentor que vai avaliar.
+  def result
+    load_mentor_choice unless @training_session.clip.attached?
+  end
 
   def submit
     @training_session.assign_attributes(result_params)
+    if result_params[:clip].present? && @training_session.mentor.nil?
+      @training_session.mentor = User.available_mentor(params.dig(:training_session, :mentor_id))
+    end
 
     if @training_session.save
       @training_session.submit!(offline: params[:offline].present?)
@@ -63,6 +71,7 @@ class TrainingSessionsController < ApplicationController
       end
       redirect_to next_screen_for(@training_session)
     else
+      load_mentor_choice(params.dig(:training_session, :mentor_id))
       render :result, status: :unprocessable_entity
     end
   end

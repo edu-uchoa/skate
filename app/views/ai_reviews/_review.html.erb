@@ -11,6 +11,17 @@
   </div>
 <% else %>
   <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;"><%= ai_review.headline %></h2>
+  <%# Quem avaliou e a média dele (MentorRating). %>
+  <% if (mentor = ai_review.reviewer) %>
+    <div class="review-mentor">
+      <span class="material-symbols-outlined" aria-hidden="true">school</span>
+      <span class="review-mentor-text">
+        <span class="auth-label">Avaliado por</span>
+        <strong class="mentor-name"><%= mentor_name(mentor) %></strong>
+      </span>
+      <%= mentor_score(local_assigns[:mentor_score]) %>
+    </div>
+  <% end %>
   <% if ai_review.reviewer_id.present? %>
     <p class="zine-status ok">
       <span class="material-symbols-outlined">check_circle</span>
@@ -44,6 +55,10 @@
       <p style="font-size: 12px; color: #e3e2e6; margin: 0; font-family: 'Inter', sans-serif; line-height: 1.4;"><%= ai_review.next_focus %></p>
     </div>
   </div>
+
+  <% if ai_review.reviewer_id.present? %>
+    <%= render "ai_reviews/rating", ai_review: ai_review, training_session: training_session %>
+  <% end %>
 <% end %>
 
 <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; padding-top: 6px;">

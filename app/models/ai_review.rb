@@ -7,6 +7,13 @@ class AiReview < ApplicationRecord
 
   TEXT_LENGTH = 600
 
+  # Avaliação que o aprendiz dá ao mentor na devolutiva: de 1 a 10 rolamentos e uma
+  # mensagem opcional. Entra na média do mentor (MentorRating).
+  RATINGS = 1..10
+  RATING_COMMENT_LENGTH = 500
+
+  scope :rated, -> { where.not(rating: nil) }
+
   # Devolutivas que o aprendiz ainda não abriu (ou que o mentor revisou depois que ele
   # abriu): viram o número no ícone Zine e a marca "Nova" no cartão do vídeo.
   scope :unseen, -> { status_completed.where("ai_reviews.seen_at IS NULL OR ai_reviews.revised_at > ai_reviews.seen_at") }
@@ -24,6 +31,31 @@ class AiReview < ApplicationRecord
   end
 
   def awaiting_mentor? = status_pending? || status_processing?
+
+  # Devolutiva escrita por um mentor, que o aprendiz ainda pode avaliar (uma vez só).
+  def rateable? = status_completed? && reviewer_id.present? && rating.nil?
+
+  # O aprendiz avalia a devolutiva. Devolve false com os erros em português.
+  def rate(rating, comment = nil)
+    rating = Integer(rating, exception: false)
+    comment = comment.to_s.strip.presence
+    errors.clear
+
+    if self.rating
+      errors.add(:base, "Essa devolutiva já foi avaliada.")
+    elsif !rateable?
+      errors.add(:base, "Só dá para avaliar a devolutiva escrita por um mentor.")
+    elsif !RATINGS.cover?(rating)
+      errors.add(:base, "Escolha de 1 a 10 rolamentos.")
+    elsif comment && comment.length > RATING_COMMENT_LENGTH
+      errors.add(:base, "A mensagem passa de #{RATING_COMMENT_LENGTH} caracteres. Deixe mais curta.")
+    elsif comment && Message::CONTACT_PATTERNS.any? { |pattern| comment.match?(pattern) }
+      errors.add(:base, "Por segurança, não mande telefone, e-mail, links ou @ de redes sociais.")
+    end
+    return false if errors.any?
+
+    update!(rating: rating, rating_comment: comment, rated_at: Time.current)
+  end
 
   # Devolutiva escrita pelo mentor: o aprendiz vê na tela que já existe
   # (ai_reviews/_review). Devolve false com os erros em português.
@@ -51,11 +83,12 @@ class AiReview < ApplicationRecord
 
   # Super administrador apagou a devolutiva (o comentário do mentor no vídeo): o texto
   # some para o aprendiz e o vídeo volta para a fila do mentor. A tarefa que a
-  # devolutiva concluiu continua concluída.
+  # devolutiva concluiu continua concluída. A avaliação dada a ela sai da média.
   def retract!
     transaction do
       update!(status: :pending, headline: nil, strengths: nil, mistake: nil, next_focus: nil,
-              raw_response: nil, reviewer: nil, completed_at: nil, revised_at: nil, seen_at: nil)
+              raw_response: nil, reviewer: nil, completed_at: nil, revised_at: nil, seen_at: nil,
+              rating: nil, rating_comment: nil, rated_at: nil)
       training_session.update!(status: :submitted) if training_session.status_analyzed?
     end
   end

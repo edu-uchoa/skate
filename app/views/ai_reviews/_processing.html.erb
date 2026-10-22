@@ -8,10 +8,22 @@
     <span class="step-indicator">Devolutiva do mentor</span>
     <h2 class="screen-title"><%= watching ? "O mentor está vendo seu vídeo" : "Seu vídeo está na fila do mentor" %></h2>
     <p class="screen-desc">
-      Um mentor vai assistir ao seu <%= training_session.maneuver.name.downcase %> e responder em até 48 horas.
+      <%= training_session.mentor ? "O mentor que você escolheu" : "Um mentor" %> vai assistir ao seu
+      <%= training_session.maneuver.name.downcase %> e responder em até <%= TrainingSession::REVIEW_HOURS %> horas.
       Enquanto isso, siga na trilha: o seu progresso não depende da resposta.
     </p>
   </header>
+
+  <%# O mentor escolhido na hora de enviar. Se ele não responder no prazo, outro responde. %>
+  <% if (mentor = training_session.mentor) %>
+    <div class="review-mentor">
+      <span class="material-symbols-outlined" aria-hidden="true">school</span>
+      <span class="review-mentor-text">
+        <span class="auth-label">Quem vai avaliar</span>
+        <strong class="mentor-name"><%= mentor_name(mentor) %></strong>
+      </span>
+    </div>
+  <% end %>
 
   <% if training_session.clip.attached? %>
     <div class="video-container" style="margin: 0;">

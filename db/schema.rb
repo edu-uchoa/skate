@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -60,6 +60,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
     t.text "headline"
     t.text "mistake"
     t.text "next_focus"
+    t.datetime "rated_at"
+    t.integer "rating"
+    t.text "rating_comment"
     t.text "raw_response"
     t.integer "reviewer_id"
     t.datetime "revised_at"
@@ -250,6 +253,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
     t.boolean "ground_clear", default: false, null: false
     t.string "location_name"
     t.integer "maneuver_id", null: false
+    t.integer "mentor_id"
     t.text "notes"
     t.integer "outcome"
     t.integer "period"
@@ -264,6 +268,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
     t.integer "user_id", null: false
     t.index ["clip_uploaded_at"], name: "index_training_sessions_on_clip_uploaded_at"
     t.index ["maneuver_id"], name: "index_training_sessions_on_maneuver_id"
+    t.index ["mentor_id"], name: "index_training_sessions_on_mentor_id"
     t.index ["scheduled_on"], name: "index_training_sessions_on_scheduled_on"
     t.index ["user_id", "status"], name: "index_training_sessions_on_user_id_and_status"
     t.index ["user_id"], name: "index_training_sessions_on_user_id"
@@ -279,6 +284,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
     t.datetime "last_seen_at"
     t.datetime "mentor_approved_at"
     t.integer "mentor_approved_by_id"
+    t.text "mentor_bio"
     t.text "mentor_request_note"
     t.datetime "mentor_requested_at"
     t.string "nickname"
@@ -327,5 +333,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_120000) do
   add_foreign_key "support_requests", "users"
   add_foreign_key "training_sessions", "maneuvers"
   add_foreign_key "training_sessions", "users"
+  add_foreign_key "training_sessions", "users", column: "mentor_id", on_delete: :nullify
   add_foreign_key "users", "users", column: "mentor_approved_by_id"
 end

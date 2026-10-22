@@ -1,0 +1,44 @@
+<%# O aprendiz avalia o mentor (opcional): de 1 a 10 rolamentos e o porquê. Uma vez só;
+    a nota entra na média do mentor (MentorRating), sem o nome de quem deu. %>
+<section class="auth-card review-rating" id="avaliar">
+  <% if ai_review.rating %>
+    <span class="auth-card-label">Sua avaliação do mentor</span>
+    <p class="rolamentos-given" role="img" aria-label="<%= pluralize(ai_review.rating, "rolamento") %> de 10">
+      <% AiReview::RATINGS.each do |count| %>
+        <%= rolamento_icon(count <= ai_review.rating ? "rolamento is-on" : "rolamento") %>
+      <% end %>
+      <strong><%= ai_review.rating %>/10</strong>
+    </p>
+    <% if ai_review.rating_comment %>
+      <p class="review-rating-comment">“<%= ai_review.rating_comment %>”</p>
+    <% end %>
+    <span class="auth-hint">Valeu! A sua nota já conta na média do mentor.</span>
+  <% else %>
+    <%= form_with url: training_session_ai_review_rating_path(training_session), scope: :rating, class: "review-rating-form" do |f| %>
+      <span class="auth-card-label">Avalie o mentor <small>(opcional)</small></span>
+      <p class="auth-hint">Quantos rolamentos essa devolutiva merece? 1 é ruim, 10 é muito boa.</p>
+      <%= render "shared/errors", record: ai_review %>
+
+      <fieldset class="rolamentos-input">
+        <legend class="visually-hidden">Rolamentos, de 1 a 10</legend>
+        <% AiReview::RATINGS.each do |count| %>
+          <%= f.radio_button :value, count, required: true, id: "rating-#{count}",
+                checked: params.dig(:rating, :value).to_s == count.to_s %>
+          <label for="rating-<%= count %>" title="<%= pluralize(count, "rolamento") %>">
+            <%= rolamento_icon %><span class="visually-hidden"><%= pluralize(count, "rolamento") %></span>
+          </label>
+        <% end %>
+      </fieldset>
+      <div class="rolamentos-scale" aria-hidden="true"><span>1 · ruim</span><span>10 · muito boa</span></div>
+
+      <%= f.label :comment, "Quer contar o porquê? (opcional)", class: "auth-label" %>
+      <%= f.text_area :comment, value: params.dig(:rating, :comment), rows: 3, maxlength: AiReview::RATING_COMMENT_LENGTH,
+            class: "auth-input", placeholder: "Ex.: explicou bem onde eu errei" %>
+
+      <%= f.button type: :submit, class: "auth-secondary-btn" do %>
+        Enviar avaliação
+      <% end %>
+      <span class="auth-hint">O mentor vê a nota e a mensagem, mas não quem mandou.</span>
+    <% end %>
+  <% end %>
+</section>

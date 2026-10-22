@@ -82,6 +82,10 @@
         <% end %>
       </div>
     </div>
+    <%# Mandando o vídeo por aqui, a pessoa também escolhe quem vai avaliar. %>
+    <% unless @training_session.clip.attached? && @training_session.clip.persisted? %>
+      <div class="result-mentor-picker"><%= render "shared/mentor_picker", f: f %></div>
+    <% end %>
   </div>
 
   <!-- Notas -->

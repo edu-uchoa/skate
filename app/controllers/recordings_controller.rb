@@ -1,9 +1,11 @@
 # Tela "Gravar": grava pela câmera ou envia um vídeo da manobra.
 #
 # O vídeo vira o `clip` de um novo TrainingSession (Active Storage guarda o
-# arquivo no serviço configurado em config/storage.yml). Em seguida o skatista
-# registra o resultado e o envio coloca o vídeo na fila do mentor (AiReview pendente).
+# arquivo no serviço configurado em config/storage.yml), na fila do mentor que o
+# skatista escolheu. Em seguida ele registra o resultado do treino.
 class RecordingsController < ApplicationController
+  include MentorChoice
+
   before_action :redirect_mentor_account
   before_action :require_age_gate
   before_action :require_diagnosis
@@ -13,9 +15,11 @@ class RecordingsController < ApplicationController
     @maneuver = selected_maneuver(params[:maneuver_slug])
     # No horário de um rolê marcado no mapa, o vídeo vale para a ofensiva.
     @meetup_now = current_user.meetups.provable_at(Time.current).order(:starts_at).first
+    load_mentor_choice
   end
 
   def create
+    load_mentor_choice(params.dig(:recording, :mentor_id))
     @maneuver = selected_maneuver(params.dig(:recording, :maneuver_slug))
     @training_session = build_training_session
 
@@ -43,7 +47,7 @@ class RecordingsController < ApplicationController
   private
 
   def recording_params
-    params.fetch(:recording, {}).permit(:clip, :duration_seconds, :cut_from, :cut_to, :source, *TrainingSession::CHECKLIST)
+    params.fetch(:recording, {}).permit(:clip, :duration_seconds, :cut_from, :cut_to, :source, :mentor_id, *TrainingSession::CHECKLIST)
   end
 
   def build_training_session
@@ -51,6 +55,8 @@ class RecordingsController < ApplicationController
     session = current_user.training_sessions.build(
       maneuver: @maneuver, scheduled_on: Date.current,
       status: :in_progress, started_at: Time.current,
+      # Só um mentor da lista; outro valor (ou mentor que saiu) = qualquer mentor responde.
+      mentor: User.available_mentor(attrs[:mentor_id]),
       **TrainingSession::CHECKLIST.index_with { |item| attrs[item] == "1" }
     )
 

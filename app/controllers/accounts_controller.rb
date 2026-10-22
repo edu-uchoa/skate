@@ -9,6 +9,7 @@ class AccountsController < ApplicationController
     @look  = Avatar.new(current_user.avatar_options)
     @deck  = Deck.new(current_user.board_options)
     @tab   = params[:aba] == "skate" ? "skate" : "avatar"
+    load_mentor_profile if current_user.mentor_account?
   end
 
   def destroy
@@ -20,5 +21,14 @@ class AccountsController < ApplicationController
     current_user.sign_out_everywhere!
     sign_out
     redirect_to root_path, notice: "Sessão encerrada em todos os aparelhos."
+  end
+
+  private
+
+  # Conta de mentor: a média de rolamentos e as últimas avaliações dos aprendizes
+  # (sem dizer quem deu, para todo mundo avaliar à vontade).
+  def load_mentor_profile
+    @mentor_score = MentorRating.of(current_user)
+    @recent_ratings = current_user.given_reviews.rated.order(rated_at: :desc).limit(5)
   end
 end

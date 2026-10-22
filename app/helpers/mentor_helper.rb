@@ -1,5 +1,5 @@
 module MentorHelper
-  RESPONSE_HOURS = 48 # prazo prometido ao aprendiz na tela de espera
+  RESPONSE_HOURS = TrainingSession::REVIEW_HOURS # prazo prometido ao aprendiz na tela de espera
 
   LEVEL_LABELS = {
     "never_ridden"   => "Começando do zero",
@@ -36,7 +36,7 @@ module MentorHelper
   def outcome_label(training_session) = OUTCOME_LABELS[training_session.outcome]
 
   # O prazo conta desde que o vídeo chegou (TrainingSession#waiting_since).
-  def overdue?(training_session) = training_session.waiting_since < RESPONSE_HOURS.hours.ago
+  def overdue?(training_session) = training_session.review_overdue?
 
   def waiting_label(training_session)
     hours = ((Time.current - training_session.waiting_since) / 1.hour).floor

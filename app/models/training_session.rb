@@ -6,6 +6,8 @@ class TrainingSession < ApplicationRecord
   has_many :clip_accesses, dependent: :delete_all # quem (além do dono) assistiu ao vídeo
   has_one :skate_session, dependent: :nullify      # se este vídeo comprovou um rolê (ofensiva)
   has_one_attached :clip   # vídeo do treino; guardado em 720p (TranscodeClipJob)
+  # Mentor que o aprendiz escolheu para avaliar o vídeo (nil: qualquer mentor).
+  belongs_to :mentor, class_name: "User", optional: true, inverse_of: :chosen_sessions
 
   enum :status, {
     scheduled: 0,    # compromisso marcado
@@ -50,6 +52,19 @@ class TrainingSession < ApplicationRecord
   # Vídeos que ainda esperam a devolutiva de um mentor ("Na fila" da Zine do mentor).
   # Entram assim que o vídeo chega: o resultado que o aprendiz registra é só um dado a mais.
   scope :awaiting_review, -> { where.not(id: AiReview.status_completed.select(:training_session_id)) }
+
+  # Prazo da devolutiva prometido ao aprendiz. Vídeo com mentor escolhido fica só com
+  # ele; passado o prazo sem resposta, qualquer mentor pode responder (o aprendiz não
+  # fica travado na trilha se o escolhido sumir).
+  REVIEW_HOURS = 48
+
+  # Vídeos que este mentor pode responder: os que o escolheram, os sem escolha e os
+  # que passaram do prazo (os antigos, sem a hora do envio, também).
+  scope :open_to, ->(mentor) {
+    where("training_sessions.mentor_id IS NULL OR training_sessions.mentor_id = :id " \
+          "OR training_sessions.clip_uploaded_at IS NULL OR training_sessions.clip_uploaded_at < :deadline",
+          id: mentor.id, deadline: REVIEW_HOURS.hours.ago)
+  }
 
   # Cada vídeo fica guardado por 1 mês, contado de quando a pessoa enviou; depois é
   # apagado sozinho (PurgeExpiredClipsJob). A devolutiva já recebida continua.
@@ -187,6 +202,11 @@ class TrainingSession < ApplicationRecord
 
   # Desde quando o vídeo espera o mentor (o prazo de 48h conta a partir daqui).
   def waiting_since = clip_uploaded_at || clip.blob.created_at
+
+  def review_overdue? = waiting_since < REVIEW_HOURS.hours.ago
+
+  # O mesmo que o escopo open_to, para um vídeo só.
+  def open_to?(mentor) = mentor_id.nil? || mentor_id == mentor.id || clip_uploaded_at.nil? || review_overdue?
 
   # Quando o vídeo será apagado (exatamente 1 mês depois do envio).
   def clip_expires_at = waiting_since + CLIP_RETENTION

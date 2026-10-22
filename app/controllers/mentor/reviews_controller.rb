@@ -11,6 +11,9 @@ module Mentor
     def create
       review = @training_session.ai_review || @training_session.build_ai_review(status: :pending)
       return redirect_to(card_in("todos"), notice: "Essa devolutiva já foi enviada.") if review.status_completed?
+      unless @training_session.open_to?(current_user)
+        return redirect_to(card_in("todos"), alert: "O aprendiz escolheu outro mentor para este vídeo. Sem resposta em 48h, o vídeo vai para a sua fila.")
+      end
 
       if review.answer(current_user, **answer_params)
         redirect_to mentor_zine_path(aba: "fila"), notice: "Devolutiva enviada! O aprendiz já pode ver, e o vídeo foi para Todos."

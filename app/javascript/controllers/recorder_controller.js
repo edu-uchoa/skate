@@ -14,7 +14,7 @@ export default class extends Controller {
   static targets = [
     "form", "chooser", "camera", "live", "timer", "recordButton", "recordLabel",
     "preview", "previewVideo", "meta", "fileInput", "captureInput", "switchButton", "notice",
-    "duration", "source", "check", "progress", "progressLabel", "errors", "submit"
+    "duration", "source", "check", "mentor", "progress", "progressLabel", "errors", "submit"
   ]
   static values = { maxSeconds: Number, maxBytes: Number, types: Array, owner: String }
   static outlets = ["clip-trim"]
@@ -278,8 +278,10 @@ export default class extends Controller {
     return problems
   }
 
+  // Enviar só com o vídeo, o checklist completo e o mentor escolhido (quando há mentores).
   refresh() {
-    const ready = this.clip && this.checkTargets.every((check) => check.checked)
+    const mentorChosen = this.mentorTargets.length === 0 || this.mentorTargets.some((radio) => radio.checked)
+    const ready = this.clip && mentorChosen && this.checkTargets.every((check) => check.checked)
     this.submitTarget.disabled = !ready || this.uploading
   }
 
