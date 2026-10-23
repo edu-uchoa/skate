@@ -37,7 +37,7 @@
           <header class="mentor-learner-head">
             <span class="material-symbols-outlined">person</span>
             <div class="mentor-learner-name">
-              <strong><%= masked_contact(learner) %></strong>
+              <strong><%= link_to masked_contact(learner), mentor_learner_path(learner), class: "mentor-learner-link", title: "Ver o perfil do aprendiz" %></strong>
               <span class="auth-hint"><%= learner_summary(learner) %></span>
             </div>
             <% if learner.needs_supervision? %>

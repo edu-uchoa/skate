@@ -17,12 +17,15 @@ class DataExport
       trilha: progress,
       treinos_e_videos: training_sessions,
       chat: chat,
+      # Não aparecem no app para o aprendiz, mas são dados sobre ele (LGPD, acesso).
+      observacoes_dos_mentores: @user.mentor_notes.order(:created_at).map { |note| { de: "equipe de mentores", texto: note.body, em: note.created_at } },
       ofensiva: { sessoes: @user.skate_sessions.order(:skated_on).map { |s| { dia: s.skated_on, validada_em: s.validated_at } },
                   justificativas: @user.streak_justifications.order(:created_at).map { |j| j.slice(:reason, :status, :created_at, :reviewed_at) } },
       roles_marcados: @user.meetups.order(:starts_at).map { |m| m.slice(:place_name, :note, :latitude, :longitude, :starts_at, :ends_at) },
       pedidos_de_ajuda: @user.support_requests.order(:created_at).map { |r| r.slice(:kind, :message, :contact, :status, :created_at) },
       retornos: @user.comebacks.order(:created_at).map { |c| c.slice(:days_away, :reason, :created_at) },
       devolutivas_que_voce_escreveu: @user.given_reviews.count,
+      observacoes_que_voce_escreveu: @user.written_mentor_notes.count,
       # Mentor: as notas que recebeu dos aprendizes (sem dizer de quem, como no Perfil).
       notas_que_voce_recebeu: @user.given_reviews.rated.order(:rated_at).map { |r| { rolamentos: r.rating, mensagem: r.rating_comment, em: r.rated_at } }
     }

@@ -4131,3 +4131,115 @@ a.guide-tab {
 }
 
 .mentor-feedback small { color: var(--text-variant); }
+
+/* Perfil do aprendiz (área do mentor): números, respostas do cadastro e observações. */
+.learner-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 2px 8px;
+}
+
+.learner-profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
+/* No chat, o cartão com o nome abre o perfil. */
+.mentor-learner-head.is-link {
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.mentor-learner-head.is-link:hover { background: #24252a; }
+.mentor-learner-head.is-link:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+.mentor-learner-go { color: var(--text-variant); }
+
+.mentor-learner-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--surface-highest);
+  text-underline-offset: 3px;
+}
+
+.learner-answers dl {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.learner-answers dt {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-variant);
+}
+
+.learner-answers dd {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-on-surface);
+}
+
+.learner-answers dd:not(:last-child) { margin-bottom: 6px; }
+
+.learner-answers,
+.learner-notes { gap: 8px; }
+
+.learner-notes .auth-form { gap: 8px; }
+
+.learner-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.learner-note {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--primary-color);
+  border-radius: var(--radius-sm);
+  background: #1a1b20;
+}
+
+.learner-note-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.learner-note-head .mentor-name { font-size: 13px; }
+.learner-note-head small { flex: 1; font-size: 10.5px; color: var(--text-variant); }
+
+.learner-note p {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-on-surface);
+  white-space: pre-line; /* mantém as quebras de linha que o mentor escreveu */
+  overflow-wrap: anywhere;
+}
+
+.learner-note-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-variant);
+  cursor: pointer;
+}
+
+.learner-note-delete:hover,
+.learner-note-delete:focus-visible { color: var(--error-color); }
+.learner-note-delete .material-symbols-outlined { font-size: 20px; }

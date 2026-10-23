@@ -1,0 +1,117 @@
+<% content_for :section, "Mentor" %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+<% level = @stats.level %>
+
+<section class="learner-profile">
+  <header class="auth-head">
+    <span class="step-indicator">Perfil do aprendiz</span>
+    <div class="mentor-learner-head">
+      <span class="material-symbols-outlined">person</span>
+      <div class="mentor-learner-name">
+        <strong><%= masked_contact(@learner) %></strong>
+        <span class="auth-hint"><%= learner_summary(@learner) %></span>
+      </div>
+      <% if @learner.needs_supervision? %>
+        <span class="guide-tag is-must">Menor de idade</span>
+      <% end %>
+    </div>
+    <div class="learner-profile-links">
+      <%= link_to mentor_chat_path(@learner), class: "auth-link review-go" do %>
+        <span class="material-symbols-outlined">forum</span> Abrir o chat
+      <% end %>
+      <%= link_to mentor_zine_path(aba: "todos", anchor: dom_id(@learner, :mentor)), class: "auth-link review-go" do %>
+        <span class="material-symbols-outlined">video_library</span> Ver os vídeos
+      <% end %>
+    </div>
+  </header>
+
+  <%# Nível (XP), ofensiva e onde está na trilha: os mesmos números do Perfil dele. %>
+  <div class="profile-stats">
+    <div class="profile-stat">
+      <span class="material-symbols-outlined">trending_up</span>
+      <strong>Nível <%= level.number %></strong>
+      <span><%= @stats.xp %> XP</span>
+    </div>
+    <div class="profile-stat is-streak">
+      <span class="material-symbols-outlined">local_fire_department</span>
+      <strong><%= streak_sessions_label(@streak.count) %></strong>
+      <span>Ofensiva · <%= streak_state_label(@streak) %><%= " · recorde de #{@streak.best}" if @streak.best > @streak.count %></span>
+    </div>
+    <div class="profile-stat">
+      <span class="material-symbols-outlined">route</span>
+      <% if @current_maneuver %>
+        <strong><%= @current_maneuver.code %> · <%= @current_maneuver.name %></strong>
+        <span>Na trilha agora · <%= @current_maneuver.learning_module.name %></span>
+      <% else %>
+        <strong>Trilha completa</strong>
+        <span>Na trilha agora</span>
+      <% end %>
+    </div>
+    <div class="profile-stat is-tasks">
+      <span class="material-symbols-outlined">task_alt</span>
+      <strong><%= @stats.completed_count %> de <%= @stats.total_count %></strong>
+      <span>Tarefas concluídas</span>
+    </div>
+  </div>
+
+  <%# As respostas das 3 perguntas que ele fez ao criar a conta. %>
+  <section class="auth-card learner-answers">
+    <span class="auth-card-label">Respostas do cadastro</span>
+    <% answers = diagnosis_answers(@learner.diagnosis) %>
+    <% if answers.empty? %>
+      <p class="auth-hint">Ainda não respondeu as perguntas do cadastro.</p>
+    <% else %>
+      <dl>
+        <% answers.each do |question, replies| %>
+          <dt><%= question %></dt>
+          <dd><%= replies.any? ? replies.join(" · ") : "Sem resposta" %></dd>
+        <% end %>
+      </dl>
+      <% if (answered_at = @learner.diagnosis.completed_at) %>
+        <span class="auth-hint">Respondeu em <%= answered_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y") %>.</span>
+      <% end %>
+    <% end %>
+  </section>
+
+  <%# Observações da equipe: só os mentores veem no app. %>
+  <section class="auth-card learner-notes" id="observacoes">
+    <span class="auth-card-label">Observações dos mentores</span>
+    <span class="auth-hint">
+      O que treinar na próxima aula e o que ajuda a evoluir. Todos os mentores leem; o aprendiz não vê no app.
+    </span>
+
+    <%= form_with url: mentor_learner_notes_path(@learner), scope: :mentor_note, class: "auth-form" do |f| %>
+      <%= f.label :body, "Nova observação", class: "visually-hidden" %>
+      <%= f.text_area :body, value: flash[:mentor_note], rows: 3, maxlength: MentorNote::BODY_LENGTH, required: true,
+            class: "auth-input", placeholder: "Ex.: na próxima aula, treinar a base do ollie parado, na grama." %>
+      <%= f.button "Salvar observação", type: :submit, class: "auth-secondary-btn" %>
+    <% end %>
+
+    <% if @notes.empty? %>
+      <p class="auth-hint">Nenhuma observação ainda.</p>
+    <% else %>
+      <ol class="learner-notes-list">
+        <% @notes.each do |note| %>
+          <li class="learner-note">
+            <div class="learner-note-head">
+              <strong class="mentor-name"><%= note.author ? mentor_name(note.author) : "Mentor que saiu" %></strong>
+              <small><%= note.created_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y às %H:%M") %></small>
+              <% if note.deletable_by?(current_user) %>
+                <%= button_to mentor_learner_note_path(@learner, note), method: :delete, class: "learner-note-delete",
+                      title: "Apagar observação", aria: { label: "Apagar observação" },
+                      form: { data: { turbo_confirm: "Apagar esta observação? Não dá para desfazer." } } do %>
+                  <span class="material-symbols-outlined">delete</span>
+                <% end %>
+              <% end %>
+            </div>
+            <p><%= note.body %></p>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
+
+    <span class="auth-hint">
+      Pela LGPD, as observações vão na cópia de dados que o aprendiz pode baixar. Escreva com respeito e só o que ajuda no treino.
+    </span>
+  </section>
+</section>

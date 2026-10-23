@@ -7,16 +7,19 @@
       <span class="material-symbols-outlined">arrow_back</span> Todas as conversas
     <% end %>
     <span class="step-indicator">Chat com o aprendiz</span>
-    <div class="mentor-learner-head">
+    <%# Tocar no nome abre o Perfil do aprendiz (respostas do cadastro, nível, ofensiva, trilha e observações). %>
+    <%= link_to mentor_learner_path(@learner), class: "mentor-learner-head is-link",
+          aria: { label: "Ver o perfil de #{masked_contact(@learner)}" } do %>
       <span class="material-symbols-outlined">person</span>
-      <div class="mentor-learner-name">
+      <span class="mentor-learner-name">
         <strong><%= masked_contact(@learner) %></strong>
-        <span class="auth-hint"><%= learner_summary(@learner) %></span>
-      </div>
+        <span class="auth-hint"><%= learner_summary(@learner) %> · Ver o perfil</span>
+      </span>
       <% if @learner.needs_supervision? %>
         <span class="guide-tag is-must">Menor de idade</span>
       <% end %>
-    </div>
+      <span class="material-symbols-outlined mentor-learner-go" aria-hidden="true">chevron_right</span>
+    <% end %>
     <%= link_to mentor_zine_path(aba: "todos", anchor: dom_id(@learner, :mentor)), class: "auth-link review-go" do %>
       <span class="material-symbols-outlined">video_library</span> Ver os vídeos
     <% end %>

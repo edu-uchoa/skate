@@ -50,6 +50,10 @@ Rails.application.routes.draw do
     resources :requests, only: %i[index update destroy], path: "pedidos"   # só administrador
     resources :mentors,  only: :destroy, path: "mentores"                   # só administrador
     resource  :profile,  only: :update, path: "perfil" # resumo profissional que os aprendizes leem
+    # Perfil do aprendiz (respostas do cadastro, nível, ofensiva, trilha) e as observações da equipe.
+    resources :learners, only: :show, path: "aprendizes" do
+      resources :notes, only: %i[create destroy], path: "observacoes"
+    end
     # Devolutiva escrita no cartão do vídeo: enviar (fila) e revisar (todos).
     resources :videos,   only: [], path: "videos" do
       resource :review,  only: %i[create update], path: "devolutiva"

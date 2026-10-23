@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -198,6 +198,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.index ["user_id"], name: "index_meetups_on_user_id"
   end
 
+  create_table "mentor_notes", force: :cascade do |t|
+    t.integer "author_id"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.integer "learner_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_mentor_notes_on_author_id"
+    t.index ["learner_id"], name: "index_mentor_notes_on_learner_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer "author_id"
     t.text "body", null: false
@@ -323,6 +333,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   add_foreign_key "maneuvers", "learning_modules"
   add_foreign_key "maneuvers", "maneuvers", column: "prerequisite_id"
   add_foreign_key "meetups", "users", on_delete: :cascade
+  add_foreign_key "mentor_notes", "users", column: "author_id", on_delete: :nullify
+  add_foreign_key "mentor_notes", "users", column: "learner_id", on_delete: :cascade
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "skate_sessions", "training_sessions", on_delete: :nullify

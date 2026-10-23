@@ -2,7 +2,7 @@
 # e não em config/initializers, para o servidor pegar mudanças sem precisar reiniciar.
 module Legal
   # Data da versão atual dos textos: mude junto com pages/privacy e pages/terms.
-  UPDATED_ON = Date.new(2026, 10, 22)
+  UPDATED_ON = Date.new(2026, 10, 23)
 
   # Quem responde pelos dados (controlador) e o e-mail para pedidos de acesso,
   # correção e exclusão. Dá para trocar no servidor sem mexer no código.

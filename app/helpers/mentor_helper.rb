@@ -8,6 +8,35 @@ module MentorHelper
     "advanced"       => "Já manda ollie"
   }.freeze
 
+  # As 3 perguntas do cadastro e as respostas, com os mesmos textos das telas do
+  # diagnóstico (onboarding/diagnoses), para o mentor ver no Perfil do aprendiz.
+  DIAGNOSIS_QUESTIONS = {
+    level:    "Qual é o seu nível hoje?",
+    blockers: "O que é mais difícil hoje?",
+    setup:    "Como é o seu skate hoje?"
+  }.freeze
+
+  DIAGNOSIS_ANSWERS = {
+    level: { "never_ridden" => "Nunca subi em um skate", "can_push" => "Consigo remar e fazer curvas",
+             "stuck_on_ollie" => "Estou travado tentando o Ollie", "advanced" => "Já mando Ollie com firmeza" },
+    blockers: { "fear_of_falling" => "Medo de cair e me machucar", "shame" => "Vergonha de treinar na frente dos outros",
+                "foot_technique" => "Não sei qual o movimento certo do pé", "no_place" => "Falta de lugar adequado e vazio" },
+    setup: { "no_board" => "Não tenho skate ainda", "store_board" => "Skate montado comum",
+             "skateshop_board" => "Skate de skateshop profissional", "other_board" => "Outro tipo de prancha" }
+  }.freeze
+
+  # [[pergunta, [respostas]], ...]; vazio se o aprendiz ainda não respondeu.
+  def diagnosis_answers(diagnosis)
+    return [] if diagnosis.nil?
+
+    answers = {
+      level:    [ diagnosis.level ],
+      blockers: diagnosis.diagnosis_blockers.map(&:kind),
+      setup:    [ diagnosis.setup ]
+    }
+    DIAGNOSIS_QUESTIONS.map { |step, question| [ question, answers[step].filter_map { DIAGNOSIS_ANSWERS[step][it] } ] }
+  end
+
   OUTCOME_LABELS = {
     "felt_safe"   => "Se sentiu seguro",
     "felt_afraid" => "Fez com medo",

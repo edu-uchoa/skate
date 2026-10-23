@@ -21,6 +21,9 @@ class User < ApplicationRecord
   has_many :messages, foreign_key: :author_id, inverse_of: :author, dependent: :nullify      # o que escreveu no chat
   has_many :chosen_sessions, class_name: "TrainingSession", foreign_key: :mentor_id,
                              inverse_of: :mentor, dependent: :nullify # vídeos em que um aprendiz o escolheu para avaliar
+  has_many :mentor_notes, foreign_key: :learner_id, inverse_of: :learner, dependent: :delete_all # observações dos mentores sobre ele
+  has_many :written_mentor_notes, class_name: "MentorNote", foreign_key: :author_id,
+                                  inverse_of: :author, dependent: :nullify # observações que escreveu como mentor
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um
