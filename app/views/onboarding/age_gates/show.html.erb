@@ -28,12 +28,18 @@
       </p>
     </div>
 
+    <%# Os links ficam fora da frase do aceite: tocar no texto marca a caixa (antes, o toque
+        caía no link). Abrem nesta mesma tela, e o "Voltar" deles volta para cá com o ano
+        já digitado, no navegador e no app instalado. %>
+    <p class="legal-read">
+      Leia antes:
+      <%= link_to "Termos de Uso", terms_path, class: "auth-link" %>
+      <span aria-hidden="true">·</span>
+      <%= link_to "Política de Privacidade", privacy_path, class: "auth-link" %>
+    </p>
     <label class="legal-accept">
       <%= check_box_tag :accept_terms, "1", params[:accept_terms] == "1", required: true %>
-      <span>
-        Li e aceito os <%= link_to "Termos de Uso", terms_path, class: "auth-link", target: "_blank", rel: "noopener" %>
-        e a <%= link_to "Política de Privacidade", privacy_path, class: "auth-link", target: "_blank", rel: "noopener" %>.
-      </span>
+      <span>Li e aceito os Termos de Uso e a Política de Privacidade.</span>
     </label>
 
     <%= f.button type: :submit, class: "tactile-btn-primary" do %>

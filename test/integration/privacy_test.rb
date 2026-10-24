@@ -38,13 +38,32 @@ class PrivacyTest < ActionDispatch::IntegrationTest
     assert_select "h2", "Termos de Uso"
   end
 
+  test "o Voltar dos termos leva de volta ao passo do cadastro em que a pessoa está" do
+    get terms_path
+    assert_select "a.auth-back[href=?][data-action='back-link#go']", root_path
+
+    user = sign_up_with_google("cadastro@example.com")
+    get terms_path
+    assert_select "a.auth-back[href=?]", onboarding_age_gate_path, { count: 1 }, "ainda sem aceitar: volta para a idade"
+
+    user.update!(birth_year: 2000, terms_accepted_at: Time.current)
+    get privacy_path
+    assert_select "a.auth-back[href=?]", onboarding_diagnosis_path, { count: 1 }, "no meio das perguntas: volta para elas"
+
+    complete_onboarding(user)
+    get privacy_path
+    assert_select "a.auth-back[href=?]", my_account_path, { count: 1 }, "já usa o app: volta ao Perfil"
+  end
+
   test "a tela da idade só segue com o aceite dos termos" do
     sign_in_with_google("nova@example.com")
     User.find_by!(email: "nova@example.com").choose_nickname(nickname: "nova")
 
     get onboarding_age_gate_path
-    assert_select "input[type=checkbox][name=accept_terms][required]"
-    assert_select ".legal-accept a[href=?]", privacy_path
+    assert_select ".legal-accept input[type=checkbox][name=accept_terms][required]"
+    assert_select ".legal-accept a", 0, "tocar na frase marca a caixa, não abre os termos"
+    assert_select ".legal-read a[href=?]:not([target])", terms_path
+    assert_select ".legal-read a[href=?]:not([target])", privacy_path, { count: 1 }, "abre na mesma tela, também no app instalado"
 
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 } }
     assert_response :unprocessable_entity

@@ -3597,17 +3597,27 @@ a.guide-tab {
 
 .legal-list { padding: 12px 14px 12px 32px; font-size: 13px; line-height: 1.5; }
 
-/* Caixinha "Li e aceito" (tela da idade). */
+/* Aceite dos termos (tela de idade): a linha toda marca a caixa, com área de toque grande. */
 .legal-accept {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 12px;
-  line-height: 1.5;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: #1a1b20;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
   color: var(--text-on-surface);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.legal-accept input { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; accent-color: var(--primary-color); }
+.legal-accept:has(input:checked) { border-color: var(--primary-color); }
+.legal-accept input { width: 24px; height: 24px; flex-shrink: 0; margin: 0; accent-color: var(--primary-color); }
+.legal-read { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12px; color: var(--text-variant); }
+.legal-read a { display: inline-flex; align-items: center; min-height: 32px; }
 .splash-legal { margin-top: -4px; }
 .splash-legal a { color: inherit; text-decoration: underline; text-underline-offset: 2px; min-height: 24px; display: inline-flex; align-items: center; }
 
