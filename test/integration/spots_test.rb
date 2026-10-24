@@ -11,7 +11,7 @@ class SpotsTest < ActionDispatch::IntegrationTest
 
   def account(contact)
     User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|
-      user.update!(birth_year: 2000, terms_accepted_at: Time.current)
+      complete_onboarding(user) # Picos exige o cadastro completo
     end
   end
 

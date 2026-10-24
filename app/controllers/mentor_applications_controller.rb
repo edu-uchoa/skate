@@ -2,6 +2,7 @@
 # mentor em /mentor/pedidos. Enquanto isso, segue usando o app como aprendiz.
 class MentorApplicationsController < ApplicationController
   before_action :redirect_mentor
+  before_action :require_onboarding
 
   def new
     render :pending if current_user.mentor_requested?

@@ -97,4 +97,14 @@ module Authentication
     return if current_user.diagnosis&.completed?
     redirect_to onboarding_diagnosis_path
   end
+
+  # Telas do app de aprendiz: só depois do cadastro completo (nickname, idade e termos,
+  # e as 3 perguntas). Antes disso a pessoa segue pelas telas do cadastro, sem menus;
+  # sem esta regra, um link antigo ou o atalho do app instalado abria a tela no meio do
+  # caminho. A conta de mentor não faz o cadastro de aprendiz.
+  def require_onboarding
+    return if current_user.mentor_account?
+    require_age_gate
+    require_diagnosis unless performed?
+  end
 end

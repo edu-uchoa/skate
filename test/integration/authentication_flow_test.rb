@@ -64,7 +64,10 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
 
     get track_path
     assert_redirected_to onboarding_age_gate_path # logado; segue para o onboarding
+    get my_account_path
+    assert_redirected_to onboarding_age_gate_path, "o Perfil também espera o cadastro"
 
+    complete_onboarding(user)
     get my_account_path
     assert_response :success
     assert_select "form[action='/auth/google_oauth2']", 1, "o Perfil oferece ligar a conta ao Google"
@@ -77,7 +80,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "logout, login com senha e retorno à rota protegida" do
-    sign_up("rider@example.com")
+    complete_onboarding(sign_up("rider@example.com"))
     delete sign_out_path
     assert_redirected_to root_path
 

@@ -18,7 +18,7 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
 
   def account(contact)
     User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|
-      user.update!(birth_year: 1995, terms_accepted_at: Time.current)
+      complete_onboarding(user, birth_year: 1995) # telas do aprendiz exigem o cadastro completo
     end
   end
 

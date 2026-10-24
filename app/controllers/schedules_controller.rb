@@ -1,6 +1,6 @@
 # Compromisso privado (primeira sessão) e agendamento da próxima.
 class SchedulesController < ApplicationController
-  before_action :require_age_gate
+  before_action :require_onboarding
 
   def new
     @maneuver = resolve_maneuver

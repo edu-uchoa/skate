@@ -23,6 +23,14 @@ module ActiveSupport
 
     # Tudo o que um vídeo limpo pode ter: nada que diga onde, quando ou com o quê foi gravado.
     CLEAN_VIDEO_TAGS = %w[major_brand minor_version compatible_brands language handler_name vendor_id].freeze
+
+    # Cadastro completo (idade, termos e as 3 perguntas): as telas do aprendiz exigem
+    # (Authentication#require_onboarding). Mantém o ano de nascimento que já tiver.
+    def complete_onboarding(user, birth_year: 2000)
+      user.update!(birth_year: user.birth_year || birth_year, terms_accepted_at: user.terms_accepted_at || Time.current)
+      user.diagnosis || user.create_diagnosis!(level: :never_ridden, setup: :store_board, completed_at: Time.current)
+      user
+    end
   end
 end
 

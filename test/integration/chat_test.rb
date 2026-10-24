@@ -12,7 +12,7 @@ class ChatTest < ActionDispatch::IntegrationTest
 
   def account(contact, birth_year:)
     User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|
-      user.update!(birth_year: birth_year, terms_accepted_at: Time.current)
+      complete_onboarding(user, birth_year: birth_year) # o chat do aprendiz exige o cadastro completo
     end
   end
 

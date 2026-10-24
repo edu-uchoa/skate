@@ -9,7 +9,7 @@ class ManeuverGuideTest < ActionDispatch::IntegrationTest
                               name: "SEM GUIA", position: 1, kind: :drill)
 
     sign_up_with_google("guia@example.com")
-    User.last.update!(birth_year: 2000, terms_accepted_at: Time.current)
+    complete_onboarding(User.last)
   end
 
   test "o passo 0.1 mostra o guia de setup abaixo do vídeo, com rua e bowl" do

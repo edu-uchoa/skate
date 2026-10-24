@@ -12,7 +12,7 @@ class TasksTest < ActionDispatch::IntegrationTest
     @shove_it = Maneuver.create!(learning_module: tricks, code: "3.0", slug: "t-shove-it", name: "SHOVE-IT", position: 0, prerequisite: @fall)
 
     @user = User.register(contact: "tarefas@example.com", password: PASSWORD, password_confirmation: PASSWORD)
-    @user.update!(birth_year: 2000, terms_accepted_at: Time.current)
+    complete_onboarding(@user)
     post session_path, params: { session: { contact: @user.contact, password: PASSWORD } }
   end
 

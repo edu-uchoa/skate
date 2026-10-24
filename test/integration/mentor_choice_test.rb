@@ -171,7 +171,7 @@ class MentorChoiceTest < ActionDispatch::IntegrationTest
     session = clip_for(@learner, mentor: @ana)
     session.create_ai_review!(status: :pending).answer(@ana, **ANSWER)
 
-    sign_in(account("intruso@example.com", nickname: "Intruso"))
+    sign_in(complete_onboarding(account("intruso@example.com", nickname: "Intruso")))
     post training_session_ai_review_rating_path(session), params: { rating: { value: "1" } }
     assert_response :not_found
     assert_nil session.ai_review.reload.rating

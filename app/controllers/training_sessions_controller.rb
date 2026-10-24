@@ -1,7 +1,7 @@
 class TrainingSessionsController < ApplicationController
   include MentorChoice
 
-  before_action :require_age_gate
+  before_action :require_onboarding
   before_action :set_training_session, only: %i[show update start result submit]
 
   # Checklist de segurança antes de gravar.

@@ -3,7 +3,7 @@
 class ZinesController < ApplicationController
   # Mentor e administrador usam a Zine do mentor, com os vídeos dos aprendizes.
   before_action -> { redirect_to mentor_zine_path if current_user.mentor_access? }
-  before_action :require_age_gate
+  before_action :require_onboarding
 
   def show
     TrainingSession.purge_expired_clips! # vídeo que passou de 1 mês não aparece mais

@@ -11,7 +11,7 @@ class PrivacyTest < ActionDispatch::IntegrationTest
 
   def learner_with_history
     sign_up_with_google("dados@example.com", nickname: "Dados").tap do |user|
-      user.update!(birth_year: 2005, terms_accepted_at: Time.current)
+      complete_onboarding(user, birth_year: 2005)
       session = user.training_sessions.new(maneuver: @maneuver, scheduled_on: Date.current, status: :submitted,
                                            submitted_at: Time.current, outcome: :felt_safe, notes: "Caí de lado",
                                            gear_checked: true, ground_clear: true, space_safe: true)

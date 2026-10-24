@@ -2,6 +2,8 @@
 # (GoogleSessionsController): o e-mail já vem confirmado e ninguém cria conta com o
 # e-mail de outra pessoa.
 class AccountsController < ApplicationController
+  before_action :require_onboarding, only: :show
+
   # Tela "Perfil" (aba de baixo): nível, XP, ofensiva, estilo, avatar, skate e a conta.
   def show
     @stats = ProfileStats.new(current_user)

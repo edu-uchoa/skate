@@ -2,7 +2,7 @@
 class MessagesController < ApplicationController
   include ChatThread
 
-  before_action :require_age_gate
+  before_action :require_onboarding
   before_action -> { redirect_to mentor_chats_path if current_user.mentor_access? }
   rate_limit to: 20, within: 1.minute, only: :create,
              with: -> { redirect_to chat_path, alert: "Muitas mensagens seguidas. Espere um pouco e mande de novo." }

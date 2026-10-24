@@ -4,6 +4,7 @@
 # nunca é enviada ao servidor.
 class SpotsController < ApplicationController
   before_action :redirect_mentor_account
+  before_action :require_onboarding
   def index
     Meetup.purge_expired!
     @meetup = suggested_meetup

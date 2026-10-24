@@ -1,6 +1,6 @@
 # Tela de espera ("na fila do mentor") e a devolutiva do vídeo do treino.
 class AiReviewsController < ApplicationController
-  before_action :require_age_gate
+  before_action :require_onboarding
 
   def show
     @training_session = current_user.training_sessions.find(params[:training_session_id])

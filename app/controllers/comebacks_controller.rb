@@ -1,6 +1,6 @@
 # Rampa de retorno para quem ficou um tempo fora.
 class ComebacksController < ApplicationController
-  before_action :require_age_gate
+  before_action :require_onboarding
 
   def new
     @comeback = current_user.comebacks.build

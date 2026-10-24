@@ -27,10 +27,14 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_match(/\A\d{4}\z/, user.nickname_tag)
     assert_not_equal "0000", user.nickname_tag
 
-    get my_account_path
-    assert_select ".profile-handle", user.handle
     get track_path
     assert_redirected_to onboarding_age_gate_path, "com nickname, segue o onboarding normal"
+    get my_account_path
+    assert_redirected_to onboarding_age_gate_path, "o Perfil também espera o cadastro"
+
+    complete_onboarding(user)
+    get my_account_path
+    assert_select ".profile-handle", user.handle
   end
 
   test "quem volta pelo Google cai na mesma conta, com o histórico" do
@@ -91,7 +95,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
 
   test "conta antiga com telefone liga o Google pelo Perfil" do
     old = User.register(contact: "61999990000", password: PASSWORD, password_confirmation: PASSWORD)
-    old.update!(birth_year: 1998, terms_accepted_at: Time.current)
+    complete_onboarding(old, birth_year: 1998)
     post session_path, params: { session: { contact: "61999990000", password: PASSWORD } }
 
     get my_account_path
@@ -104,7 +108,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     assert_equal 1, User.count
 
     choose "telefone"
-    assert_redirected_to onboarding_age_gate_path
+    assert_redirected_to track_path, "com o cadastro já feito, volta para a trilha"
     delete sign_out_path
     sign_in_with_google("telefone@example.com")
     assert_redirected_to track_path
@@ -115,7 +119,7 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     sign_up_with_google("dono@example.com")
     delete sign_out_path
 
-    User.register(contact: "outra@example.com", password: PASSWORD, password_confirmation: PASSWORD)
+    complete_onboarding(User.register(contact: "outra@example.com", password: PASSWORD, password_confirmation: PASSWORD))
     post session_path, params: { session: { contact: "outra@example.com", password: PASSWORD } }
     sign_in_with_google("dono@example.com")
     assert_redirected_to my_account_path

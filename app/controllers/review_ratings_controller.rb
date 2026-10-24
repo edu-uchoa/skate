@@ -1,7 +1,7 @@
 # O aprendiz avalia o mentor na devolutiva: de 1 a 10 rolamentos e uma mensagem
 # opcional. Uma vez por devolutiva; entra na média do mentor (MentorRating).
 class ReviewRatingsController < ApplicationController
-  before_action :require_age_gate
+  before_action :require_onboarding
 
   def create
     @training_session = current_user.training_sessions.find(params[:training_session_id])

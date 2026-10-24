@@ -1,5 +1,7 @@
 # Ajuda mínima: três portas (machucou / travou / bug), tudo cai no WhatsApp.
 class SupportRequestsController < ApplicationController
+  before_action :require_onboarding
+
   def new
     @support_request = current_user.support_requests.build(kind: params[:kind])
     @maneuver = Maneuver.find_by(slug: params[:maneuver_slug])

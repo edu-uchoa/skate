@@ -1,7 +1,7 @@
 require "test_helper"
 
 class MentorApplicationTest < ActionDispatch::IntegrationTest
-  def sign_up(contact) = sign_up_with_google(contact)
+  def sign_up(contact) = complete_onboarding(sign_up_with_google(contact)) # o pedido é pelo Perfil, depois do cadastro
 
   def sign_in(contact) = sign_in_with_google(contact)
 
