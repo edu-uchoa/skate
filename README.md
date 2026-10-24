@@ -191,13 +191,16 @@ O Google so aceita voltar para `localhost` ou para um dominio com `https`. Pelo 
 
 O super administrador entra no painel `/painel` (icone de escudo no topo), que so ele ve: remove contas (com videos, progresso e chat), tira o acesso de mentores e administradores, apaga videos e apaga devolutivas. Cada remocao fica no log do servidor.
 
-Nao existe botao nem comando para virar super admin: e a conta **Google** cujo e-mail esta na variavel `SUPER_ADMIN_EMAILS` do servidor (mais de um e-mail: separe por virgula). Login com senha nao da esse acesso.
+Nao existe botao no app para virar super admin. So o dono concede, **da maquina dele**: cada acesso e uma "concessao" assinada com a chave particular do dono (Ed25519), que fica so no computador dele, trancada com uma senha. O app tem so a chave publica (`config/super_admin_public_key.pem`, no codigo) e confere a assinatura: quem mexe nas variaveis do Render ou no banco nao consegue fabricar uma concessao. A concessao vale para uma conta **Google** especifica (o codigo que o Google da a conta, que nunca muda), nao para um e-mail. Login com senha nao da esse acesso. Detalhes em `app/models/super_admin.rb`.
 
-1. Render: **Environment** do servico (ou o grupo `Google-keys`) > adicione `SUPER_ADMIN_EMAILS` com o seu e-mail do Google e salve. Se o Render nao reiniciar sozinho, use **Manual Deploy > Restart service**.
-2. No computador (PowerShell): `setx SUPER_ADMIN_EMAILS "seu-email@gmail.com"`, feche o VS Code inteiro, abra de novo e ligue o servidor.
-3. Entre no app com essa conta Google. O escudo aparece no topo e leva ao painel.
+No seu computador (PowerShell, na pasta do projeto):
 
-Para tirar o acesso, apague o e-mail da variavel e reinicie o servidor. Como a regra mora na variavel, ela continua valendo mesmo se o banco do Render for apagado.
+1. Uma vez so: `ruby bin/rails super_admin:criar_chave`. Escolha uma senha forte (12+ caracteres). A chave particular fica em `C:\Users\<voce>\.flipaai\super_admin_ed25519.pem`; guarde uma copia num lugar seguro (sem ela e a senha, ninguem mais concede). A chave publica vai para `config/super_admin_public_key.pem`: faca o commit dela.
+2. Entre uma vez no app local com a sua conta Google e rode `ruby bin/rails "super_admin:conceder[seu-email@gmail.com]"` (pede a senha). Para outra pessoa, use o codigo Google dela, que aparece no `/painel`: `ruby bin/rails "super_admin:conceder[uid:CODIGO]"`.
+3. Coloque a concessao gerada na variavel `SUPER_ADMIN_GRANTS` (varias: separe por virgula): no Render (**Environment**, o servico reinicia) e no computador (`setx SUPER_ADMIN_GRANTS "..."`, depois feche o VS Code inteiro e ligue o servidor de novo).
+4. Entre no app com essa conta Google. O escudo aparece no topo e leva ao painel. `ruby bin/rails super_admin:listar` mostra o que vale.
+
+Para tirar o acesso, apague a concessao da variavel. Concessao alterada, ou assinada por outra chave, e ignorada e avisada no log. Cada entrada de super admin tambem fica no log.
 
 ### Google Maps (mapa de picos)
 

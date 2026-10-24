@@ -41,9 +41,14 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
   O administrador tem todas as funções de mentor.
 - Apagar vídeo: só o dono e o administrador (`TrainingSession#clip_deletable_by?`).
   Use sempre `TrainingSession#remove_clip!` (tira da fila e da ofensiva junto).
-- **Super administrador** (o dono do app): `User#super_admin?` é a conta **Google** cujo
-  e-mail está em `SUPER_ADMIN_EMAILS` (ENV no servidor). Não é papel do banco e não se
-  ganha pelo app; login com senha não dá esse acesso. Só ele entra em `/painel`
+- **Super administrador** (o dono do app): `User#super_admin?` é a conta **Google**
+  com uma concessão assinada pela chave do dono (`SuperAdmin`, Ed25519), em
+  `SUPER_ADMIN_GRANTS`. A chave particular fica só na máquina dele, com senha
+  (`bin/rails super_admin:criar_chave` / `super_admin:conceder`); o app só tem a chave
+  pública, no código (`config/super_admin_public_key.pem`). A concessão vale para o
+  `google_uid`, nunca para o e-mail. Nunca crie outro caminho para virar super admin
+  (variável com e-mails, papel no banco, botão no painel), nem deixe uma variável de
+  ambiente trocar a chave pública. Login com senha não dá esse acesso. Só ele entra em `/painel`
   (`Admin::BaseController`, 404 para os outros): remove contas, tira acesso de mentor,
   apaga vídeos e devolutivas, e cada remoção vai para o log (`audit`). Confira
   `admin_access?` (administrador ou super admin) em vez de `role_admin?` em regras novas.

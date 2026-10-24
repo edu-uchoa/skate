@@ -24,6 +24,21 @@ module ActiveSupport
     # Tudo o que um vídeo limpo pode ter: nada que diga onde, quando ou com o quê foi gravado.
     CLEAN_VIDEO_TAGS = %w[major_brand minor_version compatible_brands language handler_name vendor_id].freeze
 
+    # Super admin nos testes: uma chave só de teste (a do projeto fica de fora) e as
+    # concessões assinadas com ela para os códigos Google pedidos. Nos testes, a conta
+    # Google de "dono@example.com" tem o código "google-dono@example.com".
+    TEST_SUPER_ADMIN_KEY = OpenSSL::PKey.generate_key("ED25519")
+
+    def grant_super_admin(*uids)
+      SuperAdmin.public_key = TEST_SUPER_ADMIN_KEY
+      ENV["SUPER_ADMIN_GRANTS"] = uids.map { SuperAdmin.sign(uid: it, email: nil, private_key: TEST_SUPER_ADMIN_KEY) }.join(",")
+    end
+
+    teardown do
+      ENV.delete("SUPER_ADMIN_GRANTS")
+      SuperAdmin.public_key = nil
+    end
+
     # Cadastro completo (idade, termos e as 3 perguntas): as telas do aprendiz exigem
     # (Authentication#require_onboarding). Mantém o ano de nascimento que já tiver.
     def complete_onboarding(user, birth_year: 2000)

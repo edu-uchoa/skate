@@ -20,6 +20,8 @@ class GoogleSessionsController < ApplicationController
       redirect_to root_path, alert: "Não deu para entrar com essa conta. Fale com o suporte."
     else
       return_to = start_session_for(user)
+      # Rastro: toda entrada de super admin fica no log (quem, quando e de onde).
+      Rails.logger.warn("[FlipaAi] super admin #{user.id} entrou (IP #{request.remote_ip})") if user.super_admin?
       redirect_to(user.handle ? (return_to || home_path_for(user)) : edit_nickname_path, notice: "Bora! Você entrou com o Google.")
     end
   end

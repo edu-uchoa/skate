@@ -235,11 +235,9 @@ class User < ApplicationRecord
 
   # Super administrador: o dono do app, que entra no painel restrito (/painel) e pode
   # remover contas, vídeos e devolutivas. Não é um papel guardado no banco: é a conta
-  # Google cujo e-mail está em SUPER_ADMIN_EMAILS, no servidor. Ninguém vira super
-  # admin pelo app, e o login com senha (contas antigas) não dá esse acesso.
-  def super_admin?
-    google? && email.present? && Rails.configuration.x.flipaai.super_admin_emails.include?(email)
-  end
+  # Google que o dono autorizou com uma concessão assinada na máquina dele (SuperAdmin).
+  # Ninguém vira super admin pelo app, e o login com senha (contas antigas) não dá esse acesso.
+  def super_admin? = SuperAdmin.granted?(self)
 
   # Funções de administrador (aprovar e remover mentores, apagar vídeos de aprendizes).
   def admin_access? = role_admin? || super_admin?

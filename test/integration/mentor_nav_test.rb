@@ -68,8 +68,7 @@ class MentorNavTest < ActionDispatch::IntegrationTest
   end
 
   test "o super admin treina como aprendiz e ganha o menu de mentor só na área do mentor" do
-    original = Rails.configuration.x.flipaai.super_admin_emails
-    Rails.configuration.x.flipaai.super_admin_emails = [ "dono@example.com" ]
+    grant_super_admin("google-dono@example.com")
     owner = sign_up_with_google("dono@example.com", nickname: "dono")
     owner.update!(birth_year: 1990, terms_accepted_at: Time.current)
     owner.create_diagnosis!(level: :never_ridden, setup: :store_board, completed_at: Time.current)
@@ -81,13 +80,10 @@ class MentorNavTest < ActionDispatch::IntegrationTest
 
     get mentor_zine_path
     assert_select ".mentor-nav .nav-fab-btn.is-active"
-  ensure
-    Rails.configuration.x.flipaai.super_admin_emails = original
   end
 
   test "o super admin que ainda não fez as perguntas não vê o menu de baixo, como todo aprendiz" do
-    original = Rails.configuration.x.flipaai.super_admin_emails
-    Rails.configuration.x.flipaai.super_admin_emails = [ "dono@example.com" ]
+    grant_super_admin("google-dono@example.com")
     sign_up_with_google("dono@example.com", nickname: "dono")
 
     [ edit_nickname_path, my_account_path ].each do |path|
@@ -97,7 +93,5 @@ class MentorNavTest < ActionDispatch::IntegrationTest
 
     get admin_root_path
     assert_select ".phone-bottom-nav", 1, "no painel o menu continua"
-  ensure
-    Rails.configuration.x.flipaai.super_admin_emails = original
   end
 end

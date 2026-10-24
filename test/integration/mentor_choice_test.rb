@@ -8,9 +8,6 @@ class MentorChoiceTest < ActionDispatch::IntegrationTest
              next_focus: "Role pelo ombro." }.freeze
 
   setup do
-    @original_emails = Rails.configuration.x.flipaai.super_admin_emails
-    Rails.configuration.x.flipaai.super_admin_emails = [ "dono@example.com" ]
-
     learning_module = LearningModule.create!(code: "0", name: "BASE", position: 0)
     @maneuver = Maneuver.create!(learning_module: learning_module, code: "0.3", slug: "t-queda",
                                  name: "QUEDA CONTROLADA", position: 0, kind: :drill)
@@ -22,9 +19,8 @@ class MentorChoiceTest < ActionDispatch::IntegrationTest
     # O dono do app (super admin), mesmo com papel de administrador, não entra na lista.
     @owner = account("dono@example.com", nickname: "Dono", role: :admin)
     @owner.update!(google_uid: "google-dono")
+    grant_super_admin("google-dono")
   end
-
-  teardown { Rails.configuration.x.flipaai.super_admin_emails = @original_emails }
 
   def account(contact, nickname:, role: :learner)
     User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|

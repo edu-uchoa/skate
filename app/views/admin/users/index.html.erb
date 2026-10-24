@@ -46,6 +46,11 @@
                   "desde #{user.created_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y")}",
                   pluralize(@video_counts.fetch(user.id, 0), "vídeo", plural: "vídeos") ].compact.join(" · ") %>
           </span>
+          <%# Para dar acesso de super admin a esta conta, da sua máquina:
+              ruby bin/rails "super_admin:conceder[uid:CÓDIGO]" (lib/tasks/super_admin.rake). %>
+          <% if user.google? %>
+            <span class="auth-hint">Código Google: <code><%= user.google_uid %></code></span>
+          <% end %>
 
           <% unless user.super_admin? %>
             <div class="mentor-request-actions">

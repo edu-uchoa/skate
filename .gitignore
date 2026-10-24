@@ -39,3 +39,6 @@
 
 /config/master.key
 /config/credentials/*.key
+# Chave particular do super admin (bin/rails super_admin:criar_chave): fica fora do
+# projeto, so na maquina do dono. Nunca no Git, nem por engano.
+super_admin_ed25519.pem

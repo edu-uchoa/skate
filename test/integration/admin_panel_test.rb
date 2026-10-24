@@ -6,8 +6,7 @@ class AdminPanelTest < ActionDispatch::IntegrationTest
   PASSWORD = "manobra123"
 
   setup do
-    @original_emails = Rails.configuration.x.flipaai.super_admin_emails
-    Rails.configuration.x.flipaai.super_admin_emails = [ "dono@example.com" ]
+    grant_super_admin("google-dono@example.com")
 
     learning_module = LearningModule.create!(code: "0", name: "BASE", position: 0)
     @maneuver = Maneuver.create!(learning_module: learning_module, code: "0.3", slug: "t-queda",
@@ -16,8 +15,6 @@ class AdminPanelTest < ActionDispatch::IntegrationTest
     @learner.choose_nickname(nickname: "Rato", tag: "0420")
     @mentor  = password_account("mentor@example.com").tap(&:role_mentor!)
   end
-
-  teardown { Rails.configuration.x.flipaai.super_admin_emails = @original_emails }
 
   def password_account(contact)
     User.register(contact: contact, password: PASSWORD, password_confirmation: PASSWORD).tap do |user|
