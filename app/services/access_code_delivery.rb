@@ -28,7 +28,14 @@ class AccessCodeDelivery
     log
   end
 
+  # Enquanto não há envio de verdade, o código só vai para o log em desenvolvimento. Em
+  # produção, quem lê o log do servidor (Render) poderia usar o código para trocar a
+  # senha de outra pessoa, inclusive de uma conta de administrador ou de mentor.
   def log
-    Rails.logger.info("[FlipaAi] código #{access_code.code} para #{access_code.destination}")
+    if Rails.env.production?
+      Rails.logger.warn("[FlipaAi] pedido de código de acesso: o envio por e-mail/WhatsApp ainda não existe (código não registrado)")
+    else
+      Rails.logger.info("[FlipaAi] código #{access_code.code} para #{access_code.destination}")
+    end
   end
 end

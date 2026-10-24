@@ -83,8 +83,9 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
   mostre e-mail/telefone de aprendiz em telas de mentor (exceção: pedidos de mentor, para
   o admin saber quem é).
 - Ao trocar senha ou identidade: `reset_session` (já feito em `start_session_for`/`sign_out`).
-- O código de recuperação hoje **só é escrito no log** (`AccessCodeDelivery`). Isso não
-  pode ir para produção: o envio real por e-mail/WhatsApp é pendência conhecida.
+- O código de recuperação só vai para o log em **desenvolvimento** (`AccessCodeDelivery`). Em
+  produção ele não é registrado (quem lê o log do Render trocaria a senha de um admin), então
+  a recuperação por código só funciona quando houver o envio real por e-mail/WhatsApp.
 
 **Localização e rolês (mapa de Picos)**
 - A localização do aparelho só centraliza o mapa no navegador (`spots_map_controller.js`):
