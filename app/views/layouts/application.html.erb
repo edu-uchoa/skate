@@ -36,13 +36,15 @@
     <div class="grain"></div>
 
     <!-- App em tela cheia; em tablet e computador o conteúdo fica numa coluna central (--app-column) -->
-    <div class="phone-container<%= " no-app-menus" unless show_app_menus? %>">
+    <div class="phone-container<%= " no-app-menus" unless show_app_menus? %>" data-controller="app-menu">
 
       <!-- Menu de cima: some junto com o de baixo antes da trilha (show_app_menus?) -->
       <% if show_app_menus? %>
       <header class="phone-header-bar">
         <div class="header-left">
-          <button class="icon-btn" onclick="alert('Menu (em breve)')" title="Abrir Menu de Navegação">
+          <%# ☰: abre o painel de atalhos (shared/_app_menu). %>
+          <button type="button" class="icon-btn" data-app-menu-target="button" data-action="app-menu#toggle"
+                  aria-expanded="false" aria-controls="app-menu-panel" aria-label="Abrir o menu" title="Menu">
             <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
           </button>
         </div>
@@ -74,11 +76,12 @@
               <span class="material-symbols-outlined" style="font-size: 22px;">login</span>
             <% end %>
           <% end %>
-          <button class="help-btn" title="Dúvidas e Suporte">
+          <%= link_to new_support_request_path, class: "icon-btn help-btn", title: "Dúvidas e suporte", aria: { label: "Ajuda" } do %>
             <span class="material-symbols-outlined" style="font-size: 22px;">help</span>
-          </button>
+          <% end %>
         </div>
       </header>
+      <%= render "shared/app_menu" %>
       <% end %>
 
       <!-- Main Screens Content Viewport -->

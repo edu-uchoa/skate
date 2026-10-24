@@ -1,0 +1,23 @@
+<%# Painel do ☰ (app_menu_controller, no .phone-container do layout): os atalhos que não
+    cabem no menu de baixo. Fica fora do cabeçalho porque o desfoque do cabeçalho
+    prenderia o fundo escuro dentro dele. %>
+<div class="app-menu-backdrop" data-app-menu-target="backdrop" data-action="click->app-menu#close" hidden></div>
+<nav class="app-menu-panel" id="app-menu-panel" data-app-menu-target="panel" aria-label="Menu" hidden>
+  <ul>
+    <% unless current_user.mentor_account? %>
+      <% [ [ tasks_path, "task_alt", "Tarefas" ], [ streak_path, "local_fire_department", "Ofensiva" ],
+           [ chat_path, "forum", "Fale com os mentores" ], [ new_schedule_path, "event", "Agendar próxima sessão" ] ].each do |path, icon, label| %>
+        <li><%= link_to path, class: "app-menu-item" do %><span class="material-symbols-outlined" aria-hidden="true"><%= icon %></span> <%= label %><% end %></li>
+      <% end %>
+    <% end %>
+    <li><%= link_to new_support_request_path, class: "app-menu-item" do %><span class="material-symbols-outlined" aria-hidden="true">help</span> Ajuda<% end %></li>
+    <li class="app-menu-install"><%= link_to install_path, class: "app-menu-item" do %><span class="material-symbols-outlined" aria-hidden="true">install_mobile</span> Instalar o FlipaAi<% end %></li>
+    <li><%= link_to privacy_path, class: "app-menu-item" do %><span class="material-symbols-outlined" aria-hidden="true">shield_lock</span> Política de Privacidade<% end %></li>
+    <li><%= link_to terms_path, class: "app-menu-item" do %><span class="material-symbols-outlined" aria-hidden="true">gavel</span> Termos de Uso<% end %></li>
+    <li>
+      <%= button_to sign_out_path, method: :delete, class: "app-menu-item is-exit" do %>
+        <span class="material-symbols-outlined" aria-hidden="true">logout</span> Sair deste aparelho
+      <% end %>
+    </li>
+  </ul>
+</nav>

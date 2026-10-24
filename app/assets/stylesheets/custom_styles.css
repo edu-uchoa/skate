@@ -4269,3 +4269,57 @@ a.guide-tab {
    pergunta (antes, o destaque só aparecia ao tocar). O !important vence o estilo da tela. */
 .option-card:has(input:checked) { border-color: var(--primary-color) !important; }
 .diagnosis-back { align-self: flex-start; margin-bottom: 4px; }
+
+/* Menu do ☰ (shared/_app_menu): painel abaixo do topo, sobre um fundo escuro que fecha
+   ao tocar. No app instalado, o atalho "Instalar" some. */
+.app-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.app-menu-panel {
+  position: fixed;
+  top: calc(54px + env(safe-area-inset-top, 0px) + 6px);
+  left: max(8px, env(safe-area-inset-left, 0px), var(--column-gutter));
+  z-index: 200;
+  width: min(300px, calc(100vw - 16px));
+  max-height: calc(100dvh - 54px - env(safe-area-inset-top, 0px) - 24px);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid var(--surface-highest);
+  border-radius: var(--radius-md);
+  background: var(--surface-color);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.app-menu-backdrop[hidden],
+.app-menu-panel[hidden] { display: none; }
+
+.app-menu-panel ul { display: flex; flex-direction: column; gap: 2px; list-style: none; }
+
+.app-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-on-surface);
+  font: 600 14px var(--font-body);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-menu-item .material-symbols-outlined { color: var(--primary-color); font-size: 22px; }
+.app-menu-item:hover,
+.app-menu-item:focus-visible { background: #24252a; outline: none; }
+.app-menu-item:focus-visible { box-shadow: inset 0 0 0 2px var(--primary-color); }
+.app-menu-item.is-exit .material-symbols-outlined { color: var(--error-color); }
+.app-menu-panel form { display: block; }
+.is-standalone .app-menu-install { display: none; }
