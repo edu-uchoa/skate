@@ -253,9 +253,10 @@ class User < ApplicationRecord
   def mentor_account? = role_mentor? || role_admin?
 
   # Mentores que o aprendiz pode escolher para avaliar o vídeo: mentores e
-  # administradores, menos o super administrador (o dono do app).
+  # administradores com nickname (é como o aprendiz reconhece quem escolheu), menos o
+  # super administrador (o dono do app).
   def self.available_mentors
-    where(role: %i[mentor admin]).order(:nickname_key, :id).reject(&:super_admin?)
+    where(role: %i[mentor admin]).where.not(nickname: nil).order(:nickname_key, :id).reject(&:super_admin?)
   end
 
   # O mentor escolhido, se ele ainda está na lista; senão nil (o vídeo vai para qualquer mentor).

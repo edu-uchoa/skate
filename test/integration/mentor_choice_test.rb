@@ -75,6 +75,21 @@ class MentorChoiceTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "mentor sem nickname não entra na lista e o Perfil dele avisa" do
+    nameless = User.register(contact: "sem-nick@example.com", password: PASSWORD, password_confirmation: PASSWORD)
+    nameless.update!(birth_year: 1990, role: :mentor)
+
+    sign_in(@learner)
+    get new_recording_path
+    assert_select ".mentor-name", text: /Mentor #/, count: 0
+    assert_equal [ @ana, @beto ].sort_by(&:id), User.available_mentors.sort_by(&:id)
+
+    sign_in(nameless)
+    get my_account_path
+    assert_select "#mentor .zine-status.warn", /Escolha um nickname/
+    assert_select "#mentor a[href=?]", edit_nickname_path
+  end
+
   test "o vídeo vai para o mentor escolhido; quem não está na lista vira qualquer mentor" do
     sign_in(@learner)
     send_clip = lambda do |mentor_id|

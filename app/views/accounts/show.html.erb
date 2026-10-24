@@ -23,6 +23,14 @@
   <% if current_user.mentor_account? %>
     <section class="auth-card mentor-profile" id="mentor">
       <span class="auth-card-label">Seu perfil de mentor</span>
+      <% if current_user.nickname.blank? %>
+        <%# Sem nickname o mentor não entra na lista de escolha dos aprendizes (User.available_mentors). %>
+        <p class="zine-status warn">
+          <span class="material-symbols-outlined" aria-hidden="true">badge</span>
+          <span>Escolha um nickname: sem ele, os aprendizes não conseguem escolher você para avaliar os vídeos.</span>
+        </p>
+        <%= link_to "Escolher o nickname", edit_nickname_path, class: "auth-link" %>
+      <% end %>
       <strong class="mentor-name"><%= mentor_name(current_user) %></strong>
       <%= mentor_score(@mentor_score) %>
       <span class="auth-hint">
