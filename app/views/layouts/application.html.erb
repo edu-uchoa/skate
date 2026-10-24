@@ -24,8 +24,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800;900&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= stylesheet_link_tag "custom_styles", "data-turbo-track": "reload" %>
+    <%# Cada estilo uma vez só, nesta ordem: os do app (custom_styles) por último, vencendo
+        o Tailwind. Antes, o :app trazia o custom_styles e ele vinha de novo aqui. %>
+    <%= stylesheet_link_tag "application", "tailwind", "custom_styles", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
