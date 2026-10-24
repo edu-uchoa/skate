@@ -4,6 +4,9 @@ module Onboarding
     before_action :redirect_mentor_account # a conta de mentor não faz o cadastro de aprendiz
     before_action :require_age_gate
     before_action :set_diagnosis
+    # Perguntas já respondidas (ex.: voltou pelo navegador depois da trilha): vai para a
+    # trilha. O plano (summary) continua abrindo: é o fim do cadastro.
+    before_action -> { redirect_to track_path }, if: -> { @diagnosis.completed? }, except: :summary
 
     # Cada pergunta tem o seu endereço (?step=level, blockers, setup): assim o "voltar" do
     # navegador (e o botão Voltar da tela) leva à pergunta anterior, e não de novo à mesma.

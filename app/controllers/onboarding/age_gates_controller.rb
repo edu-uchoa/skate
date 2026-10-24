@@ -2,6 +2,9 @@ module Onboarding
   # Aviso de risco + porta de idade (13+).
   class AgeGatesController < ApplicationController
     before_action :redirect_mentor_account # a conta de mentor não faz o cadastro de aprendiz
+    # Idade e termos já aceitos (ex.: voltou pelo navegador): segue para o próximo passo.
+    before_action -> { redirect_to(current_user.onboarded? ? track_path : onboarding_diagnosis_path) },
+                  if: -> { current_user.accepted_terms? && current_user.old_enough? }
 
     def show
       @user = current_user

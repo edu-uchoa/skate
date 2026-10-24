@@ -107,6 +107,26 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_select ".auth-errors", /Escolha como é o seu skate/
   end
 
+  test "quem terminou o cadastro não volta para a idade nem para as perguntas" do
+    user = sign_up_with_google("pronto@example.com")
+    user.update!(birth_year: 2000, terms_accepted_at: Time.current)
+    get onboarding_age_gate_path
+    assert_redirected_to onboarding_diagnosis_path, "idade já aceita: segue para as perguntas"
+
+    complete_onboarding(user)
+    get onboarding_age_gate_path
+    assert_redirected_to track_path
+    get onboarding_diagnosis_path(step: "level")
+    assert_redirected_to track_path
+    patch onboarding_diagnosis_path(step: "level"), params: { diagnosis: { level: "advanced" } }
+    assert_redirected_to track_path
+    assert_equal "never_ridden", user.diagnosis.reload.level, "a resposta antiga não muda"
+
+    get summary_onboarding_diagnosis_path
+    assert_response :success, "o plano (fim do cadastro) continua abrindo"
+    assert_select "meta[name=turbo-cache-control][content=no-cache]"
+  end
+
   test "quem já entrou e abre o app pula a logo" do
     sign_up_with_google("volta@example.com")
     get root_path
