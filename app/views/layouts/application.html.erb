@@ -3,7 +3,9 @@
   <head>
     <title><%= content_for(:title) || "FlipaAi · Bora andar de skate!" %></title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <%# Sem bloquear o zoom (acessibilidade). No celular os campos têm letra de 16px
+        (custom_styles.css): abaixo disso o iPhone dá zoom sozinho ao tocar num campo. %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <%# App instalado na tela do celular (PWA, página /instalar): abre em tela cheia.
         No iPhone, a barra de status fica por cima do app; o cabeçalho e o menu de
         baixo já descontam o entalhe e a barrinha (env(safe-area-inset-*)). %>

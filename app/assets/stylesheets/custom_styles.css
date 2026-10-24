@@ -4323,3 +4323,15 @@ a.guide-tab {
 .app-menu-item.is-exit .material-symbols-outlined { color: var(--error-color); }
 .app-menu-panel form { display: block; }
 .is-standalone .app-menu-install { display: none; }
+
+/* Celular e tablet (toque): campos com letra de pelo menos 16px. Com o zoom liberado,
+   o iPhone dá zoom sozinho ao tocar num campo com letra menor (e a tela fica torta).
+   O !important vence os tamanhos menores das telas antigas (estilo na própria tag).
+   O campo do ano (24px) já é maior. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(.auth-input-code),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

@@ -11,6 +11,12 @@ class StylesheetsTest < ActionDispatch::IntegrationTest
     assert_operator links.index { it.include?("/tailwind-") }, :<, links.size - 1
   end
 
+  test "o zoom da tela fica liberado (acessibilidade)" do
+    get root_path
+    viewport = css_select("meta[name=viewport]").first["content"]
+    assert_no_match(/maximum-scale|user-scalable/, viewport)
+  end
+
   test "o application.css não importa outro arquivo" do
     css = Rails.root.join("app/assets/stylesheets/application.css").read
     assert_no_match(/^\s*@import/, css)
