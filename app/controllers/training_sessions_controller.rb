@@ -1,6 +1,7 @@
 class TrainingSessionsController < ApplicationController
   include MentorChoice
 
+  before_action :redirect_mentor_account # conta de mentor usa a área do mentor
   before_action :require_onboarding
   before_action :set_training_session, only: %i[show update start result submit]
 

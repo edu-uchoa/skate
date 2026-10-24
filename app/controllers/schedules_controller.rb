@@ -1,5 +1,6 @@
 # Compromisso privado (primeira sessão) e agendamento da próxima.
 class SchedulesController < ApplicationController
+  before_action :redirect_mentor_account # conta de mentor usa a área do mentor
   before_action :require_onboarding
 
   def new

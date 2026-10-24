@@ -1,6 +1,7 @@
 module Onboarding
   # Wizard de 3 passos: nível -> travas -> setup.
   class DiagnosesController < ApplicationController
+    before_action :redirect_mentor_account # a conta de mentor não faz o cadastro de aprendiz
     before_action :require_age_gate
     before_action :set_diagnosis
 

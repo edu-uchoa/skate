@@ -29,6 +29,25 @@ class MentorNavTest < ActionDispatch::IntegrationTest
     assert_redirected_to mentor_zine_path, "marcar rolê também é só do aprendiz"
   end
 
+  test "as outras telas de aprendiz e o cadastro também levam o mentor para a fila" do
+    learning_module = LearningModule.create!(code: "0", name: "BASE", position: 0)
+    Maneuver.create!(learning_module: learning_module, code: "0.1", slug: "t-setup", name: "SETUP",
+                     position: 0, kind: :drill, description: "Monte o seu skate.")
+    sign_in(@mentor)
+
+    [ maneuver_path("t-setup"), new_maneuver_training_session_path("t-setup"), streak_path, tasks_path, new_schedule_path,
+      new_comeback_path, store_path, onboarding_age_gate_path, onboarding_diagnosis_path ].each do |path|
+      get path
+      assert_redirected_to mentor_zine_path, path
+    end
+    assert_nil @mentor.reload.diagnosis, "abrir as perguntas não cria mais um diagnóstico vazio para o mentor"
+
+    [ my_account_path, new_support_request_path, install_path ].each do |path|
+      get path
+      assert_response :success, "#{path} continua aberto para o mentor"
+    end
+  end
+
   test "o menu de baixo do mentor tem Perfil, Todos, Na fila, Ofensivas e Chat" do
     sign_in(@mentor)
     get my_account_path

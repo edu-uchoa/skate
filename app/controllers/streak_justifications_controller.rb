@@ -1,6 +1,7 @@
 # Justificar uma parada da ofensiva. Uma por parada; um mentor avalia
 # (Mentor::StreakJustificationsController) e, até lá, a ofensiva fica guardada.
 class StreakJustificationsController < ApplicationController
+  before_action :redirect_mentor_account # conta de mentor usa a área do mentor
   before_action :require_onboarding
 
   rate_limit to: 5, within: 1.hour, only: :create

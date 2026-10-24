@@ -1,4 +1,5 @@
 class StoresController < ApplicationController
+  before_action :redirect_mentor_account # conta de mentor usa a área do mentor
   before_action :require_onboarding
 
   def show

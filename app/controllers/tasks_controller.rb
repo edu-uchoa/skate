@@ -1,6 +1,7 @@
 # Tarefas da trilha (botão "Tarefas concluídas" do Perfil): as concluídas, de
 # forma breve, e as que ainda faltam, com a situação de cada uma.
 class TasksController < ApplicationController
+  before_action :redirect_mentor_account # conta de mentor usa a área do mentor
   before_action :require_onboarding
 
   def index
