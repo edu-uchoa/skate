@@ -78,6 +78,19 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_no_match "14 DIAS", response.body
   end
 
+  test "pergunta enviada sem resposta avisa o que falta e fica na mesma tela" do
+    sign_up_with_google("vazio@example.com").update!(birth_year: 2000, terms_accepted_at: Time.current)
+    patch onboarding_diagnosis_path(step: "level"), params: { diagnosis: { level: "never_ridden" } }
+
+    patch onboarding_diagnosis_path(step: "blockers"), params: { diagnosis: { blockers: [ "" ] } }
+    assert_response :unprocessable_entity
+    assert_select ".auth-errors", /Marque pelo menos uma opção/
+    assert_select ".screen-title", "O que é mais difícil hoje?"
+
+    patch onboarding_diagnosis_path(step: "setup"), params: { diagnosis: { setup: "" } }
+    assert_select ".auth-errors", /Escolha como é o seu skate/
+  end
+
   test "quem já entrou e abre o app pula a logo" do
     sign_up_with_google("volta@example.com")
     get root_path

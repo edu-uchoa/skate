@@ -5,6 +5,8 @@
 </div>
 <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">O que é mais difícil hoje?</h2>
 
+<%= render "shared/errors", record: @diagnosis %>
+
 <%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "blockers"), method: :patch, class: "options-list", style: "margin-top: 8px;" do |f| %>
   <%= hidden_field_tag "diagnosis[blockers][]", "" %>
 

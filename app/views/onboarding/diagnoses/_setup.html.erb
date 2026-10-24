@@ -3,6 +3,8 @@
 <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Como é o seu skate hoje?</h2>
 <p class="screen-desc" style="font-family: 'Inter', sans-serif;">Isso ajuda a entender se o seu equipamento aguenta o tranco ou se precisamos te salvar de um skate travado.</p>
 
+<%= render "shared/errors", record: @diagnosis %>
+
 <%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "setup"), method: :patch, class: "options-list" do |f| %>
   <% options = [
        { val: "no_board", icon: "shopping_cart", title: "Não tenho skate ainda", desc: "Quero começar com o equipamento certo" },

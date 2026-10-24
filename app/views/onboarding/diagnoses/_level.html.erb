@@ -3,6 +3,8 @@
 <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Qual é o seu nível hoje?</h2>
 <p class="screen-desc" style="font-family: 'Inter', sans-serif;">Isso define onde você entra na trilha para não perder tempo com o que já sabe ou tentar algo difícil demais.</p>
 
+<%= render "shared/errors", record: @diagnosis %>
+
 <%= form_with model: @diagnosis, url: onboarding_diagnosis_path(step: "level"), method: :patch, class: "options-list" do |f| %>
   <% levels = [
        { val: "never_ridden", title: "Nunca subi em um skate", desc: "Quero aprender a ficar de pé, remar e cair sem me machucar", icon: "skateboarding" },

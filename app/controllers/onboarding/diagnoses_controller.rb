@@ -9,8 +9,20 @@ module Onboarding
       render @step
     end
 
+    # Pergunta enviada sem resposta: avisa e fica na mesma tela (antes, a tela só
+    # recarregava, sem dizer o que faltava).
+    UNANSWERED = {
+      "level"    => "Escolha o seu nível hoje para continuar.",
+      "blockers" => "Marque pelo menos uma opção (pode marcar várias).",
+      "setup"    => "Escolha como é o seu skate hoje para continuar."
+    }.freeze
+
     def update
       @step = requested_step
+      if Array(params.dig(:diagnosis, @step)).compact_blank.empty?
+        @diagnosis.errors.add(:base, UNANSWERED.fetch(@step))
+        return render(@step, status: :unprocessable_entity)
+      end
 
       case @step
       when "level"    then @diagnosis.level = params.dig(:diagnosis, :level)
