@@ -1,6 +1,6 @@
 <% content_for :section, "Zine" %>
-<%# Sem prévia do cache do Turbo: o status da análise muda e não pode aparecer desatualizado. %>
-<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+<%# Sem cópia guardada pelo Turbo: o status da análise muda e não pode aparecer desatualizado (nem no voltar). %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-cache") %>
 
 <section class="zine-screen" <%= tag.attributes(data: { controller: "poll", poll_interval_value: 60000 }) if @analysis_running %>>
   <header class="auth-head">

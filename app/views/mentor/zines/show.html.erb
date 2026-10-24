@@ -1,6 +1,6 @@
 <% content_for :section, "Mentor" %>
-<%# Sem prévia do cache do Turbo: a fila muda e não pode aparecer desatualizada. %>
-<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-preview") %>
+<%# Sem cópia guardada pelo Turbo: a fila muda (ex.: depois de enviar uma devolutiva, o voltar mostrava a fila antiga, com o formulário). %>
+<% content_for :head, tag.meta(name: "turbo-cache-control", content: "no-cache") %>
 
 <section class="zine-screen">
   <header class="auth-head">
