@@ -29,7 +29,9 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-[#121316] text-[#e3e2e6]" style="font-family: 'Inter', sans-serif; background: #121316; color: #e3e2e6; margin: 0; overflow: hidden;">
+  <%# data-signed-in: sem conta (ou logo depois de sair), o application.js apaga as telas guardadas para o "voltar". %>
+  <body class="bg-[#121316] text-[#e3e2e6]" style="font-family: 'Inter', sans-serif; background: #121316; color: #e3e2e6; margin: 0; overflow: hidden;"
+        data-signed-in="<%= signed_in? %>">
     <div class="grain"></div>
 
     <!-- App em tela cheia; em tablet e computador o conteúdo fica numa coluna central (--app-column) -->

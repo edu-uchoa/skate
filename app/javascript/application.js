@@ -2,6 +2,13 @@
 import "@hotwired/turbo-rails"
 import "controllers"
 
+// Saiu da conta (ou ainda não entrou): apaga as telas que o Turbo guardou para o
+// "voltar". Assim, num celular emprestado, ninguém volta para o chat ou o Perfil de
+// quem usou antes: a tela é buscada de novo e o servidor manda para a logo.
+document.addEventListener("turbo:load", () => {
+  if (document.body.dataset.signedIn === "false") window.Turbo?.cache.clear()
+})
+
 // App instalado na tela do celular (PWA). O service worker deixa o app abrir mais
 // rápido e mostra "Sem sinal" quando falta internet (app/views/pwa/service-worker.js).
 if ("serviceWorker" in navigator) {

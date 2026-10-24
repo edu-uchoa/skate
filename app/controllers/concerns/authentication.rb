@@ -10,6 +10,9 @@ module Authentication
   included do
     before_action :resume_session
     before_action :require_authentication
+    # Telas de quem está logado não ficam guardadas no navegador: depois de sair, o
+    # "voltar" busca a tela de novo (e cai na logo) em vez de mostrar a cópia antiga.
+    before_action { no_store if signed_in? }
     helper_method :current_user, :signed_in?
   end
 
