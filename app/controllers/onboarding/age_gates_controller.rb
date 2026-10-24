@@ -26,7 +26,7 @@ module Onboarding
 
       @user.terms_accepted_at = Time.current
       @user.save!
-      redirect_to onboarding_diagnosis_path
+      redirect_to onboarding_diagnosis_path(step: @user.diagnosis&.next_step || "level")
     end
   end
 end

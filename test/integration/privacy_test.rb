@@ -70,7 +70,7 @@ class PrivacyTest < ActionDispatch::IntegrationTest
     assert_nil User.find_by!(email: "nova@example.com").terms_accepted_at
 
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 }, accept_terms: "1" }
-    assert_redirected_to onboarding_diagnosis_path
+    assert_redirected_to onboarding_diagnosis_path(step: "level")
     assert User.find_by!(email: "nova@example.com").accepted_terms?
   end
 

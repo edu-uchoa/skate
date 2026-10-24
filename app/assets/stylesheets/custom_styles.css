@@ -4264,3 +4264,8 @@ a.guide-tab {
   flex: 0 0 auto;
   height: 40px;
 }
+
+/* Perguntas do cadastro: a opção marcada fica destacada também quando a pessoa volta à
+   pergunta (antes, o destaque só aparecia ao tocar). O !important vence o estilo da tela. */
+.option-card:has(input:checked) { border-color: var(--primary-color) !important; }
+.diagnosis-back { align-self: flex-start; margin-bottom: 4px; }

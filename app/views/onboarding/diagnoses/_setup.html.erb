@@ -1,4 +1,9 @@
 <% content_for :section, "Diagnóstico" %>
+<%# Voltar para a pergunta anterior: no app instalado do iPhone não existe o botão do navegador. %>
+<%= link_to onboarding_diagnosis_path(step: "blockers"), class: "auth-back diagnosis-back",
+      data: { controller: "back-link", action: "back-link#go" } do %>
+  <span class="material-symbols-outlined">arrow_back</span> Voltar
+<% end %>
 <span class="step-indicator">PASSO 3 DE 3 • 100%</span>
 <h2 class="screen-title" style="font-family: 'Outfit', sans-serif;">Como é o seu skate hoje?</h2>
 <p class="screen-desc" style="font-family: 'Inter', sans-serif;">Isso ajuda a entender se o seu equipamento aguenta o tranco ou se precisamos te salvar de um skate travado.</p>

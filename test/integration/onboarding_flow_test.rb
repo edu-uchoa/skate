@@ -60,7 +60,7 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_match "aceite os Termos de Uso e a Política de Privacidade", response.body
 
     patch onboarding_age_gate_path, params: { user: { birth_year: 2000 }, accept_terms: "1" }
-    assert_redirected_to onboarding_diagnosis_path
+    assert_redirected_to onboarding_diagnosis_path(step: "level")
     follow_redirect!
     assert_no_menus "perguntas"
 
@@ -76,6 +76,22 @@ class OnboardingFlowTest < ActionDispatch::IntegrationTest
     assert_select ".phone-bottom-nav a.nav-btn.active[href=?]", track_path
     assert_select ".phone-header-bar", 1, "na trilha o menu de cima volta"
     assert_no_match "14 DIAS", response.body
+  end
+
+  test "cada pergunta tem o seu endereço e as perguntas 2 e 3 têm o botão Voltar" do
+    sign_up_with_google("passos@example.com").update!(birth_year: 2000, terms_accepted_at: Time.current)
+
+    get onboarding_diagnosis_path
+    assert_redirected_to onboarding_diagnosis_path(step: "level"), "o voltar do navegador precisa de endereços diferentes"
+    follow_redirect!
+    assert_select "a.diagnosis-back", 0, "a primeira pergunta não tem Voltar"
+
+    patch onboarding_diagnosis_path(step: "level"), params: { diagnosis: { level: "can_push" } }
+    follow_redirect!
+    assert_select "a.diagnosis-back[href=?][data-action='back-link#go']", onboarding_diagnosis_path(step: "level")
+
+    get onboarding_diagnosis_path(step: "level")
+    assert_select "input[type=radio][value=can_push][checked]", 1, "a resposta salva já vem marcada"
   end
 
   test "pergunta enviada sem resposta avisa o que falta e fica na mesma tela" do

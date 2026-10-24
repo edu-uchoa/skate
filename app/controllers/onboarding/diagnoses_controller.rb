@@ -4,7 +4,11 @@ module Onboarding
     before_action :require_age_gate
     before_action :set_diagnosis
 
+    # Cada pergunta tem o seu endereço (?step=level, blockers, setup): assim o "voltar" do
+    # navegador (e o botão Voltar da tela) leva à pergunta anterior, e não de novo à mesma.
     def show
+      return redirect_to(onboarding_diagnosis_path(step: requested_step)) if params[:step].blank?
+
       @step = requested_step
       render @step
     end

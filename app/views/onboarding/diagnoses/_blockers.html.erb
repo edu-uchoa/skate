@@ -1,4 +1,9 @@
 <% content_for :section, "Diagnóstico" %>
+<%# Voltar para a pergunta anterior: no app instalado do iPhone não existe o botão do navegador. %>
+<%= link_to onboarding_diagnosis_path(step: "level"), class: "auth-back diagnosis-back",
+      data: { controller: "back-link", action: "back-link#go" } do %>
+  <span class="material-symbols-outlined">arrow_back</span> Voltar
+<% end %>
 <div style="position: relative;">
   <span class="step-indicator">PASSO 2 DE 3 • 66%</span>
   <div class="version-badge" style="top: -6px; right: 0; background: #fd591e; color: black; font-weight: 800; font-size: 9px; padding: 2px 6px;">PODE MARCAR VÁRIAS</div>
