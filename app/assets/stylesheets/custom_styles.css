@@ -4253,3 +4253,14 @@ a.guide-tab {
 .learner-note-delete:hover,
 .learner-note-delete:focus-visible { color: var(--error-color); }
 .learner-note-delete .material-symbols-outlined { font-size: 20px; }
+
+/* Com o menu de baixo, o botão do meio (Gravar / Na fila) sobe ~26px acima do menu.
+   O espaço no fim do conteúdo garante que o último botão da tela (ex.: "Enviar vídeo")
+   pare acima dele. É um item no fim da coluna (e não padding), porque o padding de baixo
+   não entra na rolagem quando o conteúdo passa da altura da tela. */
+.phone-container:not(.no-app-menus) .screen.active::after {
+  content: "";
+  display: block;
+  flex: 0 0 auto;
+  height: 40px;
+}
