@@ -52,6 +52,8 @@ end
 # Entrar com o Google nos testes: o OmniAuth devolve uma resposta pronta, sem ir ao Google.
 OmniAuth.config.test_mode = true
 Rails.configuration.x.flipaai.google_client_id = "id-de-teste" # mostra o botão do Google nas telas
+# Os testes entram com e-mails @example.com, um domínio reservado que não existe no Google.
+User.google_email_domains += %w[example.com]
 
 module GoogleSignIn
   # A volta do Google para essa conta. verified: false simula e-mail não confirmado.

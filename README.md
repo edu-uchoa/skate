@@ -173,6 +173,8 @@ Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e 
 
 Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Os botoes ficam na tela da logo (`/`), a unica porta de entrada. Sem `GOOGLE_CLIENT_ID`, ela mostra um aviso no lugar do botao. Contas antigas com senha (mentores e administradores) entram por `/entrar/senha`, que nao tem link no app.
 
+Conta nova so entra com conta Google `@gmail.com` (`User::GOOGLE_EMAIL_DOMAINS`). Com e-mail de escola, de empresa ou de outro provedor, quem controla o dominio consegue criar outra conta Google com o mesmo endereco. A conta e achada pelo codigo da conta Google, nunca pelo e-mail: uma segunda conta Google com o mesmo e-mail e recusada e fica no log (`login Google recusado`).
+
 1. Em [console.cloud.google.com](https://console.cloud.google.com), abra o mesmo projeto do Maps (ou crie um) e va em **Google Auth Platform**.
 2. **Branding** (tela de consentimento): nome do app `FlipaAi`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).
 3. **Audience**: tipo **External**. Em "Testing", so entram os e-mails listados em **Test users**; quando estiver pronto, clique em **Publish app**. Como o app so pede escopos basicos (`openid`, `email`), o Google nao exige a verificacao demorada de escopos sensiveis.

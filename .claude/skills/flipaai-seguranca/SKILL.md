@@ -76,7 +76,11 @@ Revise a mudança pelo checklist abaixo e rode as verificações automáticas an
 - Mensagens de login/recuperação não podem revelar se a conta existe.
 - Login pelo Google (OmniAuth): só por POST com token CSRF (`omniauth-rails_csrf_protection`;
   link GET não inicia o login), só aceita e-mail **confirmado** (o gem só preenche
-  `info.email` quando `email_verified`), pede só `openid email`. Client ID e secret ficam em
+  `info.email` quando `email_verified`), pede só `openid email`. Conta Google nova (criar,
+  aproveitar conta antiga ou ligar pelo Perfil) só com e-mail `@gmail.com`
+  (`User::GOOGLE_EMAIL_DOMAINS`): em domínio próprio, quem controla o domínio cria outra
+  conta Google com o mesmo e-mail. A conta é achada pelo `google_uid`; o e-mail só serve
+  para aproveitar conta antiga **sem** Google. Nunca religue uma conta que já tem Google. Client ID e secret ficam em
   `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (ENV), nunca no código. Conta ligada ao Google
   perde a senha e não recebe código de "Esqueci minha senha".
 - Para os outros, a pessoa é o **nickname#0000** (`User#handle`, `masked_contact`): não

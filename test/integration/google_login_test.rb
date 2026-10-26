@@ -5,6 +5,17 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
 
   def choose(nickname, tag: "") = patch(nickname_path, params: { nickname: { nickname: nickname, tag: tag } })
 
+  # O que o app escreveu no log enquanto o bloco rodava.
+  def logged
+    logs = StringIO.new
+    original_logger = Rails.logger
+    Rails.logger = ActiveSupport::Logger.new(logs)
+    yield
+    logs.string
+  ensure
+    Rails.logger = original_logger
+  end
+
   test "conta nova pelo Google escolhe o nickname#0000 antes de usar o app" do
     sign_in_with_google("Nova@Example.com")
     assert_redirected_to edit_nickname_path
@@ -60,6 +71,49 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_match "e-mail confirmado", response.body
     assert_equal 0, User.count
+  end
+
+  test "conta Google de escola, empresa ou outro e-mail não cria conta" do
+    %w[aluna@escola.com.br skatista@hotmail.com].each do |email|
+      log = logged { sign_in_with_google(email) }
+      assert_redirected_to root_path
+      follow_redirect!
+      assert_match "conta Google @gmail.com", response.body
+      assert_match "login Google recusado: email_domain", log
+      assert_no_match email, log, "o e-mail não vai para o log"
+    end
+    assert_equal 0, User.count
+  end
+
+  test "outra conta Google com o mesmo e-mail não toma a conta de quem já entrou" do
+    owner = sign_up_with_google("dono@example.com")
+    token = owner.reload.token
+    delete sign_out_path
+
+    log = logged { sign_in_with_google("dono@example.com", uid: "outra-conta-google") }
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_match "ligado a outra conta Google", response.body
+    assert_match "login Google recusado: other_google (conta #{owner.id})", log
+
+    owner.reload
+    assert_equal "google-dono@example.com", owner.google_uid, "a conta continua com o Google de quem a criou"
+    assert_equal token, owner.token, "as sessões do dono não caem"
+    assert_equal 1, User.count
+    get my_account_path
+    assert_redirected_to root_path, "quem tentou não entrou"
+  end
+
+  test "conta antiga não liga pelo Perfil uma conta Google de domínio próprio" do
+    old = User.register(contact: "61999990001", password: PASSWORD, password_confirmation: PASSWORD)
+    complete_onboarding(old)
+    post session_path, params: { session: { contact: "61999990001", password: PASSWORD } }
+
+    sign_in_with_google("professor@escola.com.br")
+    assert_redirected_to my_account_path
+    follow_redirect!
+    assert_match "conta Google @gmail.com", response.body
+    assert_not old.reload.google?
   end
 
   test "Google cancelado volta para o login com aviso" do

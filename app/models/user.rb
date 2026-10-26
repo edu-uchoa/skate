@@ -181,21 +181,53 @@ class User < ApplicationRecord
     ((1..9999).map { |number| format("%04d", number) } - taken).sample
   end
 
+  # Conta Google nova só com e-mail @gmail.com. Com e-mail de escola, de empresa ou de
+  # outro provedor, quem controla o domínio pode criar outra conta Google com o mesmo
+  # endereço; o Gmail nunca passa para outra pessoa um endereço que já existiu.
+  GOOGLE_EMAIL_DOMAINS = %w[gmail.com googlemail.com].freeze
+  class_attribute :google_email_domains, instance_accessor: false, default: GOOGLE_EMAIL_DOMAINS # nos testes, mais o example.com
+
+  def self.google_email_allowed?(email) = email.to_s.strip.downcase.split("@").last.to_s.in?(google_email_domains)
+
+  # Por que o Google não deixou entrar (GoogleSessionsController mostra o aviso e
+  # registra no log). reason: :unverified_email, :email_domain ou :other_google.
+  class GoogleRefusal < StandardError
+    attr_reader :reason, :account
+
+    def initialize(reason, account = nil)
+      @reason  = reason
+      @account = account # a conta do FlipaAi envolvida, quando há
+      super(reason.to_s)
+    end
+  end
+
   # Entrar com o Google: devolve a conta da pessoa ou cria uma nova. Só aceita e-mail
   # confirmado pelo Google (a gem só preenche info.email quando o Google confirmou).
-  # Se o e-mail já tinha conta (cadastro antigo, com senha), é a mesma conta: o
-  # histórico, os vídeos e o XP continuam. nil se o Google não mandou o necessário.
+  # A conta é achada pelo código da conta Google (uid), que não muda nem passa para
+  # outra pessoa; o e-mail só conta na primeira entrada. Recusa com GoogleRefusal.
   def self.from_google(auth)
     uid   = auth&.uid.to_s
     email = auth&.info&.email.to_s.strip.downcase
-    return if uid.blank? || email.blank?
+    raise GoogleRefusal, :unverified_email if uid.blank? || email.blank?
 
-    find_by(google_uid: uid) ||
-      find_by(email: email)&.tap { |user| user.link_google!(uid) } ||
-      create!(email: email, google_uid: uid, registered_at: Time.current)
+    find_by(google_uid: uid) || first_google_sign_in(uid, email)
   rescue ActiveRecord::RecordNotUnique
-    find_by(google_uid: uid)
+    find_by(google_uid: uid) || raise(GoogleRefusal, :other_google)
   end
+
+  # Primeira entrada com esta conta Google, só com e-mail @gmail.com. Conta antiga com o
+  # mesmo e-mail (cadastro com senha, sem Google) é a mesma pessoa: o histórico, os
+  # vídeos e o XP continuam. Conta com esse e-mail já ligada a outra conta Google não
+  # troca de dono.
+  def self.first_google_sign_in(uid, email)
+    raise GoogleRefusal, :email_domain unless google_email_allowed?(email)
+
+    account = find_by(email: email)
+    raise GoogleRefusal.new(:other_google, account) if account&.google?
+
+    account&.tap { it.link_google!(uid) } || create!(email: email, google_uid: uid, registered_at: Time.current)
+  end
+  private_class_method :first_google_sign_in
 
   # Liga a conta ao Google. A senha antiga deixa de valer e as outras sessões caem:
   # daqui em diante só entra quem tem a conta Google (que confirmou o e-mail).
