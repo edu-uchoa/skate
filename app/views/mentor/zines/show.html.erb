@@ -14,8 +14,8 @@
     <% else %>
       <h2 class="screen-title">Todos os vídeos</h2>
       <p class="screen-desc">
-        Tudo o que os aprendizes enviaram, separado por pessoa. Dá para revisar uma
-        devolutiva já enviada. Só mentores veem esta página.
+        Tudo o que os aprendizes enviaram, separado por pessoa. Dá para revisar as
+        devolutivas que você escreveu. Só mentores veem esta página.
       </p>
     <% end %>
   </header>
@@ -117,10 +117,20 @@
                       <p><span class="is-fix">Erro:</span> <%= review.mistake %></p>
                       <p><span class="is-focus">Foco:</span> <%= review.next_focus %></p>
                     </div>
-                    <details class="review-revise">
-                      <summary><span class="material-symbols-outlined">edit</span> Revisar devolutiva</summary>
-                      <%= render "mentor/reviews/form", training_session: training_session, review: review %>
-                    </details>
+                    <%# Só quem escreveu revisa (AiReview#revisable_by?). %>
+                    <% if review.revisable_by?(current_user) %>
+                      <details class="review-revise">
+                        <summary><span class="material-symbols-outlined">edit</span> Revisar devolutiva</summary>
+                        <%= render "mentor/reviews/form", training_session: training_session, review: review %>
+                      </details>
+                    <% else %>
+                      <p class="zine-status info">
+                        <span class="material-symbols-outlined">lock</span>
+                        <span>
+                          <% if review.reviewer %>Escrita por <%= mentor_name(review.reviewer) %>. <% end %>Só quem escreveu pode revisar.
+                        </span>
+                      </p>
+                    <% end %>
                   <% end %>
 
                   <% if current_user.admin_access? %>

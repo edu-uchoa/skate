@@ -89,6 +89,33 @@ class MentorReviewTest < ActionDispatch::IntegrationTest
     assert_select card(@session) + " .zine-status.ok", /revisada em/
   end
 
+  test "só quem escreveu revisa a devolutiva: outro mentor e o administrador não" do
+    @mentor.update!(nickname: "Autora", nickname_tag: "0420")
+    sign_in(@mentor)
+    post mentor_video_review_path(@session), params: { review: ANSWER }
+    delete sign_out_path
+
+    [ account("outro@example.com").tap(&:role_mentor!), account("admin@example.com").tap(&:role_admin!) ].each do |other|
+      sign_in(other)
+      get mentor_zine_path(aba: "todos")
+      assert_select card(@session) do
+        assert_select "details.review-revise", 0, "#{other.role} não vê o formulário de revisar"
+        assert_select ".zine-status.info", /Escrita por Autora#0420\. Só quem escreveu pode revisar/
+      end
+
+      patch mentor_video_review_path(@session), params: { review: ANSWER.merge(mistake: "Texto de outra pessoa.") }
+      assert_redirected_to mentor_zine_path(aba: "todos", anchor: ActionView::RecordIdentifier.dom_id(@session, :mentor))
+      follow_redirect!
+      assert_match "Só quem escreveu a devolutiva pode revisar", response.body
+      delete sign_out_path
+    end
+
+    review = @session.reload.ai_review
+    assert_equal ANSWER[:mistake], review.mistake, "o texto continua o de quem escreveu"
+    assert_nil review.revised_at
+    assert_equal @mentor, review.reviewer
+  end
+
   test "aprendiz que registra o resultado depois da devolutiva continua com ela pronta" do
     sign_in(@mentor)
     post mentor_video_review_path(@session), params: { review: ANSWER }

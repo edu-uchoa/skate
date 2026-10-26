@@ -2,7 +2,7 @@ module Mentor
   # Devolutiva do mentor, escrita no próprio cartão do vídeo da Zine do mentor.
   # "Na fila" envia a primeira (create): o aprendiz vê o resultado na tela de
   # devolutiva dele, a tarefa fica concluída e o vídeo passa para "Todos". Em
-  # "Todos" o mentor pode revisar uma devolutiva já enviada (update).
+  # "Todos" quem escreveu pode revisar a devolutiva já enviada (update).
   class ReviewsController < BaseController
     include ActionView::RecordIdentifier
 
@@ -25,6 +25,7 @@ module Mentor
     def update
       review = @training_session.ai_review
       return redirect_to(card_in("fila"), alert: "Esse vídeo ainda está na fila: envie a devolutiva por lá.") unless review&.status_completed?
+      return redirect_to(card_in("todos"), alert: "Só quem escreveu a devolutiva pode revisar o texto.") unless review.revisable_by?(current_user)
 
       if review.revise(**answer_params)
         redirect_to card_in("todos"), notice: "Devolutiva revisada. O aprendiz já vê o texto novo."

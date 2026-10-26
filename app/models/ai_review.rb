@@ -35,6 +35,11 @@ class AiReview < ApplicationRecord
   # Devolutiva escrita por um mentor, que o aprendiz ainda pode avaliar (uma vez só).
   def rateable? = status_completed? && reviewer_id.present? && rating.nil?
 
+  # A devolutiva é de quem escreveu: o aprendiz a vê com o nome e a média desse mentor.
+  # Só ele revisa o texto; outro mentor ou a administração, não (o super admin pode
+  # apagá-la pelo painel).
+  def revisable_by?(mentor) = status_completed? && reviewer_id.present? && reviewer_id == mentor&.id
+
   # O aprendiz avalia a devolutiva. Devolve false com os erros em português.
   def rate(rating, comment = nil)
     rating = Integer(rating, exception: false)
