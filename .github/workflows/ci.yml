@@ -5,6 +5,10 @@ on:
   push:
     branches: [ main ]
 
+# O CI só lê o código: sem permissão de escrever no repositório.
+permissions:
+  contents: read
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
