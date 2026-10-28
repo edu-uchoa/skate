@@ -29,6 +29,13 @@ Rails.application.configure do
   # com http:// e o Google recusaria (redirect_uri_mismatch).
   config.assume_ssl = true
 
+  # No Render, o pedido passa pela Cloudflare antes de chegar ao app, e cada etapa soma ao
+  # X-Forwarded-For o IP de quem lhe entregou o pedido. Confiando só na rede interna, o
+  # Rails parava no servidor da Cloudflare: os limites de tentativas valiam para todo mundo
+  # atrás dele e o log mostrava o IP errado. O começo da lista, que qualquer um pode
+  # inventar, continua ignorado.
+  config.action_dispatch.trusted_proxies = Skate::TRUSTED_PROXIES
+
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
