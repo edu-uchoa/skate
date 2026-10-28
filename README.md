@@ -6,7 +6,7 @@ O projeto foi desenvolvido com Ruby on Rails, SQLite, Tailwind CSS, Hotwire, Sti
 
 ## Requisitos
 
-- Ruby `3.4.1` (definido em `.ruby-version`)
+- Ruby `3.4.12` (definido em `.ruby-version`; no Windows, qualquer 3.4 do RubyInstaller funciona)
 - Bundler
 - SQLite 3
 - ffmpeg (com ffprobe): limpa a localizacao (GPS) e os outros metadados dos videos antes de guardar. Sem ele, nenhum video e aceito.

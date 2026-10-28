@@ -7,9 +7,9 @@
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.4.1
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+# Ruby igual ao do .ruby-version, sobre o Debian 13 (trixie). A versão fica escrita
+# aqui, sem ARG, para o Dependabot achar e avisar quando sair imagem nova.
+FROM docker.io/library/ruby:3.4.12-slim-trixie AS base
 
 # Rails app lives here
 WORKDIR /rails
