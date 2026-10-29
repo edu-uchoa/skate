@@ -34,20 +34,27 @@ class ClipTranscoder
 
   # Escreve o vídeo recomprimido em output_path (MP4).
   def call(output_path)
-    command = [
-      self.class.ffmpeg, "-nostdin", "-hide_banner", "-v", "error", "-y", "-i", @path,
+    run(command(output_path))
+    raise Error, "o ffmpeg não gerou o vídeo" unless File.size?(output_path)
+  end
+
+  # Uma thread só para ler e para gravar o vídeo. Sem isso o ffmpeg abre uma por núcleo
+  # da máquina do Render (que tem muitos, embora o app só possa usar uma fração) e cada
+  # uma guarda quadros na memória: no plano de 512 MB, até um vídeo de 4s em 1080p
+  # estourava a memória. Com uma, cabe, e não fica mais lento com pouco processador.
+  def command(output_path)
+    [
+      self.class.ffmpeg, "-nostdin", "-hide_banner", "-v", "error", "-y", "-threads", "1", "-i", @path,
       "-map", "0:v:0", "-map", "0:a:0?",
       # O lado menor fica com até 720px, mantendo a proporção (e em pé continua em pé).
       "-vf", "scale='if(gte(iw,ih),-2,min(#{MAX_SHORT_SIDE},iw))':'if(gte(iw,ih),min(#{MAX_SHORT_SIDE},ih),-2)'",
       "-fpsmax", MAX_FPS.to_s,
-      "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p",
+      "-c:v", "libx264", "-preset", "veryfast", "-crf", "26", "-pix_fmt", "yuv420p", "-threads", "1",
       "-c:a", "aac", "-b:a", "96k", "-ac", "2",
       "-map_metadata", "-1", "-map_chapters", "-1", "-fflags", "+bitexact",
       "-movflags", "+faststart",
       "-f", "mp4", output_path
     ]
-    run(command)
-    raise Error, "o ffmpeg não gerou o vídeo" unless File.size?(output_path)
   end
 
   private

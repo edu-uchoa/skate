@@ -78,6 +78,13 @@ class TranscodeClipJobTest < ActiveJob::TestCase
     assert session.clip.blob.custom_metadata["transcoded"]
   end
 
+  test "o ffmpeg usa uma thread só para ler e para gravar (cabe nos 512 MB do Render)" do
+    command = ClipTranscoder.new("entrada.mp4").command("saida.mp4")
+
+    assert_equal 2, command.each_cons(2).count { it == %w[-threads 1] }
+    assert_operator command.index("-threads"), :<, command.index("-i"), "vale também para ler o vídeo"
+  end
+
   test "vídeo apagado antes da recompressão não volta" do
     session = session_with(generated_video(1920, 1080))
     session.remove_clip!
