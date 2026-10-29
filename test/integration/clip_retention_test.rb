@@ -79,9 +79,14 @@ class ClipRetentionTest < ActionDispatch::IntegrationTest
   end
 
   test "faltando menos de 3 dias, o aviso fica em destaque" do
-    travel_to(1.month.ago + 2.days) { clip_for(@learner) }
-    sign_in
-    get zine_path
-    assert_select ".zine-expiry.is-soon", /em 2 dias/
+    # Data fixa: perto do fim do mês, "1 mês atrás + 2 dias" e depois "+ 1 mês" não dá
+    # 2 dias quando os meses têm tamanhos diferentes (em 29/10 dava 3).
+    now = Time.zone.local(2026, 10, 15, 12)
+    travel_to(now - 1.month + 2.days) { clip_for(@learner) }
+    travel_to(now) do
+      sign_in
+      get zine_path
+      assert_select ".zine-expiry.is-soon", /em 2 dias/
+    end
   end
 end
