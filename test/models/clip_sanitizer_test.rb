@@ -1,4 +1,5 @@
 require "test_helper"
+require "rake"
 
 class ClipSanitizerTest < ActiveSupport::TestCase
   def clean(name, content_type)
