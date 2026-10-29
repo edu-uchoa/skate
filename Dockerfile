@@ -9,7 +9,7 @@
 
 # Ruby igual ao do .ruby-version, sobre o Debian 13 (trixie). A versão fica escrita
 # aqui, sem ARG, para o Dependabot achar e avisar quando sair imagem nova.
-FROM docker.io/library/ruby:3.4.12-slim-trixie AS base
+FROM docker.io/library/ruby:4.0.0-slim-trixie AS base
 
 # Rails app lives here
 WORKDIR /rails
