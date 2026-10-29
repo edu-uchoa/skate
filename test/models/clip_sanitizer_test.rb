@@ -45,6 +45,23 @@ class ClipSanitizerTest < ActiveSupport::TestCase
     assert_equal :format,     assert_raises(ClipSanitizer::Error) { ClipSanitizer.new("id-de-outro-arquivo").call }.reason
   end
 
+  test "vídeo que passa do tempo é recusado e fica no log, sem erro da leitura em outra thread" do
+    logs = StringIO.new
+    original_logger = Rails.logger
+    Rails.logger = ActiveSupport::Logger.new(logs)
+    sanitizer = ClipSanitizer.new({ io: File.open(file_fixture("manobra.mp4"), "rb"), filename: "x.mp4",
+                                    content_type: "video/mp4" }, timeout: 0)
+
+    _, errors = capture_io do
+      assert_equal :unreadable, assert_raises(ClipSanitizer::Error) { sanitizer.call }.reason
+      sleep 0.2 # tempo para um erro da outra thread aparecer
+    end
+    assert_match "[ClipSanitizer] o ffmpeg passou de 0s e foi interrompido", logs.string
+    assert_no_match "IOError", errors
+  ensure
+    Rails.logger = original_logger
+  end
+
   test "videos:limpar limpa os vídeos guardados antes, no mesmo lugar" do
     user = User.register(contact: "antigo@example.com", password: "manobra123", password_confirmation: "manobra123")
     maneuver = Maneuver.create!(learning_module: LearningModule.create!(code: "8", name: "T", position: 8),

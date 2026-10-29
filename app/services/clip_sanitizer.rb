@@ -40,10 +40,12 @@ class ClipSanitizer
 
   # attachable: o arquivo enviado pelo navegador ou { io:, filename:, content_type: }.
   # cut: o trecho a guardar, em segundos (ex.: 3.5..18.0); sem ele, o vídeo inteiro.
-  def initialize(attachable, max_bytes: nil, cut: nil)
+  # timeout: quanto o ffmpeg pode levar, em segundos (os testes usam 0).
+  def initialize(attachable, max_bytes: nil, cut: nil, timeout: TIMEOUT)
     @attachable = attachable
     @max_bytes  = max_bytes
     @cut        = cut
+    @timeout    = timeout
   end
 
   # Devolve o vídeo limpo, no formato que o Active Storage aceita no attach.
@@ -71,7 +73,7 @@ class ClipSanitizer
 
   private
 
-  attr_reader :attachable, :max_bytes, :cut
+  attr_reader :attachable, :max_bytes, :cut, :timeout
 
   def io = attachable.is_a?(Hash) ? attachable[:io] : attachable
   def declared_filename     = attachable.is_a?(Hash) ? attachable[:filename].to_s : attachable.try(:original_filename).to_s
@@ -107,13 +109,19 @@ class ClipSanitizer
     Open3.popen2e(*command) do |stdin, log, wait|
       stdin.close
       reader = Thread.new { log.read }
-      unless wait.join(TIMEOUT)
+      unless wait.join(timeout)
         Process.kill("KILL", wait.pid)
-        raise Error.new(:unreadable, "ffmpeg passou de #{TIMEOUT}s")
+        wait.join
+        reader.join
+        Rails.logger.warn("[ClipSanitizer] o ffmpeg passou de #{timeout}s e foi interrompido (servidor sem fôlego?)")
+        raise Error.new(:unreadable, "ffmpeg passou de #{timeout}s")
       end
+      # A leitura termina antes de sair do bloco, que fecha o log: fechar com a leitura em
+      # andamento dava "stream closed in another thread (IOError)" no log do servidor.
+      text = reader.value.to_s
       next if wait.value.success? && File.size?(output)
 
-      Rails.logger.warn("[ClipSanitizer] o ffmpeg não leu o vídeo: #{reader.value.to_s.last(500)}")
+      Rails.logger.warn("[ClipSanitizer] o ffmpeg não leu o vídeo: #{text.last(500)}")
       raise Error, :unreadable
     end
   rescue Errno::ENOENT

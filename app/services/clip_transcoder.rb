@@ -79,6 +79,8 @@ class ClipTranscoder
       reader = Thread.new { log.read }
       unless wait.join(TIMEOUT)
         Process.kill("KILL", wait.pid)
+        wait.join
+        reader.join # sair do bloco com a leitura em andamento dava IOError na outra thread
         raise Error, "passou de #{TIMEOUT}s"
       end
       raise Error, reader.value.to_s.last(500) unless wait.value.success?
