@@ -2,6 +2,11 @@
 # logo depois do envio. Se der errado, o vídeo original (já limpo) continua valendo.
 class TranscodeClipJob < ApplicationJob
   queue_as :default
+  # Uma conversão por vez, de qualquer vídeo: cada uma usa até ~260 MB (4K), e duas ao
+  # mesmo tempo estouram os 512 MB do Render. As outras esperam na fila. O prazo cobre o
+  # limite do ffmpeg (ClipTranscoder::TIMEOUT) e a cópia do vídeo; passou dele, a próxima
+  # pode começar mesmo que a anterior não tenha avisado que terminou.
+  limits_concurrency to: 1, key: "720p", duration: ClipTranscoder::TIMEOUT.seconds + 5.minutes
 
   def perform(training_session)
     return unless training_session.clip.attached?

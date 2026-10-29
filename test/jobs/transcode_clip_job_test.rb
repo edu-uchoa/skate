@@ -85,6 +85,14 @@ class TranscodeClipJobTest < ActiveJob::TestCase
     assert_operator command.index("-threads"), :<, command.index("-i"), "vale também para ler o vídeo"
   end
 
+  test "uma conversão por vez, de qualquer vídeo, com prazo maior que o do ffmpeg" do
+    first, second = 2.times.map { @user.training_sessions.create!(maneuver: @maneuver, scheduled_on: Date.current) }
+
+    assert_equal 1, TranscodeClipJob.concurrency_limit
+    assert_equal TranscodeClipJob.new(first).concurrency_key, TranscodeClipJob.new(second).concurrency_key
+    assert_operator TranscodeClipJob.concurrency_duration, :>, ClipTranscoder::TIMEOUT.seconds
+  end
+
   test "vídeo apagado antes da recompressão não volta" do
     session = session_with(generated_video(1920, 1080))
     session.remove_clip!
