@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     end
     resources :videos,  only: %i[index destroy]
     resources :reviews, only: %i[index destroy], path: "devolutivas"
+    resources :allowed_emails, only: %i[index create destroy], path: "acesso" # quem pode usar o app publicado
   end
 
   # Chat do aprendiz com a equipe de mentores.

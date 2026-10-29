@@ -20,6 +20,9 @@ Rails.application.configure do
   # vêm do Google Cloud (veja o README) e ficam em variáveis de ambiente, nunca no código.
   config.x.flipaai.google_client_id     = ENV["GOOGLE_CLIENT_ID"]
   config.x.flipaai.google_client_secret = ENV["GOOGLE_CLIENT_SECRET"]
+  # Só para convidados: no app publicado, só entra quem o super admin liberou no painel
+  # (AllowedEmail). Em desenvolvimento e nos testes fica aberto (os testes ligam quando precisam).
+  config.x.flipaai.invite_only = Rails.env.production?
   # Super administrador: não é configurado aqui. Só o dono concede, com uma assinatura
   # feita na máquina dele (app/models/super_admin.rb e bin/rails super_admin:conceder).
   # Análise automática do vídeo (IA ou reconhecimento corporal). Desligada: hoje o

@@ -3,7 +3,8 @@
 # Sem conta aberta: entra na conta da pessoa (ou cria uma), e quem ainda não tem
 # nickname#0000 vai escolher. Com uma conta antiga aberta (login com senha), liga
 # essa conta ao Google pelo Perfil, para não perder o histórico. Conta Google que
-# entra pela primeira vez precisa ser @gmail.com (User.from_google).
+# entra pela primeira vez precisa ser @gmail.com (User.from_google). No app publicado,
+# só entra quem está na lista de acesso do painel (AllowedEmail).
 class GoogleSessionsController < ApplicationController
   allow_unauthenticated_access
 
@@ -14,6 +15,7 @@ class GoogleSessionsController < ApplicationController
   REFUSALS = {
     unverified_email: "Não deu para entrar: a conta Google precisa ter o e-mail confirmado.",
     email_domain:     "Entre com uma conta Google @gmail.com. Contas de escola, de empresa ou com outro e-mail não são aceitas.",
+    not_invited:      AllowedEmail::NOT_INVITED,
     other_google:     "Esse e-mail já está ligado a outra conta Google. Entre com a conta Google que você usou da primeira vez."
   }.freeze
 

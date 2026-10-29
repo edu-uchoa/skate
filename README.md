@@ -177,7 +177,7 @@ Conta nova so entra com conta Google `@gmail.com` (`User::GOOGLE_EMAIL_DOMAINS`)
 
 1. Em [console.cloud.google.com](https://console.cloud.google.com), abra o mesmo projeto do Maps (ou crie um) e va em **Google Auth Platform**.
 2. **Branding** (tela de consentimento): nome do app `FlipaAi`, e-mail de suporte, dominio autorizado (o do Render, ex.: `seu-app.onrender.com`) e os links da politica de privacidade e dos termos (precisam existir antes de publicar).
-3. **Audience**: tipo **External**. Em "Testing", so entram os e-mails listados em **Test users**; quando estiver pronto, clique em **Publish app**. Como o app so pede escopos basicos (`openid`, `email`), o Google nao exige a verificacao demorada de escopos sensiveis.
+3. **Audience**: tipo **External**. Como o app so pede escopos basicos (`openid`, `email`), o Google nao exige a verificacao demorada de escopos sensiveis e **nao usa a lista de Test users para barrar ninguem**: mesmo em "Testing", qualquer conta Google entra ([ajuda do Google](https://support.google.com/cloud/answer/15549945)). Quem pode usar o app e definido pela lista de acesso do painel (veja abaixo).
 4. **Data Access**: deixe so `openid` e `.../auth/userinfo.email`.
 5. **Clients > Create client**, tipo **Web application**, com estas **Authorized redirect URIs**:
    - `http://localhost:3000/auth/google_oauth2/callback`
@@ -186,6 +186,8 @@ Conta nova so entra com conta Google `@gmail.com` (`User::GOOGLE_EMAIL_DOMAINS`)
    - Windows (PowerShell): `setx GOOGLE_CLIENT_ID "SEU_ID"` e `setx GOOGLE_CLIENT_SECRET "SEU_SECRET"`, depois abra um terminal novo e ligue o servidor.
    - Render: **Environment > Add Environment Variable**, as mesmas duas.
 7. Reinicie o servidor e rode `ruby bin/rails db:migrate` se ainda nao rodou (cria `google_uid` e o nickname#0000 em `users`).
+
+**So para convidados.** No app publicado (producao), so entra quem tem o e-mail na lista de acesso do painel (`/painel/acesso`, `AllowedEmail`), e o super administrador, que entra mesmo com a lista vazia. Quem nao esta na lista nao cria conta; tirar um e-mail da lista corta o acesso na hora, mas a conta e os dados continuam. No computador (desenvolvimento) e nos testes a lista nao barra ninguem (`config.x.flipaai.invite_only`).
 
 O Google so aceita voltar para `localhost` ou para um dominio com `https`. Pelo IP da rede no celular (`http://192.168...`) o login do Google nao funciona: no celular, teste pelo endereco do Render.
 

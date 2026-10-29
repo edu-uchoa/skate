@@ -24,6 +24,8 @@ class User < ApplicationRecord
   has_many :mentor_notes, foreign_key: :learner_id, inverse_of: :learner, dependent: :delete_all # observações dos mentores sobre ele
   has_many :written_mentor_notes, class_name: "MentorNote", foreign_key: :author_id,
                                   inverse_of: :author, dependent: :nullify # observações que escreveu como mentor
+  # Apagar a conta tira o e-mail da lista de acesso: para voltar, precisa ser liberado de novo.
+  after_destroy { AllowedEmail.where(email: email).delete_all if email }
 
   # Mentor vê os vídeos de todos os aprendizes e responde as devolutivas. Ninguém vira
   # mentor sozinho: no cadastro a pessoa faz um pedido (#request_mentor) e só um
@@ -190,7 +192,7 @@ class User < ApplicationRecord
   def self.google_email_allowed?(email) = email.to_s.strip.downcase.split("@").last.to_s.in?(google_email_domains)
 
   # Por que o Google não deixou entrar (GoogleSessionsController mostra o aviso e
-  # registra no log). reason: :unverified_email, :email_domain ou :other_google.
+  # registra no log). reason: :unverified_email, :email_domain, :not_invited ou :other_google.
   class GoogleRefusal < StandardError
     attr_reader :reason, :account
 
@@ -210,17 +212,22 @@ class User < ApplicationRecord
     email = auth&.info&.email.to_s.strip.downcase
     raise GoogleRefusal, :unverified_email if uid.blank? || email.blank?
 
-    find_by(google_uid: uid) || first_google_sign_in(uid, email)
+    account = find_by(google_uid: uid)
+    raise GoogleRefusal.new(:not_invited, account) if account && !account.access_allowed?
+
+    account || first_google_sign_in(uid, email)
   rescue ActiveRecord::RecordNotUnique
     find_by(google_uid: uid) || raise(GoogleRefusal, :other_google)
   end
 
-  # Primeira entrada com esta conta Google, só com e-mail @gmail.com. Conta antiga com o
-  # mesmo e-mail (cadastro com senha, sem Google) é a mesma pessoa: o histórico, os
-  # vídeos e o XP continuam. Conta com esse e-mail já ligada a outra conta Google não
-  # troca de dono.
+  # Primeira entrada com esta conta Google, só com e-mail @gmail.com e liberado na lista
+  # de acesso (antes de criar a conta: de quem não foi liberado, nada fica guardado).
+  # Conta antiga com o mesmo e-mail (cadastro com senha, sem Google) é a mesma pessoa:
+  # o histórico, os vídeos e o XP continuam. Conta com esse e-mail já ligada a outra
+  # conta Google não troca de dono.
   def self.first_google_sign_in(uid, email)
     raise GoogleRefusal, :email_domain unless google_email_allowed?(email)
+    raise GoogleRefusal, :not_invited unless new(email: email, google_uid: uid).access_allowed?
 
     account = find_by(email: email)
     raise GoogleRefusal.new(:other_google, account) if account&.google?
@@ -270,6 +277,13 @@ class User < ApplicationRecord
   # Google que o dono autorizou com uma concessão assinada na máquina dele (SuperAdmin).
   # Ninguém vira super admin pelo app, e o login com senha (contas antigas) não dá esse acesso.
   def super_admin? = SuperAdmin.granted?(self)
+
+  # Pode usar o app? No app publicado (config.x.flipaai.invite_only), só quem tem o
+  # e-mail na lista de acesso (AllowedEmail) e o super admin, que entra mesmo com a
+  # lista vazia (depois de um banco novo, é ele quem libera os outros).
+  def access_allowed?
+    !Rails.configuration.x.flipaai.invite_only || (email.present? && AllowedEmail.exists?(email: email)) || super_admin?
+  end
 
   # Funções de administrador (aprovar e remover mentores, apagar vídeos de aprendizes).
   def admin_access? = role_admin? || super_admin?

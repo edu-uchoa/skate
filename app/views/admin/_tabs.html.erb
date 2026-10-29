@@ -1,7 +1,8 @@
-<%# Abas do painel do super administrador. current: "painel", "usuarios", "videos" ou "devolutivas". %>
+<%# Abas do painel do super administrador. current: "painel", "usuarios", "acesso", "videos" ou "devolutivas". %>
 <% tabs = [
      [ "painel",      "space_dashboard", "Painel",      admin_root_path ],
      [ "usuarios",    "group",           "Usuários",    admin_users_path ],
+     [ "acesso",      "how_to_reg",      "Acesso",      admin_allowed_emails_path ],
      [ "videos",      "video_library",   "Vídeos",      admin_videos_path ],
      [ "devolutivas", "rate_review",     "Devolutivas", admin_reviews_path ]
    ] %>

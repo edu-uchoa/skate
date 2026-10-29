@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_29_120000) do
   create_table "access_codes", force: :cascade do |t|
     t.integer "attempts", default: 0, null: false
     t.integer "channel", default: 0, null: false
@@ -73,6 +73,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
     t.datetime "updated_at", null: false
     t.index ["reviewer_id"], name: "index_ai_reviews_on_reviewer_id"
     t.index ["training_session_id"], name: "index_ai_reviews_on_training_session_id", unique: true
+  end
+
+  create_table "allowed_emails", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_allowed_emails_on_email", unique: true
   end
 
   create_table "clip_accesses", force: :cascade do |t|

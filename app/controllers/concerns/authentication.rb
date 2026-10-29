@@ -39,7 +39,8 @@ module Authentication
     return if token.blank?
 
     user = User.find_by(token: token)
-    user if user&.can_sign_in?
+    # Quem sai da lista de acesso (AllowedEmail) perde o acesso na hora, mesmo já logado.
+    user if user&.can_sign_in? && user.access_allowed?
   end
 
   def require_authentication

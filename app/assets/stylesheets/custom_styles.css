@@ -3495,6 +3495,7 @@ a.guide-tab {
 .admin-review-text dt { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-variant); }
 .admin-review-text dd { color: var(--text-on-surface); overflow-wrap: anywhere; }
 .admin-user .mentor-request-actions { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); }
+.admin-email { overflow-wrap: anywhere; } /* e-mail comprido não estoura o cartão no celular */
 
 /* Coluna do conteúdo (layout): borda a borda no celular, centralizada e mais larga em
    tablet e computador. */

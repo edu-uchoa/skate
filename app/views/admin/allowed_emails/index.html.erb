@@ -1,0 +1,54 @@
+<% content_for :section, "Painel" %>
+
+<section class="zine-screen">
+  <header class="auth-head">
+    <span class="step-indicator">Super administrador</span>
+    <h2 class="screen-title">Acesso</h2>
+    <p class="screen-desc">
+      O FlipaAi está só para convidados: entra quem tem o e-mail nesta lista, e você.
+      Tirar um e-mail corta o acesso na hora, mas a conta e os dados continuam (para
+      apagar, use Usuários).
+    </p>
+  </header>
+
+  <%= render "admin/tabs", current: "acesso" %>
+
+  <% unless Rails.configuration.x.flipaai.invite_only %>
+    <p class="auth-hint">Neste computador a lista não barra ninguém: ela vale no app publicado.</p>
+  <% end %>
+
+  <%= render "shared/errors", record: @allowed_email %>
+  <%= form_with model: @allowed_email, url: admin_allowed_emails_path, class: "admin-search" do |f| %>
+    <%= f.label :email, "E-mail para liberar", class: "sr-only" %>
+    <%= f.email_field :email, class: "auth-input", placeholder: "nome@gmail.com", required: true,
+          autocomplete: "off", autocapitalize: "none", spellcheck: false %>
+    <%= f.button "Liberar", type: :submit, class: "auth-secondary-btn" %>
+  <% end %>
+
+  <h3 class="guide-card-label">Liberados (<%= @allowed_emails.size %>)</h3>
+
+  <% if @allowed_emails.empty? %>
+    <div class="zine-empty">
+      <span class="material-symbols-outlined auth-icon">group_off</span>
+      <p>Ninguém liberado ainda. Por enquanto, só você entra no app.</p>
+    </div>
+  <% else %>
+    <ol class="mentor-learners">
+      <% @allowed_emails.each do |allowed_email| %>
+        <% account = @accounts[allowed_email.email] %>
+        <li class="auth-card admin-user" id="<%= dom_id(allowed_email, :admin) %>">
+          <span class="auth-card-value admin-email"><%= allowed_email.email %></span>
+          <span class="auth-hint">
+            <%= [ (account ? "Entrou como #{admin_user_name(account)}" : "Ainda não entrou"),
+                  "liberado em #{allowed_email.created_at.in_time_zone(current_user.time_zone).strftime("%d/%m/%Y")}" ].join(" · ") %>
+          </span>
+          <div class="mentor-request-actions">
+            <%= button_to "Tirar da lista", admin_allowed_email_path(allowed_email), method: :delete,
+                  class: "auth-secondary-btn danger",
+                  form: { data: { turbo_confirm: "Tirar #{allowed_email.email} da lista? A pessoa sai do app na hora; a conta e os dados continuam." } } %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
+</section>

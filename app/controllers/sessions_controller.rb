@@ -11,11 +11,14 @@ class SessionsController < ApplicationController
   def create
     contact = params.dig(:session, :contact).to_s.strip
 
-    if (user = User.authenticate_by_contact(contact, params.dig(:session, :password)))
+    user = User.authenticate_by_contact(contact, params.dig(:session, :password))
+    if user&.access_allowed?
       return_to = start_session_for(user)
       redirect_to return_to || home_path_for(user), notice: "Que bom te ver de volta!"
     else
-      flash.now[:alert] = "E-mail/telefone ou senha incorretos."
+      # Fora da lista de acesso: só depois da senha certa, então não revela quem tem conta.
+      Rails.logger.warn("[FlipaAi] login com senha recusado: not_invited (conta #{user.id}), IP #{request.remote_ip}") if user
+      flash.now[:alert] = user ? AllowedEmail::NOT_INVITED : "E-mail/telefone ou senha incorretos."
       render :new, status: :unprocessable_entity
     end
   end
