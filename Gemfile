@@ -24,7 +24,7 @@ gem "thruster", require: false
 gem "bcrypt", "~> 3.1.7"          # digest dos códigos de acesso
 gem "omniauth-google-oauth2"        # entrar com a conta Google
 gem "omniauth-rails_csrf_protection" # o botão do Google só funciona por POST com token CSRF
-gem "image_processing", "~> 1.2"  # previews dos vídeos (Active Storage)
+gem "image_processing", "~> 2.2"  # previews dos vídeos (Active Storage)
 
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
