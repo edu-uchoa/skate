@@ -6,6 +6,9 @@ module Authentication
   extend ActiveSupport::Concern
 
   COOKIE = :flipaai_token
+  # A sessão do super admin acaba sozinha (os outros continuam logados até sair). O prazo
+  # vai assinado dentro do cookie: quem guardar uma cópia não consegue esticá-lo.
+  SUPER_ADMIN_SESSION = 12.hours
 
   included do
     before_action :resume_session
@@ -74,7 +77,12 @@ module Authentication
   def start_session_for(user)
     return_to = session[:return_to_after_authenticating]
     reset_session
-    cookies.signed.permanent[COOKIE] = { value: user.token, httponly: true, same_site: :lax }
+    cookie = { value: user.token, httponly: true, same_site: :lax }
+    if user.super_admin?
+      cookies.signed[COOKIE] = cookie.merge(expires: SUPER_ADMIN_SESSION)
+    else
+      cookies.signed.permanent[COOKIE] = cookie
+    end
     Current.user = user
     return_to
   end

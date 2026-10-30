@@ -14,12 +14,9 @@ class AccountsController < ApplicationController
     load_mentor_profile if current_user.mentor_account?
   end
 
+  # Sair encerra a sessão em todos os aparelhos: o token da conta muda, então uma cópia
+  # do cookie (roubada ou esquecida em outro aparelho) deixa de valer.
   def destroy
-    sign_out
-    redirect_to root_path, notice: "Sessão encerrada neste aparelho."
-  end
-
-  def destroy_all
     current_user.sign_out_everywhere!
     sign_out
     redirect_to root_path, notice: "Sessão encerrada em todos os aparelhos."

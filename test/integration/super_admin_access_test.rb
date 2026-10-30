@@ -37,6 +37,30 @@ class SuperAdminAccessTest < ActionDispatch::IntegrationTest
     Rails.logger = original_logger if original_logger
   end
 
+  test "a sessão do super admin acaba em 12 horas, mesmo com uma cópia do cookie" do
+    grant_super_admin("google-dono@example.com")
+    sign_up_with_google("dono@example.com", nickname: "dono")
+    copied_cookie = cookies[Authentication::COOKIE.to_s]
+
+    travel Authentication::SUPER_ADMIN_SESSION - 1.minute
+    get admin_root_path
+    assert_response :success
+
+    travel 2.minutes
+    cookies[Authentication::COOKIE.to_s] = copied_cookie
+    get admin_root_path
+    assert_redirected_to root_path
+  end
+
+  test "quem não é super admin continua logado até sair" do
+    grant_super_admin("google-dono@example.com")
+    complete_onboarding(sign_up_with_google("aluna@example.com", nickname: "aluna"))
+
+    travel 90.days
+    get my_account_path
+    assert_response :success
+  end
+
   test "o painel mostra o código Google de cada conta, para o dono conceder da máquina dele" do
     grant_super_admin("google-dono@example.com")
     sign_up_with_google("aluna@example.com", nickname: "aluna")

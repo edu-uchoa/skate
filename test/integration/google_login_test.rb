@@ -87,8 +87,8 @@ class GoogleLoginTest < ActionDispatch::IntegrationTest
 
   test "outra conta Google com o mesmo e-mail não toma a conta de quem já entrou" do
     owner = sign_up_with_google("dono@example.com")
-    token = owner.reload.token
     delete sign_out_path
+    token = owner.reload.token
 
     log = logged { sign_in_with_google("dono@example.com", uid: "outra-conta-google") }
     assert_redirected_to root_path

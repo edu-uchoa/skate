@@ -122,7 +122,6 @@ Rails.application.routes.draw do
   get    "conta/meus-dados", to: "data_exports#show", as: :my_data, defaults: { format: :json }
   resource :account_deletion, only: %i[show destroy], path: "conta/apagar"
   delete "sair",  to: "accounts#destroy",     as: :sign_out
-  delete "sair-de-todos", to: "accounts#destroy_all", as: :sign_out_everywhere
 
   resources :support_requests, only: %i[new create], path: "ajuda"
   resource  :comeback,         only: %i[new create], path: "retorno"

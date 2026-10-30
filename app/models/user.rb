@@ -253,8 +253,8 @@ class User < ApplicationRecord
     save
   end
 
-  # Invalida o cookie em todos os aparelhos.
-  def sign_out_everywhere! = regenerate_token
+  # Invalida o cookie em todos os aparelhos. Sem validações: sair nunca pode falhar.
+  def sign_out_everywhere! = update_column(:token, self.class.generate_unique_secure_token)
 
   def mentor_requested? = role_learner? && mentor_requested_at.present?
 

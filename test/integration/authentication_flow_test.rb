@@ -169,13 +169,28 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_equal 0, AccessCode.count
   end
 
-  test "sair de todos os aparelhos invalida o token" do
+  test "sair invalida o token: uma cópia do cookie deixa de valer" do
     sign_up("all@example.com")
     user = User.last
     old_token = user.token
+    copied_cookie = cookies[Authentication::COOKIE.to_s]
 
-    delete sign_out_everywhere_path
+    delete sign_out_path
     assert_redirected_to root_path
     assert_not_equal old_token, user.reload.token
+
+    cookies[Authentication::COOKIE.to_s] = copied_cookie
+    get my_account_path
+    assert_redirected_to root_path
+  end
+
+  test "sair funciona mesmo com uma conta que não passaria nas validações de hoje" do
+    sign_up("antiga@example.com")
+    user = User.last
+    user.update_column(:birth_year, 1800)
+
+    delete sign_out_path
+    assert_redirected_to root_path
+    assert_not_nil user.reload.token
   end
 end
