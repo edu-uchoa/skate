@@ -23,6 +23,9 @@ Rails.application.configure do
   # Só para convidados: no app publicado, só entra quem o super admin liberou no painel
   # (AllowedEmail). Em desenvolvimento e nos testes fica aberto (os testes ligam quando precisam).
   config.x.flipaai.invite_only = Rails.env.production?
+  # Só pelo Google: no app publicado, as telas de senha e de recuperar senha não existem.
+  # No computador e nos testes continuam, para as contas de teste.
+  config.x.flipaai.google_only = Rails.env.production?
   # Super administrador: não é configurado aqui. Só o dono concede, com uma assinatura
   # feita na máquina dele (app/models/super_admin.rb e bin/rails super_admin:conceder).
   # Análise automática do vídeo (IA ou reconhecimento corporal). Desligada: hoje o

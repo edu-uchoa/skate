@@ -54,6 +54,13 @@ module Authentication
     redirect_to home_path_for(current_user) if signed_in?
   end
 
+  # Login e recuperação com senha: no app publicado (config.x.flipaai.google_only), para
+  # quem tenta abrir é 404, como se as telas não existissem.
+  def require_password_login
+    return unless Rails.configuration.x.flipaai.google_only
+    render file: Rails.public_path.join("404.html"), status: :not_found, layout: false
+  end
+
   # Para onde a pessoa vai depois de entrar: aprendiz na trilha, conta de mentor na fila.
   def home_path_for(user) = user.mentor_account? ? mentor_zine_path : track_path
 

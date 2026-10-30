@@ -107,7 +107,8 @@ Rails.application.routes.draw do
   get "cadastro", to: redirect("/")
   get "entrar",   to: redirect("/")
   # Login com senha das contas antigas (mentores e administradores, até a versão web
-  # deles): /entrar/senha, sem link no app.
+  # deles): /entrar/senha, sem link no app. No app publicado responde 404
+  # (config.x.flipaai.google_only), assim como /recuperar-senha.
   resource :session,        only: %i[new create], path: "entrar", path_names: { new: "senha" }
   get "auth/google_oauth2/callback", to: "google_sessions#create", as: :google_callback
   get "auth/failure",                to: "google_sessions#failure", as: :google_failure

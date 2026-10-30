@@ -171,7 +171,7 @@ Nao versione arquivos com segredos. Em producao, configure `RAILS_MASTER_KEY` e 
 
 ### Entrar com o Google (login)
 
-Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Os botoes ficam na tela da logo (`/`), a unica porta de entrada. Sem `GOOGLE_CLIENT_ID`, ela mostra um aviso no lugar do botao. Contas antigas com senha (mentores e administradores) entram por `/entrar/senha`, que nao tem link no app.
+Cadastro e login sao pelo botao "Continuar com o Google". O app pede ao Google so `openid` e `email` e nunca ve a senha da pessoa. Os botoes ficam na tela da logo (`/`), a unica porta de entrada. Sem `GOOGLE_CLIENT_ID`, ela mostra um aviso no lugar do botao. Contas antigas com senha (mentores e administradores) entram por `/entrar/senha`, que nao tem link no app. No app publicado (producao) nao ha login com senha: `/entrar/senha` e `/recuperar-senha` respondem 404 (`config.x.flipaai.google_only`).
 
 Conta nova so entra com conta Google `@gmail.com` (`User::GOOGLE_EMAIL_DOMAINS`). Com e-mail de escola, de empresa ou de outro provedor, quem controla o dominio consegue criar outra conta Google com o mesmo endereco. A conta e achada pelo codigo da conta Google, nunca pelo e-mail: uma segunda conta Google com o mesmo e-mail e recusada e fica no log (`login Google recusado`).
 

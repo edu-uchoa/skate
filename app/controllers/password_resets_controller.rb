@@ -2,6 +2,7 @@
 # e, com o código certo, deixa criar uma senha nova.
 class PasswordResetsController < ApplicationController
   allow_unauthenticated_access
+  before_action :require_password_login
   require_no_authentication
 
   rate_limit to: 10, within: 3.minutes, only: %i[create update resend],
