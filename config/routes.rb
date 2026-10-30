@@ -65,8 +65,8 @@ Rails.application.routes.draw do
     end
   end
 
-  # Painel do super administrador (o dono do app): contas, vídeos e devolutivas. Só
-  # entra a conta Google com e-mail em SUPER_ADMIN_EMAILS; para os outros é 404.
+  # Painel do super administrador (o dono do app): contas, acesso, vídeos e devolutivas.
+  # Só entra a conta Google com concessão assinada (SuperAdmin); para os outros é 404.
   namespace :admin, path: "painel" do
     root "dashboards#show"
     resources :users,   only: %i[index destroy], path: "usuarios" do

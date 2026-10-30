@@ -1,7 +1,7 @@
 require "test_helper"
 
-# Painel do super administrador (/painel): só a conta Google com e-mail em
-# SUPER_ADMIN_EMAILS entra; remove contas, tira acesso de mentor, apaga vídeos e devolutivas.
+# Painel do super administrador (/painel): só a conta Google com concessão assinada
+# (SuperAdmin) entra; remove contas, tira acesso de mentor, apaga vídeos e devolutivas.
 class AdminPanelTest < ActionDispatch::IntegrationTest
   PASSWORD = "manobra123"
 
